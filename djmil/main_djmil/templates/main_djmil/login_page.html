@@ -1,0 +1,34 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%}{%endblock%}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="{%static 'main_djmil/css/main.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script
+            src="https://code.jquery.com/jquery-3.6.4.min.js"
+            integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container login_page">
+    <form method="get">
+        <div class="alert alert-dark alert-login">
+            <input class="form-control" type="text" placeholder="login" name="login">
+            <input class="form-control" type="password" id="password" placeholder="password" name="password">
+            <button class="btn btn-success">login</button>
+            {%for message in mes%}
+            <p class="text-warning">{{message}}</p>
+            {%endfor%}
+        </div>
+    </form>
+</div>
+
+</body>
