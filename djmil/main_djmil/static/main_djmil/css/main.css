@@ -3,7 +3,7 @@ body {background-color: black}
 .orders {display: flex;
          flex-direction: row;}
 
-.main_table {width: 70;
+.main_table {width: 70%;
              overflow: auto;
              height: 85vh;
              padding-top: 3%;
@@ -11,15 +11,16 @@ body {background-color: black}
              justify-content: center;
             }
 
-.orders_search {width: 30%;
+.orders_search {width: 25%;
                 display: flex;
-                justify-content:center;
-                align-items:center;}
+                justify-content:start;
+                border-right: 3px solid yellow;
+                height: 90vh}
 
 .orders_search .alert-dark {padding-top:5%;}
 
 .search-btn{width:100%;
-            padding-top:5%}
+            }
 
 .login_page {width: 100%;
              height: 95vh;
@@ -29,3 +30,15 @@ body {background-color: black}
             }
 
 .alert-login button {width:100%}
+
+.download_orders {border-bottom: 3px solid yellow;
+                  padding: 5%;
+                  }
+
+.download_orders button {width: 100%}
+
+.main_search {border-bottom: 3px solid yellow;
+              padding: 5%;
+               }
+.title {display:flex;
+        justify-content:center}

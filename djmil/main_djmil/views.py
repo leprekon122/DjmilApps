@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import permissions
 import psycopg2
+import csv
 
 '''class for sql requests '''
 
@@ -24,7 +26,7 @@ class SendSqlReq:
     @property
     def newest_req(self):
         self.curs.execute(
-            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY dt_last DESC")
+            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY id DESC")
         res = self.curs.fetchall()
         return res
 
@@ -53,7 +55,7 @@ def login_page(request):
         login(request, user)
         return redirect('main_page')
 
-    #else:
+    # else:
     #    mes = messages.error(request, "oops wrong login or password!")
     #    data = {'mes': mes}
     #    return render(request, 'main_djmil/login_page.html', data)
@@ -87,6 +89,7 @@ class Orders(APIView):
         new = request.GET.get('new')
         old = request.GET.get('old')
         search_by_drone_id = request.GET.get('drone_id')
+        download = request.GET.get('download')
         if new:
             data = {'res': req.newest_req}
         elif old:
@@ -94,5 +97,40 @@ class Orders(APIView):
         elif search_by_drone_id:
             req = SendSqlReq(search_by_drone_id)
             data = {'res': req.search_drone_id}
-
+        elif download:
+            options = request.GET.get('options')
+            if options == 'without':
+                print('ok')
+                res = req.standart_req
+                response = HttpResponse(
+                    content_type='text/csv',
+                    headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+                )
+                writer = csv.writer(response)
+                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
+                for el in res:
+                    writer.writerow(el)
+                return response
+            elif options == 'newest':
+                res = req.newest_req
+                response = HttpResponse(
+                    content_type='text/csv',
+                    headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+                )
+                writer = csv.writer(response)
+                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
+                for el in res:
+                    writer.writerow(el)
+                return response
+            elif options == 'oldest':
+                res = req.oldest_req
+                response = HttpResponse(
+                    content_type='text/csv',
+                    headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+                )
+                writer = csv.writer(response)
+                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
+                for el in res:
+                    writer.writerow(el)
+                return response
         return render(request, "main_djmil/orders.html", data)
