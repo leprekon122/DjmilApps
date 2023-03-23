@@ -9,15 +9,22 @@ body {background-color: black}
              padding-top: 3%;
              display: flex;
              justify-content: center;
-            }
+
+    }
+
 
 .orders_search {width: 25%;
                 display: flex;
-                justify-content:start;
+                justify-content:center;
+                align-items:center;
                 border-right: 3px solid yellow;
-                height: 90vh}
+                height: 90vh;
+                padding-top: 2%}
 
-.orders_search .alert-dark {padding-top:5%;}
+.orders_search .alert-search {padding-top:5%;
+                              height: 85vh;
+                              overflow: auto;
+                             }
 
 .search-btn{width:100%;
             }
@@ -42,3 +49,13 @@ body {background-color: black}
                }
 .title {display:flex;
         justify-content:center}
+
+/*settings for  chose order panels */
+
+.chose_orders {border-bottom: 3px solid yellow;
+               padding: 5%;
+                }
+
+.chose_orders button {width: 100%}
+
+/* ====================================== */

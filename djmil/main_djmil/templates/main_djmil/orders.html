@@ -5,7 +5,7 @@
 {%block content%}
 <div class="container-fluid orders">
     <div class="orders_search">
-        <div class="alert alert-dark ">
+        <div class="alert alert-dark alert-search ">
             <div class="download_orders">
                 <h5 class="title">Завантаження</h5>
                 <form method="get">
@@ -41,10 +41,19 @@
                     <button class="btn btn-success search-btn" type="submit">пошук</button>
                 </form>
             </div>
+            <br>
+            <div class="chose_orders">
+                <select class="form-control" aria-label="Default select example">
+                    <option selected>Типи звітів</option>
+                    <option value="1">Звіт без fake drone</option>
+                    <option value="2">Звіт з fake drone</option>
+                </select>
+                <button class="btn btn-success" type="submit">шукати</button>
+            </div>
         </div>
     </div>
     <div class="main_table">
-        <table class="table table-dark">
+        <table class="table table-dark table-hover table-bordered">
             <thead>
             <tr>
                 <th scope="col">drone id</th>
@@ -59,7 +68,23 @@
 
             <tr>
                 <td>{{key.0}}</td>
-                <td>{{key.1}}</td>
+                {%if key.1 == 58 %}
+                <td>Mavic Air 2</td>
+                {%elif key.1 == 60 %}
+                <td>M300 RTK</td>
+                {%elif key.1 == 66 %}
+                <td>Air 2S</td>
+                {%elif key.1 == 67 %}
+                <td>M30</td>
+                {%elif key.1 == 68 %}
+                <td>Mavic 3</td>
+                {%elif key.1 == 69 %}
+                <td>Mavic 3</td>
+                {%elif key.1 == 77 %}
+                <td>Mavic 3</td>
+                {%elif key.1 == 86 %}
+                <td>Mavic 3</td>
+                {%endif%}
                 <td>{{key.2}}</td>
                 <td>{{key.3}}</td>
                 <td>{{key.4}}</td>

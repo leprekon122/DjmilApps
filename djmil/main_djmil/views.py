@@ -45,6 +45,57 @@ class SendSqlReq:
         return res
 
 
+class DownloadOrders(SendSqlReq):
+    @property
+    def download_order(self):
+        self.curs.execute("SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones")
+        res = self.curs.fetchall()
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
+        for el in res:
+            writer.writerow(el)
+        return response
+
+    @property
+    def download_newest_order(self):
+        self.curs.execute(
+            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY id DESC")
+        res = self.curs.fetchall()
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
+        for el in res:
+            writer.writerow(el)
+        return response
+
+    @property
+    def download_oldest_order(self):
+        self.curs.execute(
+            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY dt_first ")
+        res = self.curs.fetchall()
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
+        for el in res:
+            writer.writerow(el)
+        return response
+
+
+
+
 def login_page(request):
     username = request.GET.get('login')
     password = request.GET.get('password')
@@ -85,7 +136,6 @@ class Orders(APIView):
 
         data = {'res': req.standart_req
                 }
-
         new = request.GET.get('new')
         old = request.GET.get('old')
         search_by_drone_id = request.GET.get('drone_id')
@@ -100,37 +150,13 @@ class Orders(APIView):
         elif download:
             options = request.GET.get('options')
             if options == 'without':
-                print('ok')
-                res = req.standart_req
-                response = HttpResponse(
-                    content_type='text/csv',
-                    headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
-                )
-                writer = csv.writer(response)
-                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
-                for el in res:
-                    writer.writerow(el)
-                return response
+                download = DownloadOrders()
+                return download.download_order
             elif options == 'newest':
-                res = req.newest_req
-                response = HttpResponse(
-                    content_type='text/csv',
-                    headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
-                )
-                writer = csv.writer(response)
-                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
-                for el in res:
-                    writer.writerow(el)
-                return response
+                download = DownloadOrders()
+                return download.download_newest_order
             elif options == 'oldest':
-                res = req.oldest_req
-                response = HttpResponse(
-                    content_type='text/csv',
-                    headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
-                )
-                writer = csv.writer(response)
-                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
-                for el in res:
-                    writer.writerow(el)
-                return response
+                download = DownloadOrders()
+                return download.download_oldest_order
+
         return render(request, "main_djmil/orders.html", data)

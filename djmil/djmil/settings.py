@@ -85,9 +85,9 @@ WSGI_APPLICATION = 'djmil.wsgi.application'
 DATABASES = {
  'default': {
    'ENGINE': 'django.db.backends.postgresql',
-   'NAME': '',
+   'NAME': "vidma_db",
    'USER': 'user017a',
-   'PASSWORD': '',
+   'PASSWORD': 'AxqwKNn4',
    'HOST': 'localhost',
    'PORT': '5432',
   }
