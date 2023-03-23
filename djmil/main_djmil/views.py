@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import permissions
 import psycopg2
+
 import csv
 
 '''class for sql requests '''
@@ -92,8 +93,6 @@ class DownloadOrders(SendSqlReq):
         for el in res:
             writer.writerow(el)
         return response
-
-
 
 
 def login_page(request):
