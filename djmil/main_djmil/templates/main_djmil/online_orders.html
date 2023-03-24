@@ -1,0 +1,98 @@
+{%extends 'main_djmil/layout.html'%}
+
+{%block title%}online orders{%endblock%}
+
+{%block content%}
+<div class="container-fluid orders">
+    <div class="orders_search">
+        <div class="alert alert-dark alert-search ">
+            <div class="download_orders">
+                <h5 class="title">Завантаження</h5>
+                <form method="get">
+                    <select name="options" class="form-control" aria-label="Default select example">
+                        <option selected>типи звітів для завантаження</option>
+                        <option value="newest">Сортування за новими</option>
+                        <option value="oldest">Сортування за старими</option>
+                        <option value="without">без сортування</option>
+                    </select>
+                    <br>
+                    <button class="btn btn-dark" name="download" value="download">download</button>
+                </form>
+            </div>
+            <br>
+            <div class="main_search">
+                <h5 class="title">Сортування</h5>
+                <form method="get">
+                    <input class="form-control" placeholder="drone_id" name="drone_id" type="text">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="new" value="new" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            спершу новіші
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="old" value="old" id="flexCheckChecked"
+                               checked>
+                        <label class="form-check-label" for="flexCheckChecked">
+                            спершу пізніщі
+                        </label>
+                    </div>
+                    <br>
+                    <button class="btn btn-success search-btn" type="submit">пошук</button>
+                </form>
+            </div>
+            <br>
+            <div class="chose_orders">
+                <select class="form-control" aria-label="Default select example">
+                    <option selected>Типи звітів</option>
+                    <option value="1">Звіт без fake drone</option>
+                    <option value="2">Звіт з fake drone</option>
+                </select>
+                <button class="btn btn-success" type="submit">шукати</button>
+            </div>
+        </div>
+    </div>
+    <div class="main_table">
+        <table class="table table-dark table-hover table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">drone id</th>
+                <th scope="col">product type</th>
+                <th scope="col">first show date</th>
+                <th scope="col">last show date</th>
+                <th scope="col">id</th>
+            </tr>
+            </thead>
+            {%for item in model%}
+            <tbody>
+
+            <tr>
+                <td>{{item.serial_no}}</td>
+                {%if item.product_type == '58' %}
+                <td>Mavic Air 2</td>
+                {%elif item.product_type == '60' %}
+                <td>M300 RTK</td>
+                {%elif item.product_type == '66' %}
+                <td>Air 2S</td>
+                {%elif item.product_type == '67' %}
+                <td>M30</td>
+                {%elif item.product_type == '68' %}
+                <td>Mavic 3</td>
+                {%elif item.product_type == '69' %}
+                <td>Mavic 3</td>
+                {%elif item.product_type == '77' %}
+                <td>Mavic 3</td>
+                {%elif item.product_type == '86' %}
+                <td>Mavic 3</td>
+                {%endif%}
+                <td>{{item.dt_first}}</td>
+                <td>{{item.dt_last}}</td>
+            </tr>
+
+            </tbody>
+            {%endfor%}
+
+        </table>
+    </div>
+</div>
+{%endblock%}
