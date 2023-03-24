@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import permissions
 import psycopg2
+import os
 
 import csv
 
@@ -15,7 +16,7 @@ import csv
 class SendSqlReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect("dbname=vidma_db user=user017a password=AxqwKNn4")
+        self.conn = psycopg2.connect(f"dbname= user=user017a password=")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -133,7 +134,7 @@ class DownloadOrders(SendSqlReq):
 class DownloadOnlineOrders:
 
     def __init__(self, ):
-        self.conn = psycopg2.connect("dbname=vidma_db user=user017a password=AxqwKNn4")
+        self.conn = psycopg2.connect("dbname= user=user017a password=")
         self.curs = self.conn.cursor()
 
     @property
