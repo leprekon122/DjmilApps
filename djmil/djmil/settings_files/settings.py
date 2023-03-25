@@ -74,11 +74,10 @@ WSGI_APPLICATION = 'djmil.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "",
-        'USER': 'user017a',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-
+        'NAME': "vidma",
+        'USER': 'djmil_admin',
+        'PASSWORD': 'qwer1234',
+        'HOST': '85.209.89.166',
         'PORT': '5432',
     }
 }
@@ -113,6 +112,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000000
 
 STATIC_URL = 'static/'
 STATIC_ROOT = 'staticfiles/'

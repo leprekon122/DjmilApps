@@ -72,41 +72,41 @@
                 <th scope="col">dt</th>
             </tr>
             </thead>
-            {%for key in res%}
+            {%for el in model%}
             <tbody>
             <tr>
-                <td>{{key.0}}</td>
-                {%if key.1 == 58 %}
+                <td>{{el.serial_no}}</td>
+                {%if el.product_type == 58 %}
                 <td>Mavic Air 2</td>
-                {%elif key.1 == 60 %}
+                {%elif el.product_type == 60 %}
                 <td>M300 RTK</td>
-                {%elif key.1 == 66 %}
+                {%elif el.product_type == 66 %}
                 <td>Air 2S</td>
-                {%elif key.1 == 67 %}
+                {%elif el.product_type == 67 %}
                 <td>M30</td>
-                {%elif key.1 == 68 %}
+                {%elif el.product_type == 68 %}
                 <td>Mavic 3</td>
-                {%elif key.1 == 69 %}
+                {%elif el.product_type == 69 %}
                 <td>Mavic 3</td>
-                {%elif key.1 == 77 %}
+                {%elif el.product_type == 77 %}
                 <td>Mavic 3</td>
-                {%elif key.1 == 86 %}
+                {%elif el.product_type == 86 %}
                 <td>Mavic 3</td>
                 {%endif%}
-                <td><span class="text-success">lat</span>: {{key.2}}
+                <td><span class="text-success">lon</span>: {{el.longitude}}
                     <br>
-                    <span class="text-success">lon</span>: {{key.3}}
+                    <span class="text-success">lat</span>: {{el.latitude}}
                 </td>
-                <td>{{key.4}}</td>
-                <td>{{key.5}}</td>
-                <td><span class="text-success">lat</span>: {{key.6}}
+                <td>{{el.height}}</td>
+                <td>{{el.altitude}}</td>
+                <td><span class="text-success">lat</span>: {{el.phone_app_latitude}}
                     <br>
-                    <span class="text-success">lon</span>{{key.7}}</td>
+                    <span class="text-success">lon</span>{{el.phone_app_longitude}}</td>
 
-                <td><span class="text-success">lat</span>: {{key.8}}
+                <td><span class="text-success">lat</span>: {{el.home_latitude}}
                     <br>
-                    <span class="text-success">lon</span>: {{key.9}}</td>
-                <td>{{key.10}}</td>
+                    <span class="text-success">lon</span>: {{el.home_longitude}}</td>
+                <td>{{el.dt}}</td>
 
             </tr>
 

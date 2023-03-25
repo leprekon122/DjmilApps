@@ -1,12 +1,12 @@
+import psycopg2
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import MainOrders
+from .models import MainOrders, SecondOrdersModel
 from django.contrib import messages
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import permissions
-import psycopg2
-import os
+import time
 
 import csv
 
@@ -16,7 +16,7 @@ import csv
 class SendSqlReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect(f"dbname= user=user017a password=")
+        self.conn = psycopg2.connect(f"dbname=vidma_db user=user017a password=AxqwKNn4")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -43,24 +43,28 @@ class SendSqlReq:
     @property
     def search_drone_id(self):
         self.curs.execute(
-            f"SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones WHERE serial_no='{self.drone_id[0]}'")
+            f"SELECT serial_no, product_type, dt_first, dt_last,"
+            f" id FROM vidma.vidma_drones WHERE serial_no='{self.drone_id[0]}'")
         res = self.curs.fetchall()
         return res
 
 
-'''sql req on production'''
+'''second sql req on'''
 
 
 class SecondSQLReq:
 
-    def __init__(self):
-        self.conn = psycopg2.connect(f"dbname= user=user017a password=")
+    def __init__(self, *args):
+        self.conn = psycopg2.connect(f"dbname=vidma_db user=user017a password=AxqwKNn4")
         self.curs = self.conn.cursor()
+        self.drone_id = args
 
+    @property
     def make_sql(self):
         self.curs.execute(
             "SELECT serial_no, product_type, longitude, latitude, height, altitude,"
-            "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt FROM vidma.vidma_frames"
+            "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt,"
+            " frame_id FROM vidma.vidma_frames"
             " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ")
         res = self.curs.fetchall()
         return res
@@ -82,6 +86,43 @@ class SecondSQLReq:
             " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ORDER BY dt")
         res = self.curs.fetchall()
         return res
+
+    @property
+    def search_by_drone_id(self):
+        self.curs.execute(
+            f"SELECT serial_no, product_type, longitude, latitude, height,"
+            f" altitude, phone_app_latitude, phone_app_longitude, home_latitude,"
+            f" home_longitude, dt FROM vidma.vidma_frames WHERE serial_no='{self.drone_id[0]}'")
+        res = self.curs.fetchall()
+        return res
+
+
+'''sql second_online_req'''
+
+
+class SecondOnlineSQLReq:
+
+    def __init__(self, *args):
+        self.drone_id = args
+
+    @property
+    def make_sql(self):
+        return SecondOrdersModel.objects.all()
+
+    @property
+    def newest_req(self):
+        return SecondOrdersModel.objects.all().order_by('-dt')
+
+    @property
+    def oldest_req(self):
+        return SecondOrdersModel.objects.all().order_by('dt')
+
+    @property
+    def search_by_drone_id(self):
+        return SecondOrdersModel.objects.filter(id=int(self.drone_id[0]))
+
+
+'''sql req on production'''
 
 
 class OnlineSQLReq:
@@ -161,13 +202,81 @@ class DownloadOrders(SendSqlReq):
         return response
 
 
+'''download second order on local'''
+
+
+class DownloadSecondOrders(SecondSQLReq):
+    @property
+    def download_order(self):
+        self.curs.execute("SELECT serial_no, product_type, longitude, latitude, height, altitude,"
+                          "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude,"
+                          " dt FROM vidma.vidma_frames"
+                          " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ")
+        res = self.curs.fetchall()
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="download_second_order.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(["SELECT serial_no, product_type, longitude, latitude, height, altitude,"
+                         "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt"
+                         ])
+        for el in res:
+            writer.writerow(el)
+        time.sleep(20)
+        return response
+
+    @property
+    def download_newest_order(self):
+        self.curs.execute(
+            "SELECT serial_no, product_type, longitude, latitude, height, altitude,"
+            "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude,"
+            " dt FROM vidma.vidma_frames"
+            " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ORDER BY dt DESC"
+        )
+        res = self.curs.fetchall()
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="second_newest_date_order.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
+                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
+        for el in res:
+            writer.writerow(el)
+        return response
+
+    @property
+    def download_oldest_order(self):
+        self.curs.execute(
+            "SELECT serial_no, product_type, longitude, latitude, height, altitude,"
+            "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude,"
+            " dt FROM vidma.vidma_frames"
+            " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ORDER BY dt"
+        )
+        res = self.curs.fetchall()
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="second_oldest_date_order.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
+                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
+        for el in res:
+            writer.writerow(el)
+        return response
+
+
 '''download orders on production'''
 
 
 class DownloadOnlineOrders:
 
-    def __init__(self, ):
-        self.conn = psycopg2.connect("dbname= user=user017a password=")
+    def __init__(self):
+        self.conn = psycopg2.connect("dbname=vidma user=djmil_admin password=qwer1234 ")
         self.curs = self.conn.cursor()
 
     @property
@@ -206,7 +315,8 @@ class DownloadOnlineOrders:
     @property
     def download_oldest_order(self):
         self.curs.execute(
-            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY dt_first")
+            "SELECT serial_no, product_type, dt_first, dt_last, id"
+            " FROM vidma.vidma_drones ORDER BY dt_first")
         res = self.curs.fetchall()
         response = HttpResponse(
             content_type='text/csv',
@@ -290,11 +400,27 @@ class SecondOrder(APIView):
 
         new = request.GET.get('new')
         old = request.GET.get('old')
+        drone_id = request.GET.get('drone_id')
+        download = request.GET.get('download')
 
         if new:
             data = {'res': req.newest_req}
         elif old:
-            data = {'res':req.oldest_req}
+            data = {'res': req.oldest_req}
+        elif drone_id:
+            req = SecondSQLReq(drone_id)
+            data = {'res': req.search_by_drone_id}
+        elif download:
+            options = request.GET.get('options')
+
+            if options == 'without':
+                download = DownloadSecondOrders
+                return download.download_order
+            elif options == 'newest':
+                return download.download_newest_order
+            elif options == 'oldest':
+                download = DownloadOrders()
+                return download.download_oldest_order
 
         return render(request, 'main_djmil/second_order.html', data)
 
@@ -316,29 +442,43 @@ class OnlineOrders(APIView):
         elif search_by_drone_id:
             req = OnlineSQLReq(search_by_drone_id)
             model = req.search_drone_id
-        if download:
-            options = request.GET.get('options')
-            if options == 'without':
-                # req = DownloadOnlineOrders()
-                # return req.download_order
-                res = MainOrders.objects.all()
-                response = HttpResponse(
-                    content_type='text/csv',
-                    headers={'Content-Disposition': 'attachment; filename="orders.csv"'},
-                )
-
-                writer = csv.writer(response)
-                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last'])
-                for el in res:
-                    writer.writerow(el)
-                return response
-            elif options == 'newest':
-                req = DownloadOnlineOrders()
-                return req.download_newest_order
-            elif options == 'oldest':
-                req = DownloadOnlineOrders()
-                return req.download_oldest_order
 
         data = {'model': model}
 
         return render(request, 'main_djmil/online_orders.html', data)
+
+
+class OnlineSecondOrders(APIView):
+    @staticmethod
+    def get(request):
+        model = SecondOrdersModel.objects.all()
+
+        new = request.GET.get('new')
+        old = request.GET.get('old')
+        search_by_drone_id = request.GET.get('drone_id')
+        download = request.GET.get('download')
+        update_data = request.GET.get('update_data')
+        req = SecondOnlineSQLReq()
+        req_updata = SecondSQLReq()
+        count = 0
+
+        if update_data:
+            for el in req.make_sql:
+                if el[11] != SecondOrdersModel.objects.filter(frame_id=el[11]).values()[0]['frame_id']:
+                    SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
+                                      latitude=el[3], height=el[4], altitude=el[5],
+                                      phone_app_latitude=el[6], phone_app_longitude=el[7],
+                                      home_latitude=el[8], home_longitude=el[9], dt=el[10],
+                                      frame_id=el[11]).save()
+
+        if new:
+            model = req.newest_req
+        elif old:
+            model = req.oldest_req
+        elif search_by_drone_id:
+            req = SecondOnlineSQLReq(search_by_drone_id)
+            model = req.search_by_drone_id
+
+        data = {'model': model}
+
+        return render(request, 'main_djmil/online_second_orders.html', data)
