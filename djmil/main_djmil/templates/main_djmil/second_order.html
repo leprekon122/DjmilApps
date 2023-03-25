@@ -1,6 +1,6 @@
 {%extends 'main_djmil/layout.html'%}
 
-{%block title%}Orders{%endblock%}
+{%block title%}Second order{%endblock%}
 
 {%block content%}
 <div class="container-fluid orders">
@@ -42,6 +42,7 @@
                 </form>
             </div>
             <br>
+
             <div class="chose_orders">
                 <div class="dropdown">
                     <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -49,37 +50,36 @@
                         вибери звіт
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{% url 'orders' %}">Поверховий звіт</a>
-                        <a class="dropdown-item" href="{% url 'second_order' %}">Детальній звіт</a>
+                        <a class="dropdown-item" href="{% url 'orders' %}">Поверховий Звіт</a>
+                        <a class="dropdown-item" href="{% url 'second_order' %}">Детальній Звіт</a>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-    <div class="main_table">
-        <table class="table table-dark table-sm table-hover table-bordered">
+    <div class="main_table_second">
+        <table class="table table-dark  table-hover table-bordered">
             <thead>
             <tr>
                 <th scope="col">drone id</th>
                 <th scope="col">product type</th>
-                <th scope="col">first show date</th>
-                <th scope="col">last show date</th>
-                <th scope="col">id</th>
+                <th scope="col">координати дрона</th>
+                <th scope="col">height</th>
+                <th scope="col">altitude</th>
+                <th scope="col">координати пульта </th>
+                <th scope="col">координати  homepoint</th>
+                <th scope="col">dt</th>
             </tr>
             </thead>
             {%for key in res%}
             <tbody>
-
             <tr>
                 <td>{{key.0}}</td>
                 {%if key.1 == 58 %}
                 <td>Mavic Air 2</td>
                 {%elif key.1 == 60 %}
                 <td>M300 RTK</td>
-                {%elif key.1 == 63 %}
-                <td>mavic 2 mini</td>
-                {%elif key.1 == 0.0 %}
-                <td>fakefake</td>
                 {%elif key.1 == 66 %}
                 <td>Air 2S</td>
                 {%elif key.1 == 67 %}
@@ -93,9 +93,21 @@
                 {%elif key.1 == 86 %}
                 <td>Mavic 3</td>
                 {%endif%}
-                <td>{{key.2}}</td>
-                <td>{{key.3}}</td>
+                <td><span class="text-success">lon</span>: {{key.2}}
+                    <br>
+                    <span class="text-success">lat</span>: {{key.3}}
+                </td>
                 <td>{{key.4}}</td>
+                <td>{{key.5}}</td>
+                <td><span class="text-success">lon</span>: {{key.6}}
+                    <br>
+                    <span class="text-success">len</span>{{key.7}}</td>
+
+                <td><span class="text-success">lon</span>: {{key.8}}
+                    <br>
+                    <span class="text-success">lat</span>: {{key.9}}</td>
+                <td>{{key.10}}</td>
+
             </tr>
 
             </tbody>

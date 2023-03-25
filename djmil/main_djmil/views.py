@@ -51,6 +51,39 @@ class SendSqlReq:
 '''sql req on production'''
 
 
+class SecondSQLReq:
+
+    def __init__(self):
+        self.conn = psycopg2.connect(f"dbname= user=user017a password=")
+        self.curs = self.conn.cursor()
+
+    def make_sql(self):
+        self.curs.execute(
+            "SELECT serial_no, product_type, longitude, latitude, height, altitude,"
+            "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt FROM vidma.vidma_frames"
+            " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ")
+        res = self.curs.fetchall()
+        return res
+
+    @property
+    def newest_req(self):
+        self.curs.execute(
+            "SELECT serial_no, product_type, longitude, latitude, height, altitude,"
+            "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt FROM vidma.vidma_frames"
+            " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ORDER BY dt DESC")
+        res = self.curs.fetchall()
+        return res
+
+    @property
+    def oldest_req(self):
+        self.curs.execute(
+            "SELECT serial_no, product_type, longitude, latitude, height, altitude,"
+            "phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt FROM vidma.vidma_frames"
+            " WHERE serial_no != 'fakefake' AND home_longitude != 0.0 ORDER BY dt")
+        res = self.curs.fetchall()
+        return res
+
+
 class OnlineSQLReq:
     def __init__(self, *args):
         self.drone_id = args
@@ -194,6 +227,7 @@ def login_page(request):
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
+        print('ok')
         login(request, user)
         return redirect('main_page')
 
@@ -210,12 +244,6 @@ class MainPage(APIView):
 
     @staticmethod
     def get(request):
-        log_out = request.GET.get('exit')
-
-        if log_out:
-            print('ok')
-            logout(request)
-            redirect('login')
         return render(request, "main_djmil/main_page.html")
 
 
@@ -253,6 +281,24 @@ class Orders(APIView):
         return render(request, "main_djmil/orders.html", data)
 
 
+class SecondOrder(APIView):
+
+    @staticmethod
+    def get(request):
+        req = SecondSQLReq()
+        data = {'res': req.make_sql}
+
+        new = request.GET.get('new')
+        old = request.GET.get('old')
+
+        if new:
+            data = {'res': req.newest_req}
+        elif old:
+            data = {'res':req.oldest_req}
+
+        return render(request, 'main_djmil/second_order.html', data)
+
+
 class OnlineOrders(APIView):
     @staticmethod
     def get(request):
@@ -273,8 +319,19 @@ class OnlineOrders(APIView):
         if download:
             options = request.GET.get('options')
             if options == 'without':
-                req = DownloadOnlineOrders()
-                return req.download_order
+                # req = DownloadOnlineOrders()
+                # return req.download_order
+                res = MainOrders.objects.all()
+                response = HttpResponse(
+                    content_type='text/csv',
+                    headers={'Content-Disposition': 'attachment; filename="orders.csv"'},
+                )
+
+                writer = csv.writer(response)
+                writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last'])
+                for el in res:
+                    writer.writerow(el)
+                return response
             elif options == 'newest':
                 req = DownloadOnlineOrders()
                 return req.download_newest_order
