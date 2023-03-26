@@ -75,7 +75,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': "vidma",
-        'USER': '',
+        'USER': ')',
         'PASSWORD': '',
         'HOST': '',
         'PORT': '5432',
