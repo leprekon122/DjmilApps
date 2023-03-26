@@ -55,7 +55,7 @@ class SendSqlReq:
 class SecondSQLReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect(f"dbname= user=user017a password=")
+        self.conn = psycopg2.connect(f"dbname=vidma_db user=user017a password=AxqwKNn4")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -285,58 +285,105 @@ class DownloadSecondOrders(SecondSQLReq):
 
 class DownloadOnlineOrders:
 
-    def __init__(self):
-        self.conn = psycopg2.connect("dbname= user= password= ")
-        self.curs = self.conn.cursor()
-
     @property
     def download_order(self):
-        self.curs.execute(
-            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones")
-        res = self.curs.fetchall()
 
+        model = MainOrders.objects.values()
         response = HttpResponse(
             content_type='text/csv',
-            headers={'Content-Disposition': 'attachment; filename="orders.csv"'},
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
         )
 
         writer = csv.writer(response)
-        writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last'])
-        for el in res:
-            writer.writerow(el)
+        writer.writerow(['id', 'serial_no', 'product_type', 'dt_first', 'dt_last'])
+        for el in model:
+            writer.writerow(el.values())
+
         return response
 
     @property
     def download_newest_order(self):
-        self.curs.execute(
-            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY dt_last DESC")
-        res = self.curs.fetchall()
+        model = MainOrders.objects.values().order_by('-dt_last')
         response = HttpResponse(
             content_type='text/csv',
-            headers={'Content-Disposition': 'attachment; filename="newest_data_order.csv"'},
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
         )
 
         writer = csv.writer(response)
-        writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last', 'id'])
-        for el in res:
-            writer.writerow(el)
+        writer.writerow(['id', 'serial_no', 'product_type', 'dt_first', 'dt_last'])
+        for el in model:
+            writer.writerow(el.values())
+
         return response
 
     @property
     def download_oldest_order(self):
-        self.curs.execute(
-            "SELECT serial_no, product_type, dt_first, dt_last, id"
-            " FROM vidma.vidma_drones ORDER BY dt_first")
-        res = self.curs.fetchall()
+        model = MainOrders.objects.values().order_by('id')
         response = HttpResponse(
             content_type='text/csv',
-            headers={'Content-Disposition': 'attachment; filename="oldest_date_order.csv"'},
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
         )
 
         writer = csv.writer(response)
-        writer.writerow(['serial_no', 'product_type', 'dt_first', 'dt_last'])
-        for el in res:
-            writer.writerow(el)
+        writer.writerow(['id', 'serial_no', 'product_type', 'dt_first', 'dt_last'])
+        for el in model:
+            writer.writerow(el.values())
+
+        return response
+
+
+'''download second orders on production '''
+
+
+class DownloadSecondOnlineOrders:
+
+    @property
+    def download_order(self):
+
+        model = SecondOrdersModel.objects.values()
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
+                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
+        for el in model:
+            writer.writerow(el.values())
+
+        return response
+
+    @property
+    def download_newest_order(self):
+        model = SecondOrdersModel.objects.values().order_by('-dt')
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
+                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
+        for el in model:
+            writer.writerow(el.values())
+
+        return response
+
+    @property
+    def download_oldest_order(self):
+        model = SecondOrdersModel.objects.values().order_by('dt')
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
+                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
+        for el in model:
+            writer.writerow(el.values())
+
         return response
 
 
@@ -445,6 +492,17 @@ class OnlineOrders(APIView):
         search_by_drone_id = request.GET.get('drone_id')
         download = request.GET.get('download')
         req = OnlineSQLReq()
+
+        if download:
+            options = request.GET.get('options')
+            req_download = DownloadOnlineOrders()
+            if options == 'without':
+                return req_download.download_order
+            elif options == 'newest':
+                return req_download.download_newest_order
+            elif options == 'oldest':
+                return req_download.download_oldest_order
+
         if new:
             model = req.newest_req
         elif old:
@@ -470,7 +528,7 @@ class OnlineSecondOrders(APIView):
         update_data = request.GET.get('update_data')
         req = SecondOnlineSQLReq()
 
-        req_update = SecondSQLReq()
+        # req_update = SecondSQLReq()
         if update_data:
             if len(model) == 0:
                 for el in req_update.make_sql:
@@ -481,7 +539,7 @@ class OnlineSecondOrders(APIView):
                                       frame_id=el[11]).save()
             else:
                 frame_id = SecondOrdersModel.objects.values('frame_id').last()['frame_id']
-                req_update = SecondSQLReq(frame_id)
+                # req_update = SecondSQLReq(frame_id)
                 for el in req_update.update_data:
                     SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
                                       latitude=el[3], height=el[4], altitude=el[5],
@@ -489,12 +547,30 @@ class OnlineSecondOrders(APIView):
                                       home_latitude=el[8], home_longitude=el[9], dt=el[10],
                                       frame_id=el[11]).save()
 
+        if download:
+            options = request.GET.get('options')
+            req_download = DownloadSecondOnlineOrders()
+            if options == 'without':
+                return req_download.download_order
+            elif options == 'newest':
+                return req_download.download_newest_order
+            elif options == 'oldest':
+                return req_download.download_oldest_order
+
         if new:
             model = req.newest_req
         elif old:
             model = req.oldest_req
         elif search_by_drone_id:
-            model = SecondOrdersModel.objects.filter(serial_no=search_by_drone_id)
+            req = OnlineSQLReq(search_by_drone_id)
+            model = req.search_drone_id
+
+        #if new:
+        #    model = req.newest_req
+        #elif old:
+        #    model = req.oldest_req
+        #elif search_by_drone_id:
+        #    model = SecondOrdersModel.objects.filter(serial_no=search_by_drone_id)
 
         data = {'model': model}
 
