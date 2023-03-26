@@ -55,7 +55,7 @@ class SendSqlReq:
 class SecondSQLReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect(f"dbname=vidma_db user=user017a password=AxqwKNn4")
+        self.conn = psycopg2.connect(f"dbname= user=user017a password=")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -92,7 +92,17 @@ class SecondSQLReq:
         self.curs.execute(
             f"SELECT serial_no, product_type, longitude, latitude, height,"
             f" altitude, phone_app_latitude, phone_app_longitude, home_latitude,"
-            f" home_longitude, dt FROM vidma.vidma_frames WHERE serial_no='{self.drone_id[0]}'")
+            f" home_longitude, dt FROM vidma.vidma_frames WHERE serial_no='{self.drone_id} AND home_latitude != 0.0 '")
+        res = self.curs.fetchall()
+        return res
+
+    @property
+    def update_data(self):
+        self.curs.execute(
+            f"SELECT serial_no, product_type, longitude, latitude, height,"
+            f" altitude, phone_app_latitude, phone_app_longitude, home_latitude,"
+            f" home_longitude, dt FROM vidma.vidma_frames WHERE frame_id > {self.drone_id[0]} "
+            f"AND serial_no != 'fakefake' AND home_longitude != 0.0  ")
         res = self.curs.fetchall()
         return res
 
@@ -119,7 +129,7 @@ class SecondOnlineSQLReq:
 
     @property
     def search_by_drone_id(self):
-        return SecondOrdersModel.objects.filter(id=int(self.drone_id[0]))
+        return SecondOrdersModel.objects.filter(serial_no=self.drone_id[0])
 
 
 '''sql req on production'''
@@ -276,7 +286,7 @@ class DownloadSecondOrders(SecondSQLReq):
 class DownloadOnlineOrders:
 
     def __init__(self):
-        self.conn = psycopg2.connect("dbname=vidma user=djmil_admin password=qwer1234 ")
+        self.conn = psycopg2.connect("dbname= user= password= ")
         self.curs = self.conn.cursor()
 
     @property
@@ -459,12 +469,20 @@ class OnlineSecondOrders(APIView):
         download = request.GET.get('download')
         update_data = request.GET.get('update_data')
         req = SecondOnlineSQLReq()
-        req_updata = SecondSQLReq()
-        count = 0
 
+        req_update = SecondSQLReq()
         if update_data:
-            for el in req.make_sql:
-                if el[11] != SecondOrdersModel.objects.filter(frame_id=el[11]).values()[0]['frame_id']:
+            if len(model) == 0:
+                for el in req_update.make_sql:
+                    SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
+                                      latitude=el[3], height=el[4], altitude=el[5],
+                                      phone_app_latitude=el[6], phone_app_longitude=el[7],
+                                      home_latitude=el[8], home_longitude=el[9], dt=el[10],
+                                      frame_id=el[11]).save()
+            else:
+                frame_id = SecondOrdersModel.objects.values('frame_id').last()['frame_id']
+                req_update = SecondSQLReq(frame_id)
+                for el in req_update.update_data:
                     SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
                                       latitude=el[3], height=el[4], altitude=el[5],
                                       phone_app_latitude=el[6], phone_app_longitude=el[7],
@@ -476,8 +494,7 @@ class OnlineSecondOrders(APIView):
         elif old:
             model = req.oldest_req
         elif search_by_drone_id:
-            req = SecondOnlineSQLReq(search_by_drone_id)
-            model = req.search_by_drone_id
+            model = SecondOrdersModel.objects.filter(serial_no=search_by_drone_id)
 
         data = {'model': model}
 

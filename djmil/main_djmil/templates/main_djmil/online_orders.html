@@ -43,12 +43,16 @@
             </div>
             <br>
             <div class="chose_orders">
-                <select class="form-control" aria-label="Default select example">
-                    <option selected>Типи звітів</option>
-                    <option value="1">Звіт без fake drone</option>
-                    <option value="2">Звіт з fake drone</option>
-                </select>
-                <button class="btn btn-success" type="submit">шукати</button>
+                <div class="dropdown">
+                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        вибери звіт
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a>
+                        <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

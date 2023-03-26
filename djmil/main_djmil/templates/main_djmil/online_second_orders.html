@@ -17,6 +17,7 @@
                     </select>
                     <br>
                     <button class="btn btn-dark" name="download" value="download">download</button>
+                     <button class="btn btn-dark" name="update_data" value="update_data">update_data</button>
                 </form>
             </div>
             <br>
@@ -50,8 +51,8 @@
                         вибери звіт
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{% url 'orders' %}">Поверховий Звіт</a>
-                        <a class="dropdown-item" href="{% url 'second_order' %}">Детальній Звіт</a>
+                        <a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a>
+                        <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
                     </div>
                 </div>
             </div>
