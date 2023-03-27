@@ -559,22 +559,22 @@ class OnlineSecondOrders(APIView):
 
         # update order block
         if update_data:
-            if len(model) == 0:
-                for el in req_update.make_sql:
-                    SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
-                                      latitude=el[3], height=el[4], altitude=el[5],
-                                      phone_app_latitude=el[6], phone_app_longitude=el[7],
-                                      home_latitude=el[8], home_longitude=el[9], dt=el[10],
-                                      frame_id=el[11]).save()
-            else:
-                frame_id = SecondOrdersModel.objects.values('frame_id').last()['frame_id']
+            #if len(model) == 0:
+            #    for el in req_update.make_sql:
+            #        SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
+            #                          latitude=el[3], height=el[4], altitude=el[5],
+            #                          phone_app_latitude=el[6], phone_app_longitude=el[7],
+            #                          home_latitude=el[8], home_longitude=el[9], dt=el[10],
+            #                          frame_id=el[11]).save()
+            #else:
+            #    frame_id = SecondOrdersModel.objects.values('frame_id').last()['frame_id']
                 # req_update = SecondSQLReq(frame_id)
-                for el in req_update.update_data:
-                    SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
-                                      latitude=el[3], height=el[4], altitude=el[5],
-                                      phone_app_latitude=el[6], phone_app_longitude=el[7],
-                                      home_latitude=el[8], home_longitude=el[9], dt=el[10],
-                                      frame_id=el[11]).save()
+            #    for el in req_update.update_data:
+            #        SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
+            #                          latitude=el[3], height=el[4], altitude=el[5],
+            #                          phone_app_latitude=el[6], phone_app_longitude=el[7],
+            #                          home_latitude=el[8], home_longitude=el[9], dt=el[10],
+            #                          frame_id=el[11]).save()
 
         # download orders block
         if download:
