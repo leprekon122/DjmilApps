@@ -75,7 +75,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': "vidma",
-        'USER': ')',
+        'USER': '',
         'PASSWORD': '',
         'HOST': '',
         'PORT': '5432',
@@ -105,6 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
+DATETIME_FORMAT = 'y-m-d'
 
 USE_I18N = True
 

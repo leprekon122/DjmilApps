@@ -1,3 +1,5 @@
+import os
+
 import psycopg2
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -6,7 +8,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import permissions
-import time
+from datetime import datetime
 
 import csv
 
@@ -16,7 +18,7 @@ import csv
 class SendSqlReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect(f"dbname=vidma_db user=user017a password=AxqwKNn4")
+        self.conn = psycopg2.connect(f"dbname= user= password=AxqwKNn4")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -55,7 +57,7 @@ class SendSqlReq:
 class SecondSQLReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect(f"dbname=vidma_db user=user017a password=AxqwKNn4")
+        self.conn = psycopg2.connect(f"dbname= user= password=AxqwKNn4")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -416,6 +418,8 @@ class MainPage(APIView):
 
 class Orders(APIView):
 
+    permission_classes = [permissions.IsAuthenticated]
+
     @staticmethod
     def get(request):
         req = SendSqlReq()
@@ -450,6 +454,8 @@ class Orders(APIView):
 
 class SecondOrder(APIView):
 
+    permission_classes = [permissions.IsAuthenticated]
+
     @staticmethod
     def get(request):
         req = SecondSQLReq()
@@ -483,14 +489,19 @@ class SecondOrder(APIView):
 
 
 class OnlineOrders(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
     @staticmethod
     def get(request):
         model = MainOrders.objects.all()
 
         new = request.GET.get('new')
+        today = request.GET.get('today')
         old = request.GET.get('old')
         search_by_drone_id = request.GET.get('drone_id')
         download = request.GET.get('download')
+        date_search = request.GET.get('date_search')
         req = OnlineSQLReq()
 
         if download:
@@ -511,24 +522,40 @@ class OnlineOrders(APIView):
             req = OnlineSQLReq(search_by_drone_id)
             model = req.search_drone_id
 
+        if date_search:
+            model = MainOrders.objects.filter(dt_first__icontains=date_search)
+
+        if today:
+            model = MainOrders.objects.filter(dt_first__icontains=datetime.today())
+
         data = {'model': model}
 
         return render(request, 'main_djmil/online_orders.html', data)
 
 
 class OnlineSecondOrders(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+
     @staticmethod
     def get(request):
         model = SecondOrdersModel.objects.all()
 
+        print(os.getenv('db_pass.py'))
+
         new = request.GET.get('new')
+        today = request.GET.get('today')
         old = request.GET.get('old')
         search_by_drone_id = request.GET.get('drone_id')
         download = request.GET.get('download')
         update_data = request.GET.get('update_data')
         req = SecondOnlineSQLReq()
+        date_search = request.GET.get('date_search')
 
         # req_update = SecondSQLReq()
+
+        # update order block
         if update_data:
             if len(model) == 0:
                 for el in req_update.make_sql:
@@ -547,6 +574,7 @@ class OnlineSecondOrders(APIView):
                                       home_latitude=el[8], home_longitude=el[9], dt=el[10],
                                       frame_id=el[11]).save()
 
+        # download orders block
         if download:
             options = request.GET.get('options')
             req_download = DownloadSecondOnlineOrders()
@@ -557,20 +585,21 @@ class OnlineSecondOrders(APIView):
             elif options == 'oldest':
                 return req_download.download_oldest_order
 
+        # search by old,new, drone_id
         if new:
             model = req.newest_req
         elif old:
             model = req.oldest_req
         elif search_by_drone_id:
-            req = OnlineSQLReq(search_by_drone_id)
-            model = req.search_drone_id
+            req = SecondOnlineSQLReq(search_by_drone_id)
+            model = req.search_by_drone_id
 
-        #if new:
-        #    model = req.newest_req
-        #elif old:
-        #    model = req.oldest_req
-        #elif search_by_drone_id:
-        #    model = SecondOrdersModel.objects.filter(serial_no=search_by_drone_id)
+        # sort_by_date
+        if date_search:
+            model = SecondOrdersModel.objects.filter(dt__icontains=date_search)
+
+        if today:
+            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today())
 
         data = {'model': model}
 
