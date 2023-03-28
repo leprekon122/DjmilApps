@@ -12,6 +12,14 @@ body {background-color: black}
 
     }
 
+.no_data {
+          width: 70%;
+          height: 85vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+}
+
 .main_table_second {
                     width: 75%;
                     overflow: auto;

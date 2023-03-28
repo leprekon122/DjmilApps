@@ -17,7 +17,7 @@
                     </select>
                     <br>
                     <button class="btn btn-dark" name="download" value="download">download</button>
-                     <button class="btn btn-dark" name="update_data" value="update_data">update_data</button>
+                     <button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data</button>
                 </form>
             </div>
             <br>
@@ -26,18 +26,27 @@
                 <form method="get">
                     <input class="form-control" placeholder="drone_id" name="drone_id" type="text">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="new" value="new" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
+                        <input class="form-check-input" type="checkbox" name="new" value="new" id="flexCheckDefault_new">
+                        <label class="form-check-label" for="flexCheckDefault_new">
                             спершу новіші
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="old" value="old" id="flexCheckChecked"
-                               checked>
-                        <label class="form-check-label" for="flexCheckChecked">
+                        <input class="form-check-input" type="checkbox" name="today" value="today"
+                               id="flexCheckChecked_today"
+                        >
+                        <label class="form-check-label" for="flexCheckChecked_today">
+                            за сьогодні
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="old" value="old" id="flexCheckChecked_old"
+                               >
+                        <label class="form-check-label" for="flexCheckChecked_old">
                             спершу пізніщі
                         </label>
                     </div>
+                    <input type="date" class="form-control" name="date_search">
                     <br>
                     <button class="btn btn-success search-btn" type="submit">пошук</button>
                 </form>
