@@ -76,3 +76,27 @@ body {background-color: black}
 .chose_orders button {width: 100%}
 
 /* ====================================== */
+
+.combat_data {display: flex;
+              flex-direction: column;
+              width: 80%;
+              height: 85vh;
+              overflow: auto;
+              padding: 1%;
+            }
+
+.combat_alert {display: flex;
+               flex-direction: row;
+               background-color: black;
+               justify-content: space-around;
+               }
+
+.combat_alert_data {display: flex;
+                    flex-direction: column;
+                    }
+
+.combat_dark {background-color: black;
+              display:flex;
+              flex-direction: row;
+              justify-content: space-around;
+             }

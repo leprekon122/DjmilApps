@@ -1,6 +1,8 @@
-{%extends 'main_djmil/layout.html'%}
+{% extends 'main_djmil/layout.html'%}
 
-{%block title%}online orders{%endblock%}
+
+{%block title%}Combat order{%endblock%}
+
 
 {%block content%}
 <div class="container-fluid orders">
@@ -11,7 +13,6 @@
                 <form method="get">
                     <select name="options" class="form-control" aria-label="Default select example">
                         <option selected>типи звітів для завантаження</option>
-                        <option value="today_orders">Сортування за сьогодні</option>
                         <option value="newest">Сортування за новими</option>
                         <option value="oldest">Сортування за старими</option>
                         <option value="without">без сортування</option>
@@ -28,28 +29,6 @@
             <div class="main_search">
                 <h5 class="title">Сортування</h5>
                 <form method="get">
-                    <input class="form-control" placeholder="drone_id" name="drone_id" type="text">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="new" value="new" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            спершу новіші
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="today" value="today"
-                               id="flexCheckChecked_today"
-                        >
-                        <label class="form-check-label" for="flexCheckChecked_today">
-                            за сьогодні
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="old" value="old" id="flexCheckChecked"
-                        >
-                        <label class="form-check-label" for="flexCheckChecked">
-                            спершу пізніщі
-                        </label>
-                    </div>
                     <input type="date" class="form-control" name="date_search">
                     <br>
                     <button class="btn btn-success search-btn" type="submit">пошук</button>
@@ -71,53 +50,82 @@
             </div>
         </div>
     </div>
-    {%if model|length == 0%}
-    <div class="no_data">
-        <h1 class="text-light">No data for such period </h1>
-    </div>
-    {%else%}
-    <div class="main_table">
+    {% if model|length > 0 %}
+    <div class="combat_data">
+
+        {%if action == 0%}
+        {%for el in model%}
+        <div class="alert alert-dark combat_alert">
+            <form method="get">
+                <button class="btn btn-success" type="submit" name="open_data" value="{{el.serial_no}} {{el.dt}}">
+                    {{el.serial_no}}
+                </button>
+            </form>
+            <div class="combat_alert_data">
+                <span class="text-light">Дата виявлення:</span>
+                <p class="text-light">{{el.dt}}</p>
+            </div>
+            <div class="combat_alert_data">
+                <span class="text-light">Кількість польтів за дату:</span>
+                <p class="text-light">{{el.quantity}}</p>
+            </div>
+        </div>
+        {%endfor%}
+        {%else%}
+        <br>
+
+
+        <div class="alert alert-dark combat_dark">
+            <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.serial_no}}</p>
+            <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.dt}}</p>
+
+        </div>
+
+
+        <br>
         <table class="table table-dark table-sm table-hover table-bordered">
             <thead>
             <tr>
-                <th scope="col">drone id</th>
-                <th scope="col">product type</th>
-                <th scope="col">first show date</th>
-                <th scope="col">last show date</th>
+                <th scope="col">коордінати дрона</th>
+                <th scope="col">height</th>
+                <th scope="col">altitude</th>
+                <th scope="col">коордінати пульта</th>
+                <th scope="col">коордінати homepoint</th>
+
 
             </tr>
             </thead>
-            {%for item in model%}
+            {%for el in model_detail%}
             <tbody>
-
             <tr>
-                <td>{{item.serial_no}}</td>
-                {%if item.product_type == '58' %}
-                <td>Mavic Air 2</td>
-                {%elif item.product_type == '60' %}
-                <td>M300 RTK</td>
-                {%elif item.product_type == '66' %}
-                <td>Air 2S</td>
-                {%elif item.product_type == '67' %}
-                <td>M30</td>
-                {%elif item.product_type == '68' %}
-                <td>Mavic 3</td>
-                {%elif item.product_type == '69' %}
-                <td>Mavic 3</td>
-                {%elif item.product_type == '77' %}
-                <td>Mavic 3</td>
-                {%elif item.product_type == '86' %}
-                <td>Mavic 3</td>
-                {%endif%}
-                <td>{{item.dt_first}}</td>
-                <td>{{item.dt_last}}</td>
+                <td>{{el.longitude}}
+                    {{el.latitude}}
+                </td>
+                <td>{{el.height}}</td>
+                <td>{{el.altitude}}</td>
+                <td>{{el.phone_app_latitude}}
+                    {{el.phone_app_longitude}}
+                </td>
+                <td>{{el.home_latitude}}
+                    {{el.home_longitude}}
+                </td>
+
+
             </tr>
 
             </tbody>
             {%endfor%}
 
         </table>
+        {%endif%}
+    </div>
+    {%else%}
+    <div class="no_data">
+        <h3 class="text-light">no such data</h3>
     </div>
     {%endif%}
+
+
 </div>
+
 {%endblock%}

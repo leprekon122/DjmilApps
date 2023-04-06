@@ -9,8 +9,8 @@ urlpatterns = [
     path("orders/", views.Orders.as_view(), name="orders"),
     path('second_orders/', views.SecondOrder.as_view(), name='second_order'),
     path('online_orders/', views.OnlineOrders.as_view(), name='online_orders'),
-    path('online_second_orders/', views.OnlineSecondOrders.as_view(), name='online_second_orders')
-
+    path('online_second_orders/', views.OnlineSecondOrders.as_view(), name='online_second_orders'),
+    path('combat_orders/', views.CombatOrder.as_view(), name="combat_orders")
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

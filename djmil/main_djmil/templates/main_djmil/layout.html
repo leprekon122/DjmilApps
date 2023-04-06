@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="{%static 'main_djmil/css/main.css' %}">
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
           integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -27,6 +27,11 @@
             integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
             crossorigin="anonymous"></script>
 
+    <script type='text/javascript'
+            src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AkuezCwTATSUoOJz6anm2a7b64t-uTcIbVPXE8gxzwMxazjeGZyMFxXPIbbWEhfr'
+            async defer></script>
+
+
 </head>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -40,10 +45,6 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'orders'%}" id="offline_order">Звіти<span
-                        class="sr-only">(current)</span></a>
-            </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'online_orders'%}" id="online_order">Звіти<span class="sr-only">(current)</span></a>
             </li>

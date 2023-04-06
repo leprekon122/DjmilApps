@@ -3,5 +3,17 @@
 {%block title%}Main page{%endblock%}
 
 {%block content%}
+<div class="container-fluid">
+    <div class="main_map">
+        <div id="myMap" style="position:relative;width:600px;height:400px;"></div>
+        <div class="map_data">
+            <input placeholder="len" type="text" id="len">
+            <input placeholder="lon" type="text" id="lon">
+            <button onclick="GetMap()" class="btn btn-success">пошук</button>
+        </div>
+    </div>
+</div>
 
+<script type='text/javascript' src="/static/main_djmil/js/main_js.js">
+</script>
 {%endblock%}

@@ -63,6 +63,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a>
                         <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
+                        <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
                     </div>
                 </div>
             </div>
@@ -114,7 +115,7 @@
                     <br>
                     <span class="text-success">lon</span>{{el.phone_app_longitude}}</td>
 
-                <td><span class="text-success">lat</span>: {{el.home_latitude}}
+                <td id="position" onclick="location_data()"><span class="text-success" >lat</span>: {{el.home_latitude}}
                     <br>
                     <span class="text-success">lon</span>: {{el.home_longitude}}</td>
                 <td>{{el.dt}}</td>
@@ -127,4 +128,7 @@
         </table>
     </div>
 </div>
+<script src="/static/main_djmil/js/main_js.js">
+
+</script>
 {%endblock%}

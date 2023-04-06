@@ -24,8 +24,7 @@ class SendSqlReq:
 
     @property
     def standart_req(self):
-        self.curs.execute("SELECT serial_no, product_type, dt_first,"
-                          " dt_last, id FROM vidma.vidma_drones ORDER BY serial_no")
+        self.curs.execute("SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones")
         res = self.curs.fetchall()
         return res
 
@@ -48,14 +47,6 @@ class SendSqlReq:
         self.curs.execute(
             f"SELECT serial_no, product_type, dt_first, dt_last,"
             f" id FROM vidma.vidma_drones WHERE serial_no='{self.drone_id[0]}'")
-        res = self.curs.fetchall()
-        return res
-
-    @property
-    def update_data(self):
-        self.curs.execute(
-            f"SELECT serial_no, product_type, dt_first, dt_last,"
-            f" id FROM vidma.vidma_drones ORDER BY serial_no DESC LIMIT {self.drone_id[0]}")
         res = self.curs.fetchall()
         return res
 
@@ -112,7 +103,7 @@ class SecondSQLReq:
         self.curs.execute(
             f"SELECT serial_no, product_type, longitude, latitude, height,"
             f" altitude, phone_app_latitude, phone_app_longitude, home_latitude,"
-            f" home_longitude, dt, frame_id FROM vidma.vidma_frames WHERE frame_id > {self.drone_id[0]} "
+            f" home_longitude, dt FROM vidma.vidma_frames WHERE frame_id > {self.drone_id[0]} "
             f"AND serial_no != 'fakefake' AND home_longitude != 0.0  ")
         res = self.curs.fetchall()
         return res
@@ -341,21 +332,6 @@ class DownloadOnlineOrders:
 
         return response
 
-    @property
-    def download_online_orders(self):
-        model = MainOrders.objects.filter(dt_last__icontains=datetime.today().strftime('%y-%m-%d')).values()
-        response = HttpResponse(
-            content_type='text/csv',
-            headers={'Content-Disposition': 'attachment; filename="today_orders.csv"'},
-        )
-
-        writer = csv.writer(response)
-        writer.writerow(['id', 'serial_no', 'product_type', 'dt_first', 'dt_last'])
-        for el in model:
-            writer.writerow(el.values())
-
-        return response
-
 
 '''download second orders on production '''
 
@@ -401,22 +377,6 @@ class DownloadSecondOnlineOrders:
         response = HttpResponse(
             content_type='text/csv',
             headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
-        )
-
-        writer = csv.writer(response)
-        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
-                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
-        for el in model:
-            writer.writerow(el.values())
-
-        return response
-
-    @property
-    def download_today_orders(self):
-        model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d')).values()
-        response = HttpResponse(
-            content_type='text/csv',
-            headers={'Content-Disposition': 'attachment; filename="today_orders.csv"'},
         )
 
         writer = csv.writer(response)
@@ -539,31 +499,6 @@ class OnlineOrders(APIView):
         download = request.GET.get('download')
         date_search = request.GET.get('date_search')
         req = OnlineSQLReq()
-        req_update = SendSqlReq()
-
-        update_data = request.GET.get('update_data')
-
-        #if update_data:
-
-        #    if len(model) == 0:
-        #        for el in req_update.standart_req:
-        #            MainOrders(serial_no=el[0], product_type=el[1],
-        #                       dt_first=el[2], dt_last=el[3]).save()
-
-        #    else:
-
-        #        count = len(req_update.standart_req) - len(MainOrders.objects.values())
-
-        #        req_update = SendSqlReq(count)
-
-        #        for el in req_update.update_data:
-        #            MainOrders(serial_no=el[0], product_type=el[1],
-        #                       dt_first=el[2], dt_last=el[3]).save()
-
-
-
-
-
 
         if download:
             options = request.GET.get('options')
@@ -574,8 +509,6 @@ class OnlineOrders(APIView):
                 return req_download.download_newest_order
             elif options == 'oldest':
                 return req_download.download_oldest_order
-            elif options == 'today_orders':
-                return req_download.download_online_orders
 
         if new:
             model = req.newest_req
@@ -589,7 +522,7 @@ class OnlineOrders(APIView):
             model = MainOrders.objects.filter(dt_first__icontains=date_search)
 
         if today:
-            model = MainOrders.objects.filter(dt_last__icontains=datetime.today().strftime("%y-%m-%d"))
+            model = MainOrders.objects.filter(dt_first__icontains=datetime.today())
 
         data = {'model': model}
 
@@ -603,6 +536,7 @@ class OnlineSecondOrders(APIView):
     def get(request):
         model = SecondOrdersModel.objects.all()
 
+        print(os.getenv('db_pass.py'))
 
         new = request.GET.get('new')
         today = request.GET.get('today')
@@ -616,24 +550,23 @@ class OnlineSecondOrders(APIView):
         # req_update = SecondSQLReq()
 
         # update order block
-        #if update_data:
-        #    req_update = SecondSQLReq()
-        #    if len(model) == 0:
-        #        for el in req_update.make_sql:
-        #            SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
-        #                              latitude=el[3], height=el[4], altitude=el[5],
-        #                              phone_app_latitude=el[6], phone_app_longitude=el[7],
-        #                              home_latitude=el[8], home_longitude=el[9], dt=el[10],
-        #                              frame_id=el[11]).save()
-        #    else:
-        #        frame_id = SecondOrdersModel.objects.values('frame_id').last()['frame_id']
-        #        req_update = SecondSQLReq(frame_id)
-        #        for el in req_update.update_data:
-        #####            SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
-        ####                              latitude=el[3], height=el[4], altitude=el[5],
-        ###                              phone_app_latitude=el[6], phone_app_longitude=el[7],
-        ##                              home_latitude=el[8], home_longitude=el[9], dt=el[10],
-        #                              frame_id=el[11]).save()
+        # if update_data:
+        # if len(model) == 0:
+        #    for el in req_update.make_sql:
+        #        SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
+        #                          latitude=el[3], height=el[4], altitude=el[5],
+        #                          phone_app_latitude=el[6], phone_app_longitude=el[7],
+        #                          home_latitude=el[8], home_longitude=el[9], dt=el[10],
+        #                          frame_id=el[11]).save()
+        # else:
+        #    frame_id = SecondOrdersModel.objects.values('frame_id').last()['frame_id']
+        # req_update = SecondSQLReq(frame_id)
+        #    for el in req_update.update_data:
+        #        SecondOrdersModel(serial_no=el[0], product_type=el[1], longitude=el[2],
+        #                          latitude=el[3], height=el[4], altitude=el[5],
+        #                          phone_app_latitude=el[6], phone_app_longitude=el[7],
+        #                          home_latitude=el[8], home_longitude=el[9], dt=el[10],
+        #                          frame_id=el[11]).save()
 
         # download orders block
         if download:
@@ -645,8 +578,6 @@ class OnlineSecondOrders(APIView):
                 return req_download.download_newest_order
             elif options == 'oldest':
                 return req_download.download_oldest_order
-            elif options == 'today_orders':
-                return req_download.download_today_orders
 
         # search by old,new, drone_id
         if new:
@@ -662,8 +593,134 @@ class OnlineSecondOrders(APIView):
             model = SecondOrdersModel.objects.filter(dt__icontains=date_search)
 
         if today:
-            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d'))
+            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today())
 
         data = {'model': model}
 
         return render(request, 'main_djmil/online_second_orders.html', data)
+
+
+class CombatOrder(APIView):
+
+    @staticmethod
+    def get(request):
+        date_search = request.GET.get('date_search')
+
+        open_data = request.GET.get('open_data')
+
+        model_set = SecondOrdersModel.objects.filter(
+            dt__icontains=datetime.today().strftime('%Y-%m-%d')).values().order_by('serial_no')
+
+        model = []
+
+        for el in range(len(model_set) - 1):
+            if model_set[el]['serial_no'] != model_set[el + 1]['serial_no']:
+                quantity = SecondOrdersModel.objects.filter(dt__icontains=date_search,
+                                                            serial_no=model_set[el]['serial_no']).values().count()
+
+                model_data = {'serial_no': model_set[el]['serial_no'],
+                              'dt': model_set[el]['dt'],
+                              'quantity': quantity,
+                              'action': 0,
+                              }
+
+                model.append(model_data)
+
+        if date_search:
+            model_set = SecondOrdersModel.objects.filter(dt__icontains=date_search).values().order_by('serial_no')
+
+            model = []
+
+            for el in range(len(model_set) - 1):
+                if model_set[el]['serial_no'] != model_set[el + 1]['serial_no']:
+                    quantity = SecondOrdersModel.objects.filter(dt__icontains=date_search,
+                                                                serial_no=model_set[el]['serial_no']).values().count()
+
+                    model_data = {'serial_no': model_set[el]['serial_no'],
+                                  'dt': model_set[el]['dt'],
+                                  'quantity': quantity,
+                                  'action': 0,
+                                  }
+
+                    model.append(model_data)
+
+            data = {
+                'model': model,
+                'action': 0
+            }
+            return render(request, 'main_djmil/combat_orders.html', data)
+
+        if open_data:
+
+            serial_no = open_data.split(' ')[0]
+            current_year = open_data.split(',')[1].split(' ')[1]
+            current_month = open_data.split(' ')[1]
+            current_day = open_data.split(' ')[2].split(',')[0]
+
+            if current_month == 'March':
+                model_detail = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')
+                model = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')[0]
+
+                data = {
+                    'model': model,
+                    'model_detail': model_detail,
+                    'action': 1
+                }
+                return render(request, 'main_djmil/combat_orders.html', data)
+
+            elif current_month == "April":
+                model_detail = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-04-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')
+                model = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')[0]
+
+                data = {
+                    'model': model,
+                    'model_detail': model_detail,
+                    'action': 1
+                }
+                return render(request, 'main_djmil/combat_orders.html', data)
+
+            elif current_month == "May":
+                model_detail = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-05-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')
+
+                model = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')[0]
+
+                data = {
+                    'model': model,
+                    'model_detail': model_detail,
+                    'action': 1
+                }
+                return render(request, 'main_djmil/combat_orders.html', data)
+
+            elif current_year == "July":
+                model_detail = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-06-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')
+
+                model = SecondOrdersModel.objects.filter(
+                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
+                    'serial_no')[0]
+
+                data = {
+                    'model': model,
+                    'model_detail': model_detail,
+                    'action': 1
+                }
+                return render(request, 'main_djmil/combat_orders.html', data)
+
+        data = {'model': model,
+                'action': 0
+                }
+
+        return render(request, 'main_djmil/combat_orders.html', data)
