@@ -100,3 +100,11 @@ body {background-color: black}
               flex-direction: row;
               justify-content: space-around;
              }
+
+.main_map {display: flex;
+           flex-direction: row;
+           justify-content: space-between;
+          }
+
+.map_data {width: 45%;}
+#loc {width:50%}

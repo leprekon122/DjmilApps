@@ -522,7 +522,7 @@ class OnlineOrders(APIView):
             model = MainOrders.objects.filter(dt_first__icontains=date_search)
 
         if today:
-            model = MainOrders.objects.filter(dt_first__icontains=datetime.today())
+            model = MainOrders.objects.filter(dt_first__icontains=datetime.today().strftime('%Y-%m-%d'))
 
         data = {'model': model}
 
@@ -593,7 +593,7 @@ class OnlineSecondOrders(APIView):
             model = SecondOrdersModel.objects.filter(dt__icontains=date_search)
 
         if today:
-            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today())
+            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%Y-%m-%d'))
 
         data = {'model': model}
 
@@ -604,27 +604,37 @@ class CombatOrder(APIView):
 
     @staticmethod
     def get(request):
+
         date_search = request.GET.get('date_search')
 
         open_data = request.GET.get('open_data')
 
-        model_set = SecondOrdersModel.objects.filter(
-            dt__icontains=datetime.today().strftime('%Y-%m-%d')).values().order_by('serial_no')
+        today = request.GET.get('today')
 
-        model = []
+        if today:
+            model_set = SecondOrdersModel.objects.filter(
+                dt__icontains=datetime.today().strftime('%y-%m-%d')).values().order_by('serial_no')
 
-        for el in range(len(model_set) - 1):
-            if model_set[el]['serial_no'] != model_set[el + 1]['serial_no']:
-                quantity = SecondOrdersModel.objects.filter(dt__icontains=date_search,
-                                                            serial_no=model_set[el]['serial_no']).values().count()
+            model = []
 
-                model_data = {'serial_no': model_set[el]['serial_no'],
-                              'dt': model_set[el]['dt'],
-                              'quantity': quantity,
-                              'action': 0,
-                              }
+            for el in range(len(model_set) - 1):
+                if model_set[el]['serial_no'] != model_set[el + 1]['serial_no']:
+                    quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d'),
+                                                                serial_no=model_set[el]['serial_no']).values().count()
 
-                model.append(model_data)
+                    model_data = {'serial_no': model_set[el]['serial_no'],
+                                  'dt': model_set[el]['dt'],
+                                  'quantity': quantity,
+                                  'action': 0,
+                                  }
+
+                    model.append(model_data)
+                    data = {
+                        'model': model,
+                        'action': 0
+                    }
+
+            return render(request, 'main_djmil/combat_orders.html', data)
 
         if date_search:
             model_set = SecondOrdersModel.objects.filter(dt__icontains=date_search).values().order_by('serial_no')
@@ -656,6 +666,8 @@ class CombatOrder(APIView):
             current_year = open_data.split(',')[1].split(' ')[1]
             current_month = open_data.split(' ')[1]
             current_day = open_data.split(' ')[2].split(',')[0]
+            if int(current_day) < 10:
+                current_day = f'{current_day}'
 
             if current_month == 'March':
                 model_detail = SecondOrdersModel.objects.filter(
@@ -670,14 +682,17 @@ class CombatOrder(APIView):
                     'model_detail': model_detail,
                     'action': 1
                 }
+
                 return render(request, 'main_djmil/combat_orders.html', data)
 
             elif current_month == "April":
+
                 model_detail = SecondOrdersModel.objects.filter(
                     dt__icontains=f"{current_year}-04-{current_day}", serial_no=serial_no).values().order_by(
                     'serial_no')
+
                 model = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
+                    dt__icontains=f"{current_year}-04-{current_day}", serial_no=serial_no).values().order_by(
                     'serial_no')[0]
 
                 data = {
@@ -688,6 +703,7 @@ class CombatOrder(APIView):
                 return render(request, 'main_djmil/combat_orders.html', data)
 
             elif current_month == "May":
+
                 model_detail = SecondOrdersModel.objects.filter(
                     dt__icontains=f"{current_year}-05-{current_day}", serial_no=serial_no).values().order_by(
                     'serial_no')
@@ -719,8 +735,4 @@ class CombatOrder(APIView):
                 }
                 return render(request, 'main_djmil/combat_orders.html', data)
 
-        data = {'model': model,
-                'action': 0
-                }
-
-        return render(request, 'main_djmil/combat_orders.html', data)
+        return render(request, 'main_djmil/combat_orders.html')
