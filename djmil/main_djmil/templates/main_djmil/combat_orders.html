@@ -94,7 +94,7 @@
                 <h5 id='point' class="text-dark">x</h5>
             </div>
             <div class="map_data">
-                <input placeholder="loc" type="text" id="loc">
+                <input placeholder="координати" type="text" id="loc">
                 <button onclick="GetMap()" class="btn btn-success">пошук</button>
             </div>
         </div>
@@ -126,10 +126,9 @@
                     {{el.phone_app_latitude}}
                     {{el.phone_app_longitude}}
                 </td>
-                <td onclick="GetMap()" class="len_lon">
+                <td class="len_lon" onclick="GetMap()">
                     {{el.home_latitude}}
                     {{el.home_longitude}}
-
                 </td>
 
 
@@ -148,7 +147,7 @@
     {%endif%}
 </div>
 
-<script type='text/javascript' src="/static/main_djmil/js/main_js.js">
+<script type='text/javascript' src="/static/main_djmil/js/bing_map_api_js.js">
 </script>
 
 {%endblock%}

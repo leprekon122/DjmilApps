@@ -1,5 +1,19 @@
 body {background-color: black}
 
+.navbar-brand {padding: .5%;
+               background: linear-gradient(to right, #f5cb42, #eff542);
+               font-family: Cursive;
+               font-size: 17px;
+               border-radius: 5%;
+               }
+
+
+
+.orders_button:hover {background: radial-gradient(circle at center, #c28b0c, #0a9145);
+                      border-radius: 10%;
+                      }
+
+
 .orders {display: flex;
          flex-direction: row;}
 
@@ -90,6 +104,7 @@ body {background-color: black}
                background-color: black;
                justify-content: space-around;
                }
+
 
 .combat_alert_data {display: flex;
                     flex-direction: column;
