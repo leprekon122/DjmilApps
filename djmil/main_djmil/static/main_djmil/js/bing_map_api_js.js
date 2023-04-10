@@ -4,7 +4,6 @@ function GetMap()
 
         var len_lon = document.getElementsByClassName('len_lon')
 
-        console.log(len_lon)
 
 
         for(let el = 0; el < len_lon.length; el++){

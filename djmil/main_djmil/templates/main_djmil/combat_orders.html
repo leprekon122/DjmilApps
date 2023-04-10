@@ -50,7 +50,7 @@
                         вибери звіт
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a>
+                        <!--<a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a> -->
                         <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
                         <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
                     </div>
@@ -90,7 +90,7 @@
         </div>
 
         <div class="main_map">
-            <div id="myMap" style="position:relative;width:500px;height:300px;">
+            <div id="myMap" style="position:relative;width:600px;height:300px;">
                 <h5 id='point' class="text-dark">x</h5>
             </div>
             <div class="map_data">
@@ -117,8 +117,9 @@
             <tbody>
             <tr>
                 <td>
-                    {{el.longitude}}
                     {{el.latitude}}
+                    {{el.longitude}}
+
                 </td>
                 <td>{{el.height}}</td>
                 <td>{{el.altitude}}</td>
@@ -148,6 +149,9 @@
 </div>
 
 <script type='text/javascript' src="/static/main_djmil/js/bing_map_api_js.js">
+</script>
+
+<script src="/static/main_djmil/js/main_js.js">
 </script>
 
 {%endblock%}
