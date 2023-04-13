@@ -4,10 +4,13 @@ diff-match-patch==20200713
 Django==4.1.7
 django-import-export==3.1.0
 djangorestframework==3.14.0
+docx==0.2.4
 et-xmlfile==1.1.0
+lxml==4.9.2
 MarkupPy==1.14
 odfpy==1.4.1
 openpyxl==3.1.2
+Pillow==9.5.0
 psycopg2==2.9.5
 psycopg2-binary==2.9.5
 pytz==2022.7.1

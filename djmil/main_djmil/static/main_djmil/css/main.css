@@ -91,6 +91,17 @@ body {background-color: black}
 
 /* ====================================== */
 
+/* combat orders build docx */
+
+.build_orders  {border-bottom: 3px solid yellow;
+               padding: 5%;
+
+
+                }
+.build_orders button {width: 100%}
+
+/* ====================================== */
+
 .combat_data {display: flex;
               flex-direction: column;
               width: 80%;

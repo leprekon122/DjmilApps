@@ -3,6 +3,7 @@ from datetime import datetime
 
 import psycopg2
 from django.http import HttpResponse
+from docx import Document
 
 from .models import SecondOrdersModel, MainOrders
 
@@ -97,7 +98,7 @@ class SecondSQLReq:
             f" altitude, phone_app_latitude, phone_app_longitude, home_latitude,"
             f" home_longitude, dt FROM vidma.vidma_frames WHERE frame_id > {self.drone_id[0]} "
             f"AND serial_no != 'fakefake' AND home_longitude != 0.0  "
-            )
+        )
         res = self.curs.fetchall()
         return res
 
@@ -395,7 +396,8 @@ class CombatLogic:
     @property
     def today_req(self):
         model_set = SecondOrdersModel.objects.filter(
-            dt__icontains=datetime.today().strftime('%y-%m-%d')).values().order_by('serial_no')
+            dt__icontains=datetime.today().strftime('%y-%m-%d')).values().order_by(
+            'serial_no')
 
         model = []
 
@@ -406,6 +408,7 @@ class CombatLogic:
 
             model_data = {'serial_no': model_set[0]['serial_no'],
                           'dt': model_set[0]['dt'],
+                          'product_type': model_set[0]['product_type'],
                           'quantity': quantity,
                           'action': 0,
                           }
@@ -421,6 +424,7 @@ class CombatLogic:
 
                     model_data = {'serial_no': model_set[el]['serial_no'],
                                   'dt': model_set[el]['dt'],
+                                  'product_type': model_set[el]['product_type'],
                                   'quantity': quantity,
                                   'action': 0,
                                   }
@@ -458,6 +462,7 @@ class CombatLogic:
 
                     model_data = {'serial_no': model_set[el]['serial_no'],
                                   'dt': model_set[el]['dt'],
+                                  'product_type': model_set[el]['product_type'],
                                   'quantity': quantity,
                                   'action': 0,
                                   }
@@ -471,9 +476,78 @@ class CombatLogic:
 
                         model_data = {'serial_no': model_set[el]['serial_no'],
                                       'dt': model_set[el]['dt'],
+                                      'product_type': model_set[el]['product_type'],
                                       'quantity': quantity,
                                       'action': 0,
                                       }
 
                         model.append(model_data)
         return model
+
+
+'''Combat orders download docx logic'''
+
+
+class BuildCombatOrders:
+
+    def __init__(self, *args):
+        self.start_cut = args[0]
+        self.end_cut = args[1]
+
+    @property
+    def build_orders(self):
+
+        drone_id = []
+
+        logic = CombatLogic(self.start_cut)
+        for el in logic.search_by_date:
+            if el['product_type'] == 58:
+                drone_id.append('mavic air')
+            elif el['product_type'] == 60:
+                drone_id.append('M 300 RTK')
+            elif el['product_type'] == 63:
+                drone_id.append('mini 2')
+            elif el['product_type'] == 66:
+                drone_id.append('Air 2s')
+            elif el['product_type'] == 67:
+                drone_id.append('M 30')
+            elif el['product_type'] == 68:
+                drone_id.append('mavic 3')
+            elif el['product_type'] == 69:
+                drone_id.append('mavic 2 Enterprise')
+            elif el['product_type'] == 70:
+                drone_id.append('mini se')
+
+        text = Document()
+        text.add_heading(f"Доповідь командира СПР Око 1го СтрБ 67ї ОМБр ДУК станом на 03:00, {self.start_cut}.",
+                         level=0)
+        text.add_paragraph('Обстановка в смузі відповідальності бригади стабільна, контрольована.')
+        text.add_paragraph('Змін в стані та положенні підрозділів бригади  немає.')
+        text.add_paragraph(
+            f'''Аероскоп: За період 16:00 {self.start_cut} - 03:00 {self.end_cut} в повітрі над зоною н.п. Липці - Лук'янці - Борисівна - Зелене - Середа- Нескучне  зафіксовано  такі дрони {drone_id}
+            Розвідка технічними засобами підрозділу від 16:00 {self.start_cut} до 03:00 {self.end_cut}:
+            1. Технічними засобами спостереження, відеофіксації та розвідки СПР Око 1го СтрБ 67ї ОМБр ДУК  за звітний період не зафіксовано ніяких значущих подій.
+            2. Засобами аеророзвідки за звітний період  не зафіксовано ніяких значущих подій з причини підготовки обладнання та технічних засобів до виконання бойових завдань.
+            Спостереження, розвідка з використанням технічних засобів підрозділу триває.
+            ''')
+        text.add_paragraph('''Втрати:
+            о/с- 0
+            в/т- 0
+            а/т- 0
+            Виконання вогневих завдань- не виконувались. 
+            Обладнання територій в інженерному та фортифікаційному відношенні - без змін.
+            Розвідка - 1 сб проводив огляд місцевості (позицій, розвідку) за допомогою технічних засобів відеоспостереження, розрахунків БпЛА та іншого обладнання, пристроїв СПР Око 1го СтрБ 67ї ОМБр ДУК.
+            Заходи бойової підготовки:
+            Проведена роботи по злагодженю та взаємодії між особовим складом підрозділу із бойової підготовки. Також особовий склад провів закріплення правил поведінки в умовах бойових дій в складі підрозділу.
+            Проблемні питання - відсутні.
+
+            Оперативний черговий
+            солдат                  					                            Володимир Расько.
+            ''')
+
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            headers={'Content-Disposition': 'attachment; filename="combat_orders.docx"'},
+        )
+        text.save(response)
+        return response

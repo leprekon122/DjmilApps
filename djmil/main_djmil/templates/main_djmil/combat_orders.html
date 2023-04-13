@@ -56,6 +56,17 @@
                     </div>
                 </div>
             </div>
+            <div class="build_orders">
+                <h5 class="title">Побудувати звіт</h5>
+                <form method="get">
+                    Звіт з:
+                    <input type="date" class="form-control" name="start_cut">
+                    Звіт по:
+                    <input type="date" class="form-control" name="end_cup">
+                    <br>
+                    <button class="btn btn-success" type="submit" name="build_order" value="build_order">Збудувати звіт</button>
+                </form>
+            </div>
         </div>
     </div>
     {% if model|length > 0 %}

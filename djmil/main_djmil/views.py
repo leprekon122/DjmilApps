@@ -1,16 +1,17 @@
 import os
 
-
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
-    DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders
+    DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders
 from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
-
+from docx import Document
+import docx2txt
 
 '''class for offline sql requests '''
 
@@ -242,6 +243,15 @@ class CombatOrder(APIView):
 
         today = request.GET.get('today')
 
+        build_order = request.GET.get('build_order')
+
+        # build docx file and download
+        if build_order:
+            start_cut = request.GET.get('start_cut')
+            end_cut = request.GET.get('end_cup')
+            logic = BuildCombatOrders(start_cut, end_cut)
+            return logic.build_orders
+
         # filter by today checkbox
         if today:
             logic = CombatLogic()
@@ -270,6 +280,7 @@ class CombatOrder(APIView):
             current_year = open_data.split(',')[1].split(' ')[1]
             current_month = open_data.split(' ')[1]
             current_day = open_data.split(' ')[2].split(',')[0]
+
             if int(current_day) < 10:
                 current_day = f'0{current_day}'
 
