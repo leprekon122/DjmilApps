@@ -5,7 +5,7 @@
 
 
 {%block content%}
-<div class="container-fluid orders">
+<div class="container-fluid orders" xmlns="http://www.w3.org/1999/html">
     <div class="orders_search">
         <div class="alert alert-dark alert-search ">
             <div class="download_orders">
@@ -26,46 +26,74 @@
             </div>
             <br>
 
-            <div class="main_search">
+            <div class="main_search_all">
+                <div class="hide" id="hide">
+                    <i class="fa-solid fa-arrow-up text-danger" onclick="hide_main_search()"></i>
+                </div>
+                <div class="show" id="show">
+                    <i class="fa-solid fa-arrow-down" onclick="show_main_search()"></i>
+                </div>
                 <h5 class="title">Сортування</h5>
-                <form method="get">
-                    <input type="date" class="form-control" name="date_search">
-                    <br>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="today" value="today"
-                               id="flexCheckChecked_today">
-                        <label class="form-check-label" for="flexCheckChecked_today">
-                            за сьогодні
-                        </label>
-                    </div>
-                    <br>
-                    <button class="btn btn-success search-btn" type="submit">пошук</button>
-                </form>
+                <div class="main_search" id="main_search">
+                    <form method="get">
+                        <input type="date" class="form-control" name="date_search">
+                        <br>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="today" value="today"
+                                   id="flexCheckChecked_today">
+                            <label class="form-check-label" for="flexCheckChecked_today">
+                                за сьогодні
+                            </label>
+                        </div>
+                        <br>
+                        <button class="btn btn-success search-btn" type="submit">пошук</button>
+                    </form>
+                </div>
             </div>
             <br>
-            <div class="chose_orders">
-                <div class="dropdown">
-                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        вибери звіт
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <!--<a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a> -->
-                        <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
-                        <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
+            <div class="chose_orders_all">
+                <div class="hide" id="hide_chose_orders">
+                    <i class="fa-solid fa-arrow-up text-danger" onclick="hide_chose_orders()"></i>
+                </div>
+                <div class="show" id="show_chose_orders">
+                    <i class="fa-solid fa-arrow-down" onclick="show_chose_orders()"></i>
+                </div>
+                <br>
+                <div class="chose_orders" id="chose_orders">
+                    <div class="dropdown">
+                        <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            вибери звіт
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <!--<a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a> -->
+                            <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
+                            <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="build_orders">
+            <br>
+            <div class="build_orders_all">
+                <div class="hide" id="hide_build_orders_all" onclick="show_and_hide()">
+                    <i class="fa-solid fa-arrow-up text-danger" onclick="hide_build_orders_all()"></i>
+                </div>
+                <div class="show" id="show_build_orders_all">
+                    <i class="fa-solid fa-arrow-down" onclick="show_build_orders_all()"></i>
+                </div>
                 <h5 class="title">Побудувати звіт</h5>
-                <form method="get">
-                    Звіт з:
-                    <input type="date" class="form-control" name="start_cut">
-                    Звіт по:
-                    <input type="date" class="form-control" name="end_cup">
-                    <br>
-                    <button class="btn btn-success" type="submit" name="build_order" value="build_order">Збудувати звіт</button>
-                </form>
+                <div class="build_orders" id="build_orders">
+                    <form method="get">
+                        Звіт з:
+                        <input type="date" class="form-control" name="start_cut">
+                        Звіт по:
+                        <input type="date" class="form-control" name="end_cup">
+                        <br>
+                        <button class="btn btn-success" type="submit" name="build_order" value="build_order">Збудувати
+                            звіт
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

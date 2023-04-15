@@ -1,7 +1,6 @@
 import os
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
@@ -10,8 +9,6 @@ from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
-from docx import Document
-import docx2txt
 
 '''class for offline sql requests '''
 

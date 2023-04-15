@@ -134,3 +134,11 @@ body {background-color: black}
 
 .map_data {width: 45%;}
 #loc {width:50%}
+
+.hide {display: flex;
+       justify-content: end;
+      }
+.show {
+       display:none;
+      }
+
