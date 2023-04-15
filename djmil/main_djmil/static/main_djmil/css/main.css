@@ -138,7 +138,7 @@ body {background-color: black}
 .hide {display: flex;
        justify-content: end;
       }
-.show {
+.show_btn {
        display:none;
       }
 

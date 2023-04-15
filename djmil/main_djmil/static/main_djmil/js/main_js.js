@@ -7,6 +7,7 @@ function update_data_func(){
         }
     }
 update_data_func()
+
 function hide_main_search(){
         document.getElementById('main_search').style.display = 'none'
         document.getElementById('hide').style.display = 'none'
@@ -25,33 +26,10 @@ function show_main_search(){
         document.getElementById('hide').style.display = 'flex'
         document.getElementById('hide').style.justifyContent = 'end'
         document.getElementById('hide').style.color = 'red'
-
-
-
 }
 
 
-function hide_chose_orders(){
-        document.getElementById('chose_orders').style.display = 'none'
-        document.getElementById('hide_chose_orders').style.display = 'none'
-        document.getElementById('show_chose_orders').style.display = 'block'
-        document.getElementById('show_chose_orders').style.display = 'flex'
-        document.getElementById('show_chose_orders').style.justifyContent = 'end'
-        document.getElementById('show_chose_orders').style.color = 'green'
 
-
-}
-
-function show_chose_orders(){
-        document.getElementById('chose_orders').style.display = 'block'
-        document.getElementById('hide_chose_orders').style.display = 'block'
-        document.getElementById('show_chose_orders').style.display = 'none'
-        document.getElementById('hide_chose_orders').style.display = 'flex'
-        document.getElementById('hide_chose_orders').style.justifyContent = 'end'
-        document.getElementById('hide_chose_orders').style.color = 'red'
-
-
-}
 
 function hide_build_orders_all(){
         document.getElementById('build_orders').style.display = 'none'
@@ -72,3 +50,4 @@ function show_build_orders_all(){
         document.getElementById('hide_build_orders_all').style.justifyContent = 'red'
 
 }
+

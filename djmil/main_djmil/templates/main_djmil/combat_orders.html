@@ -30,7 +30,7 @@
                 <div class="hide" id="hide">
                     <i class="fa-solid fa-arrow-up text-danger" onclick="hide_main_search()"></i>
                 </div>
-                <div class="show" id="show">
+                <div class="show_btn" id="show">
                     <i class="fa-solid fa-arrow-down" onclick="show_main_search()"></i>
                 </div>
                 <h5 class="title">Сортування</h5>
@@ -51,34 +51,25 @@
                 </div>
             </div>
             <br>
-            <div class="chose_orders_all">
-                <div class="hide" id="hide_chose_orders">
-                    <i class="fa-solid fa-arrow-up text-danger" onclick="hide_chose_orders()"></i>
-                </div>
-                <div class="show" id="show_chose_orders">
-                    <i class="fa-solid fa-arrow-down" onclick="show_chose_orders()"></i>
-                </div>
-                <br>
-                <div class="chose_orders" id="chose_orders">
-                    <div class="dropdown">
-                        <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            вибери звіт
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <!--<a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a> -->
-                            <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
-                            <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
-                        </div>
+            <div class="chose_orders">
+                <div class="dropdown">
+                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        вибери звіт
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
+                        <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
                     </div>
                 </div>
+
             </div>
             <br>
             <div class="build_orders_all">
                 <div class="hide" id="hide_build_orders_all" onclick="show_and_hide()">
                     <i class="fa-solid fa-arrow-up text-danger" onclick="hide_build_orders_all()"></i>
                 </div>
-                <div class="show" id="show_build_orders_all">
+                <div class="show_btn" id="show_build_orders_all">
                     <i class="fa-solid fa-arrow-down" onclick="show_build_orders_all()"></i>
                 </div>
                 <h5 class="title">Побудувати звіт</h5>
@@ -192,5 +183,6 @@
 
 <script src="/static/main_djmil/js/main_js.js">
 </script>
+
 
 {%endblock%}
