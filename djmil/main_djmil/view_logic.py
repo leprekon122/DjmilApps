@@ -560,6 +560,8 @@ class BuildCombatOrders:
                     drone_id.append('mavic 2 Enterprise')
                 elif el['product_type'] == 70:
                     drone_id.append('mini se')
+                elif el['product_type'] == 77:
+                    drone_id.append('mavic 3')
                 else:
                     drone_id.append('mavic 3')
 

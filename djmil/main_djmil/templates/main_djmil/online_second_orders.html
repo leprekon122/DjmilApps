@@ -18,7 +18,8 @@
                     </select>
                     <br>
                     <button class="btn btn-dark" name="download" value="download">download</button>
-                     <button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data</button>
+                     <!--<button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data</button>
+                    -->
                 </form>
             </div>
             <br>
@@ -104,6 +105,8 @@
                 <td>mavic 2 Enterprise</td>
                 {%elif el.product_type == 70 %}
                 <td>mini se</td>
+                {%elif el.product_type == 77 %}
+                <td>mavic 3</td>
                 {%endif%}
                 <td><span class="text-success">lon</span>: {{el.longitude}}
                     <br>

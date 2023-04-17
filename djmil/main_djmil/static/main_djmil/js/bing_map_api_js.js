@@ -5,11 +5,6 @@ function GetMap()
         var len_lon = document.getElementsByClassName('len_lon')
 
 
-
-        for(let el = 0; el < len_lon.length; el++){
-            console.log(len_lon[el])
-        }
-
         var map = new Microsoft.Maps.Map('#myMap');
 
         map.setView({
@@ -30,3 +25,5 @@ function GetMap()
         //Add the pushpin to the map
         map.entities.push(pin);
     }
+
+

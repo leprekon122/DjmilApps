@@ -242,6 +242,9 @@ class CombatOrder(APIView):
 
         build_order = request.GET.get('build_order')
 
+        coord_data = request.GET.get('coord_data')
+        print(coord_data)
+
         # build docx file and download
         if build_order:
             start_cut = request.GET.get('start_cut')
@@ -292,7 +295,8 @@ class CombatOrder(APIView):
                 data = {
                     'model': model,
                     'model_detail': model_detail,
-                    'action': 1
+                    'action': 1,
+
                 }
 
                 return render(request, 'main_djmil/combat_orders.html', data)
@@ -310,7 +314,8 @@ class CombatOrder(APIView):
                 data = {
                     'model': model,
                     'model_detail': model_detail,
-                    'action': 1
+                    'action': 1,
+
                 }
                 return render(request, 'main_djmil/combat_orders.html', data)
 
@@ -327,7 +332,8 @@ class CombatOrder(APIView):
                 data = {
                     'model': model,
                     'model_detail': model_detail,
-                    'action': 1
+                    'action': 1,
+
                 }
                 return render(request, 'main_djmil/combat_orders.html', data)
 
@@ -343,7 +349,7 @@ class CombatOrder(APIView):
                 data = {
                     'model': model,
                     'model_detail': model_detail,
-                    'action': 1
+                    'action': 1,
                 }
                 return render(request, 'main_djmil/combat_orders.html', data)
 

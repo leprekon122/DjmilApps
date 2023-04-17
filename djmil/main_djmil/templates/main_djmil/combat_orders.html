@@ -19,8 +19,8 @@
                     </select>
                     <br>
                     <button class="btn btn-dark" name="download" value="download">download</button>
-                    <button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data
-                    </button>
+                    <!--<button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data
+                    </button>-->
 
                 </form>
             </div>
@@ -157,7 +157,7 @@
                     {{el.phone_app_latitude}}
                     {{el.phone_app_longitude}}
                 </td>
-                <td class="len_lon" onclick="GetMap()">
+                <td>
                     {{el.home_latitude}}
                     {{el.home_longitude}}
                 </td>
@@ -167,7 +167,6 @@
 
             </tbody>
             {%endfor%}
-
         </table>
         {%endif%}
     </div>
