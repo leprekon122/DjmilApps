@@ -5,7 +5,11 @@ import psycopg2
 from django.http import HttpResponse
 from docx import Document
 
+from django.db.models import Count, Max, Sum
+
 from .models import SecondOrdersModel, MainOrders
+
+from django.db.models import Q
 
 
 class SendSqlReq:
@@ -605,3 +609,62 @@ class BuildCombatOrders:
             )
             text.save(response)
             return response
+
+
+class MainPageLogic:
+
+    def __init__(self):
+        pass
+
+    @property
+    def total_month_result(self):
+        total_value = SecondOrdersModel.objects.filter(
+            dt__icontains=datetime.today().strftime('%y-%m')).aggregate(
+            Count('serial_no'))
+
+        return total_value
+
+
+class BuildStatistics:
+
+    @property
+    def total_results_for_month(self):
+        logic = CombatLogic(datetime.today().strftime('%y-%m'))
+
+        mavic3 = []
+        M300RTK = []
+        mini_2 = []
+        air_2s = []
+        m30 = []
+        mavic2Enterprise = []
+        mini_se = []
+
+        for el in logic.search_by_date:
+
+            if el['product_type'] == 68:
+                mavic3.append(el['product_type'])
+            elif el['product_type'] == 60:
+                M300RTK.append(el['product_type'])
+            elif el['product_type'] == 63:
+                mini_2.append(el['product_type'])
+            elif el['product_type'] == 66:
+                air_2s.append(el['product_type'])
+            elif el['product_type'] == 67:
+                m30.append(el['product_type'])
+            elif el['product_type'] == 69:
+                mavic2Enterprise.append(el['product_type'])
+            elif el['product_type'] == 70:
+                mini_se.append(el['product_type'])
+
+        data = {'total_value': len(logic.search_by_date),
+                'dirty_total_value': len(
+                    SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m'))),
+                'mavic3': len(mavic3),
+                'M300RTK': len(M300RTK),
+                'mini_2': len(mini_2),
+                'air_2s': len(air_2s),
+                'm30': len(m30),
+                'mavic2Enterprise': len(mavic2Enterprise),
+                'mini_se': len(mini_se),
+                }
+        return data

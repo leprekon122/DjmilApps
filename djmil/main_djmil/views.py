@@ -1,11 +1,10 @@
 import os
-
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
-    DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders
-from django.contrib import messages
+    DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
+    BuildStatistics
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
@@ -37,6 +36,7 @@ class MainPage(APIView):
 
     @staticmethod
     def get(request):
+
         return render(request, "main_djmil/main_page.html")
 
 
@@ -354,3 +354,15 @@ class CombatOrder(APIView):
                 return render(request, 'main_djmil/combat_orders.html', data)
 
         return render(request, 'main_djmil/combat_orders.html')
+
+
+class StatisticsPage(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @staticmethod
+    def get(request):
+        logic = BuildStatistics()
+
+        data = logic.total_results_for_month
+
+        return render(request, 'main_djmil/main_statistics.html', data)

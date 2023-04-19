@@ -1,0 +1,36 @@
+{%extends 'main_djmil/layout.html' %}
+
+{%block title%}Statistics page{%endblock%}
+
+{%block content%}
+<div class="container-fluid">
+    <br>
+    <div class="main_statistic">
+        <div class="total_result_for_month alert-warning">
+            <p class="text-light">Знайдено дронів за місяць: {{total_value}} (Шт)</p>
+            <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}} (Раз)</p>
+            {% if M300RTK != 0 %}
+            <p class="text-light">M 300 RTK: {{M300RTK}} (Шт)</p>
+            {%endif%}
+            {%if mavic3 != 0%}
+            <p class="text-light">mavic 3: {{mavic3}} (Шт)</p>
+            {%endif%}
+            {%if mini_2 != 0%}
+            <p class="text-light">mini_2: {{mini_2}} (Шт)</p>
+            {%endif%}
+            {%if air_2s != 0 %}
+            <p class="text-light">air_2s: {{air_2s}} (Шт)</p>
+            {%endif%}
+            {%if m30 != 0%}
+            <p class="text-light">M30: {{m30}} (Шт)</p>
+            {%endif%}
+            {%if mavic2Enterprise != 0%}
+            <p class="text-light">mavic2Enterprise: {{mavic2Enterprise}}</p>
+            {%endif%}
+            {%if mini_se != 0 %}
+            <p class="text-light">mini_se: {{mini_se}}</p>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{%endblock%}

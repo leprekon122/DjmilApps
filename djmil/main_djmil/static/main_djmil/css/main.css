@@ -142,3 +142,12 @@ body {background-color: black}
        display:none;
       }
 
+.main_statistic {width: 100%;
+                display: flex;
+                flex-wrap: wrap
+                }
+.total_result_for_month {width: 25%;
+                         padding: 1%;
+                         border-radius: 5%;
+                         background-color: #360e0f;
+                        }
