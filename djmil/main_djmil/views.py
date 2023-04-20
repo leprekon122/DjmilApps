@@ -36,8 +36,18 @@ class MainPage(APIView):
 
     @staticmethod
     def get(request):
+        logic = BuildStatistics()
 
-        return render(request, "main_djmil/main_page.html")
+        open_data = request.GET.get('open_data')
+
+        if open_data:
+            logic = BuildStatistics(open_data)
+
+            return render(request, "main_djmil/main_page.html", logic.open_data_main_page)
+
+        data = {'model': logic.top_rank,
+                'action': 0}
+        return render(request, "main_djmil/main_page.html", data)
 
 
 class Orders(APIView):

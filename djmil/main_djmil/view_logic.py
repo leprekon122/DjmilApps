@@ -5,11 +5,9 @@ import psycopg2
 from django.http import HttpResponse
 from docx import Document
 
-from django.db.models import Count, Max, Sum
+from django.db.models import Count, Max
 
 from .models import SecondOrdersModel, MainOrders
-
-from django.db.models import Q
 
 
 class SendSqlReq:
@@ -627,24 +625,29 @@ class MainPageLogic:
 
 class BuildStatistics:
 
+    def __init__(self, *args):
+        self.logic = CombatLogic(datetime.today().strftime('%y-%m'))
+        self.data_set = {}
+        self.model = []
+        self.open_data = args
+
     @property
     def total_results_for_month(self):
-        logic = CombatLogic(datetime.today().strftime('%y-%m'))
 
         mavic3 = []
-        M300RTK = []
+        m300rtk = []
         mini_2 = []
         air_2s = []
         m30 = []
-        mavic2Enterprise = []
+        mavic2enterprise = []
         mini_se = []
 
-        for el in logic.search_by_date:
+        for el in self.logic.search_by_date:
 
             if el['product_type'] == 68:
                 mavic3.append(el['product_type'])
             elif el['product_type'] == 60:
-                M300RTK.append(el['product_type'])
+                m300rtk.append(el['product_type'])
             elif el['product_type'] == 63:
                 mini_2.append(el['product_type'])
             elif el['product_type'] == 66:
@@ -652,19 +655,64 @@ class BuildStatistics:
             elif el['product_type'] == 67:
                 m30.append(el['product_type'])
             elif el['product_type'] == 69:
-                mavic2Enterprise.append(el['product_type'])
+                mavic2enterprise.append(el['product_type'])
             elif el['product_type'] == 70:
                 mini_se.append(el['product_type'])
+            else:
+                mavic3.append(el['product_type'])
 
-        data = {'total_value': len(logic.search_by_date),
+        data = {'total_value': len(self.logic.search_by_date),
                 'dirty_total_value': len(
                     SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m'))),
                 'mavic3': len(mavic3),
-                'M300RTK': len(M300RTK),
+                'M300RTK': len(m300rtk),
                 'mini_2': len(mini_2),
                 'air_2s': len(air_2s),
                 'm30': len(m30),
-                'mavic2Enterprise': len(mavic2Enterprise),
+                'mavic2Enterprise': len(mavic2enterprise),
                 'mini_se': len(mini_se),
                 }
+        return data
+
+    """Rate function"""
+
+    @property
+    def top_rank(self):
+        logic = self.logic.search_by_date
+        if len(logic) == 1:
+            self.data_set = {'serial_no': logic[0]['serial_no'],
+                             'quantity': logic[0]['quantity']
+                             }
+            self.model.append(self.data_set)
+
+        elif len(logic) == 0:
+            self.model.append('no data')
+        else:
+            for el in range(len(logic)):
+                if el < len(logic) - 1:
+                    if logic[el]['quantity'] > logic[el + 1]['quantity']:
+                        self.data_set = {'serial_no': logic[el]['serial_no'],
+                                         'quantity': logic[el]['quantity']
+                                         }
+                        self.model.append(self.data_set)
+                else:
+                    if logic[el]['quantity'] > logic[el - 1]['quantity']:
+                        self.data_set = {'serial_no': logic[el]['serial_no'],
+                                         'quantity': logic[el]['quantity']
+                                         }
+                    self.model.append(self.data_set)
+
+        return self.model
+
+
+    @property
+    def open_data_main_page(self):
+        model_detail = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m'),
+                                                        serial_no=self.open_data[0]).values()
+
+        data = {'model_detail': model_detail,
+                'model': SecondOrdersModel.objects.filter(serial_no=self.open_data[0]).values()[0],
+                'action': 1
+                }
+
         return data
