@@ -6,81 +6,85 @@
 <div class="container-fluid">
     <br>
     <div class="main_page">
-        <form method="get">
-            {%if action == 0%}
-            <div class="top_rank">
 
-                {%for el in model%}
-                <div class="alert alert-dark">
-                    <button class="btn btn-success" type="submit" name="open_data" value="{{el.serial_no}}">
+        {%if action == 0%}
+        <div class="top_rank">
+
+            {%for el in model%}
+            <div class="alert alert-dark">
+                <form method="get">
+                    <button class="btn btn-success" type="submit" name="open_data" value="{{el.serial_no}}"
+                    >
                         {{el.serial_no}}
                     </button>
-                    <p class="text-light"><span class="text-light">кількість виявлень:</span> {{el.quantity}}</p>
-                </div>
-                {%endfor%}
+                </form>
+                <p class=" text-light
+                    "><span class="text-light">кількість виявлень:</span> {{el.quantity}}</p>
             </div>
-            {%else%}
+            {%endfor%}
+        </div>
+
+        {%else%}
+        <br>
+
+        <div class="container-fluid">
+            <div class="alert alert-dark combat_dark">
+                <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.serial_no}}</p>
+                <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.dt}}</p>
+
+            </div>
+
+            <div class="main_map">
+                <div id="myMap" style="position:relative;width:600px;height:300px;">
+                    <h5 id='point' class="text-dark">x</h5>
+                </div>
+                <div class="map_data">
+                    <input placeholder="координати" type="text" id="loc">
+                    <button onclick="GetMap()" class="btn btn-success">пошук</button>
+                </div>
+            </div>
+
+
             <br>
-
-            <div class="container-fluid">
-                <div class="alert alert-dark combat_dark">
-                    <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.serial_no}}</p>
-                    <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.dt}}</p>
-
-                </div>
-
-                <div class="main_map">
-                    <div id="myMap" style="position:relative;width:600px;height:300px;">
-                        <h5 id='point' class="text-dark">x</h5>
-                    </div>
-                    <div class="map_data">
-                        <input placeholder="координати" type="text" id="loc">
-                        <button onclick="GetMap()" class="btn btn-success">пошук</button>
-                    </div>
-                </div>
+            <table class="table table-dark table-sm table-hover table-bordered" style="background-color: #0a0a0a">
+                <thead>
+                <tr>
+                    <th scope="col">коордінати дрона</th>
+                    <th scope="col">height</th>
+                    <th scope="col">altitude</th>
+                    <th scope="col">коордінати пульта</th>
+                    <th scope="col">коордінати homepoint</th>
 
 
-                <br>
-                <table class="table table-dark table-sm table-hover table-bordered">
-                    <thead>
-                    <tr>
-                        <th scope="col">коордінати дрона</th>
-                        <th scope="col">height</th>
-                        <th scope="col">altitude</th>
-                        <th scope="col">коордінати пульта</th>
-                        <th scope="col">коордінати homepoint</th>
+                </tr>
+                </thead>
+                {%for el in model_detail%}
+                <tbody>
+                <tr>
+                    <td>
+                        {{el.latitude}}
+                        {{el.longitude}}
+
+                    </td>
+                    <td>{{el.height}}</td>
+                    <td>{{el.altitude}}</td>
+                    <td>
+                        {{el.phone_app_latitude}}
+                        {{el.phone_app_longitude}}
+                    </td>
+                    <td>
+                        {{el.home_latitude}}
+                        {{el.home_longitude}}
+                    </td>
 
 
-                    </tr>
-                    </thead>
-                    {%for el in model_detail%}
-                    <tbody>
-                    <tr>
-                        <td>
-                            {{el.latitude}}
-                            {{el.longitude}}
+                </tr>
 
-                        </td>
-                        <td>{{el.height}}</td>
-                        <td>{{el.altitude}}</td>
-                        <td>
-                            {{el.phone_app_latitude}}
-                            {{el.phone_app_longitude}}
-                        </td>
-                        <td>
-                            {{el.home_latitude}}
-                            {{el.home_longitude}}
-                        </td>
-
-
-                    </tr>
-
-                    </tbody>
-                    {%endfor%}
-                </table>
-                {%endif%}
-            </div>
-        </form>
+                </tbody>
+                {%endfor%}
+            </table>
+            {%endif%}
+        </div>
     </div>
 </div>
 

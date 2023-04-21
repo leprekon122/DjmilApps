@@ -1,4 +1,6 @@
-body {background-color: black}
+body {background-color: black
+
+}
 
 .navbar-brand {padding: .5%;
                background: linear-gradient(to right, #f5cb42, #eff542);
@@ -9,7 +11,7 @@ body {background-color: black}
 
 
 
-.orders_button:hover {background: radial-gradient(circle at center, #c28b0c, #0a9145);
+.orders_button:hover {background: linear-gradient(to right, #171614, #1c6129);
                       border-radius: 10%;
                       }
 
@@ -170,4 +172,11 @@ body {background-color: black}
                       background-color: #360e0f;
                       border-radius: 3%;
                       width: 47%;
-                      }
+
+                    }
+
+.top_rank .alert-dark button {background: linear-gradient(to right, #171614, #e6b517)}
+
+.top_rank .alert-dark button:hover{background: linear-gradient(to right, #171614, #1c6129);
+
+                                   }

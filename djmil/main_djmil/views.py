@@ -9,6 +9,9 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 '''class for offline sql requests '''
 
 
@@ -374,5 +377,4 @@ class StatisticsPage(APIView):
         logic = BuildStatistics()
 
         data = logic.total_results_for_month
-
         return render(request, 'main_djmil/main_statistics.html', data)
