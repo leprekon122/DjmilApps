@@ -56,8 +56,12 @@ body {background-color: black
 
 .orders_search .alert-search {padding-top:5%;
                               height: 85vh;
+                              width: 90%;
                               overflow: auto;
+
+
                              }
+
 
 .search-btn{width:100%;
             }
@@ -148,7 +152,7 @@ body {background-color: black
                 display: flex;
                 flex-wrap: wrap
                 }
-.total_result_for_month {width: 25%;
+.total_result_for_month {width: 100%;
                          padding: 1%;
                          border-radius: 5%;
                          background-color: #360e0f;
@@ -180,3 +184,49 @@ body {background-color: black
 .top_rank .alert-dark button:hover{background: linear-gradient(to right, #171614, #1c6129);
 
                                    }
+
+
+.chose_month {width: 100%;
+              display: flex;
+              justify-content: space-between;
+              flex-direction: row;}
+
+
+.statistic_container {display: flex;
+                      flex-direction: row;
+                        }
+
+
+.main_btn {transition: 1s;
+           background: linear-gradient(to right, #171614, #1c6129);
+}
+
+.main_btn:hover {transform: scale(1.07);
+                 background: linear-gradient(to right, #080707, #9c5805, #080707);
+            }
+
+
+.main_row:hover {transform: scale(1.015);}
+
+
+.data_for_month {
+
+                width: 25%;
+                border: 1px solid #cc8812;
+                padding: 1%;
+                backdrop-filter: blur(5px);
+
+                 }
+
+.compare_data {
+               width: 25%;
+               padding: 2%;
+               backdrop-filter: blur(5px);
+               ;
+               border: 1px solid #cc8812;
+
+}
+
+.chose_dates button{width: 100%;}
+
+#compare_data_detail {display: none}

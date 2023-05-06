@@ -674,6 +674,47 @@ class BuildStatistics:
                 }
         return data
 
+    @property
+    def total_results_for_chosen_month(self):
+        mavic3 = []
+        m300rtk = []
+        mini_2 = []
+        air_2s = []
+        m30 = []
+        mavic2enterprise = []
+        mini_se = []
+        for el in CombatLogic(self.open_data[0]).search_by_date:
+
+            if el['product_type'] == 68:
+                mavic3.append(el['product_type'])
+            elif el['product_type'] == 60:
+                m300rtk.append(el['product_type'])
+            elif el['product_type'] == 63:
+                mini_2.append(el['product_type'])
+            elif el['product_type'] == 66:
+                air_2s.append(el['product_type'])
+            elif el['product_type'] == 67:
+                m30.append(el['product_type'])
+            elif el['product_type'] == 69:
+                mavic2enterprise.append(el['product_type'])
+            elif el['product_type'] == 70:
+                mini_se.append(el['product_type'])
+            else:
+                mavic3.append(el['product_type'])
+
+        data = {'total_value': len(CombatLogic(self.open_data[0]).search_by_date),
+                'dirty_total_value': len(
+                    SecondOrdersModel.objects.filter(dt__icontains=self.open_data[0])),
+                'mavic3': len(mavic3),
+                'M300RTK': len(m300rtk),
+                'mini_2': len(mini_2),
+                'air_2s': len(air_2s),
+                'm30': len(m30),
+                'mavic2Enterprise': len(mavic2enterprise),
+                'mini_se': len(mini_se),
+                }
+        return data
+
     """Rate function"""
 
     @property
@@ -704,7 +745,6 @@ class BuildStatistics:
 
         return self.model
 
-
     @property
     def open_data_main_page(self):
         model_detail = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m'),
@@ -716,3 +756,91 @@ class BuildStatistics:
                 }
 
         return data
+
+
+class LogicAnalyze:
+
+    def __init__(self, data_1, data_2):
+        self.date_1 = data_1
+        self.date_2 = data_2
+        self.data_set_1 = BuildStatistics(self.date_1[:7])
+        self.data_set_2 = BuildStatistics(self.date_2[:7])
+        self.data = {}
+
+    @property
+    def make_anylyze(self):
+
+        try:
+            total_value = (self.data_set_1.total_results_for_chosen_month['total_value'] /
+                           self.data_set_2.total_results_for_chosen_month['total_value']) * 100
+            self.data['total_value'] = round(total_value, 2)
+        except Exception:
+            self.data['total_value'] = 'none'
+
+        try:
+            dirty_total_value = (self.data_set_1.total_results_for_chosen_month['dirty_total_value'] /
+                                 self.data_set_2.total_results_for_chosen_month['dirty_total_value']) * 100
+            self.data['dirty_total_value'] = round(dirty_total_value, 2)
+
+        except Exception:
+            self.data['dirty_total_value'] = 'none'
+
+        try:
+            mavic3 = (self.data_set_1.total_results_for_chosen_month['mavic3'] /
+                      self.data_set_2.total_results_for_chosen_month['mavic3']) * 100
+
+            self.data['mavic3'] = round(mavic3, 2)
+        except Exception:
+            self.data['mavic3'] = 'none'
+
+        try:
+            M300RTK = (self.data_set_1.total_results_for_chosen_month['M300RTK'] /
+                       self.data_set_2.total_results_for_chosen_month['M300RTK']) * 100
+
+            self.data['M300RTK'] = round(M300RTK, 2)
+        except Exception:
+            self.data['M300RTK'] = 'none'
+
+        try:
+            mini_2 = (self.data_set_1.total_results_for_chosen_month['mini_2'] /
+                      self.data_set_2.total_results_for_chosen_month['mini_2']) * 100
+
+            self.data['mini_2'] = round(mini_2, 2)
+        except Exception:
+            self.data['mini_2'] = 'none'
+
+        try:
+            air_2s = (self.data_set_1.total_results_for_chosen_month['air_2s'] /
+                      self.data_set_2.total_results_for_chosen_month['air_2s']) * 100
+
+            self.data['air_2s'] = round(air_2s, 2)
+
+        except Exception:
+            self.data['air_2s'] = 'none'
+
+        try:
+            m30 = (self.data_set_1.total_results_for_chosen_month['m30'] /
+                   self.data_set_2.total_results_for_chosen_month['m30']) * 100
+
+            self.data['m30'] = round(m30, 2)
+        except Exception:
+            self.data['m30'] = 'none'
+
+        try:
+            mavic2Enterprise = (self.data_set_1.total_results_for_chosen_month['mavic2Enterprise'] /
+                                self.data_set_2.total_results_for_chosen_month['mavic2Enterprise']) * 100
+
+            self.data['mavic2Enterprise'] = round(mavic2Enterprise, 2)
+
+        except Exception:
+            self.data['mavic2Enterprise'] = 'none'
+
+        try:
+            mini_se = (self.data_set_1.total_results_for_chosen_month['mini_se'] /
+                       self.data_set_2.total_results_for_chosen_month['mini_se']) * 100
+
+            self.data['mini_se'] = round(mini_se, 2)
+        except Exception:
+            self.data['mini_se'] = 'none'
+
+        return self.data

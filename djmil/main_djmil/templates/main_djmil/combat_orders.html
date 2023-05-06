@@ -7,24 +7,7 @@
 {%block content%}
 <div class="container-fluid orders" xmlns="http://www.w3.org/1999/html">
     <div class="orders_search">
-        <div class="alert alert-dark alert-search ">
-            <div class="download_orders">
-                <h5 class="title">Завантаження</h5>
-                <form method="get">
-                    <select name="options" class="form-control" aria-label="Default select example">
-                        <option selected>типи звітів для завантаження</option>
-                        <option value="newest">Сортування за новими</option>
-                        <option value="oldest">Сортування за старими</option>
-                        <option value="without">без сортування</option>
-                    </select>
-                    <br>
-                    <button class="btn btn-dark" name="download" value="download">download</button>
-                    <!--<button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data
-                    </button>-->
-
-                </form>
-            </div>
-            <br>
+        <div class="alert alert-dark alert-search text-light" style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
 
             <div class="main_search_all">
                 <div class="hide" id="hide">
@@ -46,15 +29,15 @@
                             </label>
                         </div>
                         <br>
-                        <button class="btn btn-success search-btn" type="submit">пошук</button>
+                        <button class="btn btn-warning search-btn text-light main_btn" type="submit" >пошук</button>
                     </form>
                 </div>
             </div>
             <br>
             <div class="chose_orders">
                 <div class="dropdown">
-                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-warning dropdown-toggle text-light main_btn" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                         вибери звіт
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -80,7 +63,7 @@
                         Звіт по:
                         <input type="date" class="form-control" name="end_cup">
                         <br>
-                        <button class="btn btn-success" type="submit" name="build_order" value="build_order">Збудувати
+                        <button class="btn btn-warning text-light main_btn" type="submit" name="build_order" value="build_order">Збудувати
                             звіт
                         </button>
                     </form>
@@ -93,9 +76,9 @@
 
         {%if action == 0%}
         {%for el in model%}
-        <div class="alert alert-dark combat_alert">
+        <div class="alert alert-warning combat_alert" style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
             <form method="get">
-                <button class="btn btn-success" type="submit" name="open_data" value="{{el.serial_no}} {{el.dt}}">
+                <button class="btn btn-warning main_btn text-light" type="submit" name="open_data" value="{{el.serial_no}} {{el.dt}}">
                     {{el.serial_no}}
                 </button>
             </form>
@@ -113,7 +96,7 @@
         <br>
 
 
-        <div class="alert alert-dark combat_dark">
+        <div class="alert alert-dark combat_dark" style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
             <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.serial_no}}</p>
             <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.dt}}</p>
 
@@ -131,7 +114,7 @@
 
 
         <br>
-        <table class="table table-dark table-sm table-hover table-bordered" style="background-color: #0a0a0a">
+        <table class="table table-dark table-sm table-hover table-bordered" style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
             <thead>
             <tr>
                 <th scope="col">коордінати дрона</th>
@@ -145,7 +128,7 @@
             </thead>
             {%for el in model_detail%}
             <tbody>
-            <tr>
+            <tr class="main_row">
                 <td>
                     {{el.latitude}}
                     {{el.longitude}}
@@ -171,6 +154,7 @@
         {%endif%}
     </div>
     {%else%}
+
     <div class="no_data">
         <h3 class="text-light">no such data</h3>
     </div>

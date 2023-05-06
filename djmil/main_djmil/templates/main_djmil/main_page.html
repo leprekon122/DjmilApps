@@ -11,15 +11,13 @@
         <div class="top_rank">
 
             {%for el in model%}
-            <div class="alert alert-dark">
-                <form method="get">
-                    <button class="btn btn-success" type="submit" name="open_data" value="{{el.serial_no}}"
-                    >
-                        {{el.serial_no}}
-                    </button>
-                </form>
+            <div class="alert alert-dark" style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
+                <button class="btn btn-warning main_btn text-light" type="submit" name="open_data" value="{{el.serial_no}}"
+                > no data
+                </button>
+
                 <p class=" text-light
-                    "><span class="text-light">кількість виявлень:</span> {{el.quantity}}</p>
+                    "><span class="text-light">кількість виявлень:</span> 0</p>
             </div>
             {%endfor%}
         </div>
@@ -28,7 +26,7 @@
         <br>
 
         <div class="container-fluid">
-            <div class="alert alert-dark combat_dark">
+            <div class="alert alert-dark combat_dark" >
                 <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.serial_no}}</p>
                 <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.dt}}</p>
 
@@ -46,7 +44,7 @@
 
 
             <br>
-            <table class="table table-dark table-sm table-hover table-bordered" style="background-color: #0a0a0a">
+            <table class="table table-dark table-sm table-hover table-bordered" style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
                 <thead>
                 <tr>
                     <th scope="col">коордінати дрона</th>
@@ -62,8 +60,9 @@
                 <tbody>
                 <tr>
                     <td>
-                        {{el.latitude}}
                         {{el.longitude}}
+                        {{el.latitude}}
+
 
                     </td>
                     <td>{{el.height}}</td>

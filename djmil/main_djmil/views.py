@@ -4,13 +4,10 @@ from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
     DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
-    BuildStatistics
+    BuildStatistics, LogicAnalyze
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
-
-import matplotlib.pyplot as plt
-import numpy as np
 
 '''class for offline sql requests '''
 
@@ -255,9 +252,6 @@ class CombatOrder(APIView):
 
         build_order = request.GET.get('build_order')
 
-        coord_data = request.GET.get('coord_data')
-        print(coord_data)
-
         # build docx file and download
         if build_order:
             start_cut = request.GET.get('start_cut')
@@ -374,7 +368,21 @@ class StatisticsPage(APIView):
 
     @staticmethod
     def get(request):
-        logic = BuildStatistics()
+        month = request.GET.get('month')
+        date_1 = request.GET.get('date_1')
+        date_2 = request.GET.get('date_2')
 
+        if all([date_1, date_2]):
+            logic = LogicAnalyze(date_1, date_2)
+            data = logic.make_anylyze
+            return render(request, 'main_djmil/main_statistics.html', data)
+        if month:
+            logic = BuildStatistics(month[:7])
+            data = logic.total_results_for_chosen_month
+
+            return render(request, 'main_djmil/main_statistics.html', data)
+
+        logic = BuildStatistics()
         data = logic.total_results_for_month
+
         return render(request, 'main_djmil/main_statistics.html', data)
