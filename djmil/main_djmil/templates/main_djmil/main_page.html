@@ -8,18 +8,7 @@
     <div class="main_page">
 
         {%if action == 0%}
-        <div class="top_rank">
-
-            {%for el in model%}
-            <div class="alert alert-dark" style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
-                <button class="btn btn-warning main_btn text-light" type="submit" name="open_data" value="{{el.serial_no}}"
-                > no data
-                </button>
-
-                <p class=" text-light
-                    "><span class="text-light">кількість виявлень:</span> 0</p>
-            </div>
-            {%endfor%}
+        <div class="top_rank" style="display: none">
         </div>
 
         {%else%}

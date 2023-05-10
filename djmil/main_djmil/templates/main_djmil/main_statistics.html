@@ -13,26 +13,35 @@
                 <button class="btn btn-dark" type="submit">обрати</button>
             </div>
         </form>
+
+        <form method="get">
+            <div class="alert alert-dark chose_dates"
+                 style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
+                <input type="date" class="form-control" name="date_1">
+                <input type="date" class="form-control" name="date_2">
+                <button class="btn btn-dark" type="submit" onclick="show_data()">обрати</button>
+            </div>
+        </form>
         <br>
         <div class="main_statistic">
-            <div class="total_result_for_month alert-warning"
-                 style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
-                <p class="text-light">Знайдено дронів за місяць: {{total_value}} (Шт)</p>
-                <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}} (Раз)</p>
+            <div class="total_result_for_month"
+                 >
+                <p class="text-light">Знайдено дронів за місяць: {{total_value}}</p>
+                <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}}</p>
                 {% if M300RTK != 0 %}
-                <p class="text-light">M 300 RTK: {{M300RTK}} (Шт)</p>
+                <p class="text-light">M 300 RTK: {{M300RTK}}</p>
                 {%endif%}
                 {%if mavic3 != 0%}
-                <p class="text-light">mavic 3: {{mavic3}} (Шт)</p>
+                <p class="text-light">mavic 3: {{mavic3}}</p>
                 {%endif%}
                 {%if mini_2 != 0%}
-                <p class="text-light">mini_2: {{mini_2}} (Шт)</p>
+                <p class="text-light">mini_2: {{mini_2}}</p>
                 {%endif%}
                 {%if air_2s != 0 %}
-                <p class="text-light">air_2s: {{air_2s}} (Шт)</p>
+                <p class="text-light">air_2s: {{air_2s}}</p>
                 {%endif%}
                 {%if m30 != 0%}
-                <p class="text-light">M30: {{m30}} (Шт)</p>
+                <p class="text-light">M30: {{m30}}</p>
                 {%endif%}
                 {%if mavic2Enterprise != 0%}
                 <p class="text-light">mavic2Enterprise: {{mavic2Enterprise}}</p>
@@ -43,42 +52,7 @@
             </div>
         </div>
     </div>
-    <div class="compare_data">
-        <form method="get">
-            <div class="alert alert-dark chose_dates"
-                 style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
-                <input type="date" class="form-control" name="date_1">
-                <input type="date" class="form-control" name="date_2">
-                <button class="btn btn-dark" type="submit" onclick="show_data()">обрати</button>
-            </div>
-        </form>
 
-        <div id="compare_data_detail">
-            <p class="text-light">Знайдено дронів за місяць: {{total_value}} (Шт)</p>
-            <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}} (Раз)</p>
-            {% if M300RTK != 'none' %}
-            <p class="text-light">M 300 RTK: {{M300RTK}} %</p>
-            {%endif%}
-            {%if mavic3 != 'none' %}
-            <p class="text-light">mavic 3: {{mavic3}} %</p>
-            {%endif%}
-            {%if mini_2 != 'none' %}
-            <p class="text-light">mini_2: {{mini_2}} %</p>
-            {%endif%}
-            {%if air_2s != 'none' %}
-            <p class="text-light">air_2s: {{air_2s}} %</p>
-            {%endif%}
-            {%if m30 != 'none' %}
-            <p class="text-light">M30: {{m30}} %</p>
-            {%endif%}
-            {%if mavic2Enterprise != 'none' %}
-            <p class="text-light">mavic2Enterprise: {{mavic2Enterprise}} %</p>
-            {%endif%}
-            {%if mini_se != 'none' %}
-            <p class="text-light">mini_se: {{mini_se}} %</p>
-            {%endif%}
-        </div>
-    </div>
 </div>
 
 <script src="/static/main_djmil/js/statistics.js">

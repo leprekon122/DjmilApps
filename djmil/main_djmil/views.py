@@ -225,7 +225,7 @@ class OnlineSecondOrders(APIView):
 
         # sort_by_date
         if date_search:
-            model = SecondOrdersModel.objects.filter(dt__icontains=date_search)
+            model = SecondOrdersModel.objects.filter(dt__icontains=date_search).order_by("dt")
 
         if today:
             model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%Y-%m-%d'))
@@ -372,10 +372,13 @@ class StatisticsPage(APIView):
         date_1 = request.GET.get('date_1')
         date_2 = request.GET.get('date_2')
 
+        # compare two month data
         if all([date_1, date_2]):
             logic = LogicAnalyze(date_1, date_2)
             data = logic.make_anylyze
             return render(request, 'main_djmil/main_statistics.html', data)
+
+        # chose total result for month
         if month:
             logic = BuildStatistics(month[:7])
             data = logic.total_results_for_chosen_month

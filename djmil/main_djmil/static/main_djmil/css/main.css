@@ -138,8 +138,13 @@ body {background-color: black
            justify-content: space-between;
           }
 
-.map_data {width: 45%;}
-#loc {width:50%}
+.map_data {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            height: 40px;
+            width: 40%;}
+#loc {width:70%}
 
 .hide {display: flex;
        justify-content: end;
@@ -155,7 +160,7 @@ body {background-color: black
 .total_result_for_month {width: 100%;
                          padding: 1%;
                          border-radius: 5%;
-                         background-color: #360e0f;
+
                         }
 
 .top_rank {width: 70%;
@@ -229,4 +234,3 @@ body {background-color: black
 
 .chose_dates button{width: 100%;}
 
-#compare_data_detail {display: none}

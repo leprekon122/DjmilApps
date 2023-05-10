@@ -115,19 +115,19 @@ class SecondOnlineSQLReq:
 
     @property
     def make_sql(self):
-        return SecondOrdersModel.objects.all()
+        return SecondOrdersModel.objects.all().order_by('id')
 
     @property
     def newest_req(self):
-        return SecondOrdersModel.objects.all().order_by('-dt')
+        return SecondOrdersModel.objects.all().order_by('id')
 
     @property
     def oldest_req(self):
-        return SecondOrdersModel.objects.all().order_by('dt')
+        return SecondOrdersModel.objects.all().order_by('-id')
 
     @property
     def search_by_drone_id(self):
-        return SecondOrdersModel.objects.filter(serial_no=self.drone_id[0])
+        return SecondOrdersModel.objects.filter(serial_no=self.drone_id[0]).order_by('-dt')
 
 
 '''sql req on production'''
@@ -196,7 +196,7 @@ class DownloadOrders(SendSqlReq):
     @property
     def download_oldest_order(self):
         self.curs.execute(
-            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY dt_last DESC")
+            "SELECT serial_no, product_type, dt_first, dt_last, id FROM vidma.vidma_drones ORDER BY dt_last ASC")
         res = self.curs.fetchall()
         response = HttpResponse(
             content_type='text/csv',
@@ -773,14 +773,14 @@ class LogicAnalyze:
         try:
             total_value = (self.data_set_1.total_results_for_chosen_month['total_value'] /
                            self.data_set_2.total_results_for_chosen_month['total_value']) * 100
-            self.data['total_value'] = round(total_value, 2)
+            self.data['total_value'] = f"{round(total_value, 2)} %"
         except Exception:
             self.data['total_value'] = 'none'
 
         try:
             dirty_total_value = (self.data_set_1.total_results_for_chosen_month['dirty_total_value'] /
                                  self.data_set_2.total_results_for_chosen_month['dirty_total_value']) * 100
-            self.data['dirty_total_value'] = round(dirty_total_value, 2)
+            self.data['dirty_total_value'] = f"{round(dirty_total_value, 2)} %"
 
         except Exception:
             self.data['dirty_total_value'] = 'none'
@@ -789,7 +789,7 @@ class LogicAnalyze:
             mavic3 = (self.data_set_1.total_results_for_chosen_month['mavic3'] /
                       self.data_set_2.total_results_for_chosen_month['mavic3']) * 100
 
-            self.data['mavic3'] = round(mavic3, 2)
+            self.data['mavic3'] = f"{round(mavic3, 2)} %"
         except Exception:
             self.data['mavic3'] = 'none'
 
@@ -797,7 +797,7 @@ class LogicAnalyze:
             M300RTK = (self.data_set_1.total_results_for_chosen_month['M300RTK'] /
                        self.data_set_2.total_results_for_chosen_month['M300RTK']) * 100
 
-            self.data['M300RTK'] = round(M300RTK, 2)
+            self.data['M300RTK'] = f"{round(M300RTK, 2)} %"
         except Exception:
             self.data['M300RTK'] = 'none'
 
@@ -805,7 +805,7 @@ class LogicAnalyze:
             mini_2 = (self.data_set_1.total_results_for_chosen_month['mini_2'] /
                       self.data_set_2.total_results_for_chosen_month['mini_2']) * 100
 
-            self.data['mini_2'] = round(mini_2, 2)
+            self.data['mini_2'] = f"{round(mini_2, 2)} %"
         except Exception:
             self.data['mini_2'] = 'none'
 
@@ -813,7 +813,7 @@ class LogicAnalyze:
             air_2s = (self.data_set_1.total_results_for_chosen_month['air_2s'] /
                       self.data_set_2.total_results_for_chosen_month['air_2s']) * 100
 
-            self.data['air_2s'] = round(air_2s, 2)
+            self.data['air_2s'] = f"{round(air_2s, 2)} %"
 
         except Exception:
             self.data['air_2s'] = 'none'
@@ -822,7 +822,7 @@ class LogicAnalyze:
             m30 = (self.data_set_1.total_results_for_chosen_month['m30'] /
                    self.data_set_2.total_results_for_chosen_month['m30']) * 100
 
-            self.data['m30'] = round(m30, 2)
+            self.data['m30'] = f"{round(m30, 2)} %"
         except Exception:
             self.data['m30'] = 'none'
 
@@ -830,7 +830,7 @@ class LogicAnalyze:
             mavic2Enterprise = (self.data_set_1.total_results_for_chosen_month['mavic2Enterprise'] /
                                 self.data_set_2.total_results_for_chosen_month['mavic2Enterprise']) * 100
 
-            self.data['mavic2Enterprise'] = round(mavic2Enterprise, 2)
+            self.data['mavic2Enterprise'] = f"{round(mavic2Enterprise, 2)} %"
 
         except Exception:
             self.data['mavic2Enterprise'] = 'none'
@@ -839,7 +839,7 @@ class LogicAnalyze:
             mini_se = (self.data_set_1.total_results_for_chosen_month['mini_se'] /
                        self.data_set_2.total_results_for_chosen_month['mini_se']) * 100
 
-            self.data['mini_se'] = round(mini_se, 2)
+            self.data['mini_se'] = f"{round(mini_se, 2)} %"
         except Exception:
             self.data['mini_se'] = 'none'
 
