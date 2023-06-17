@@ -115,15 +115,15 @@ class SecondOnlineSQLReq:
 
     @property
     def make_sql(self):
-        return SecondOrdersModel.objects.all().order_by('id')
+        return SecondOrdersModel.objects.all()
 
     @property
     def newest_req(self):
-        return SecondOrdersModel.objects.all().order_by('id')
+        return SecondOrdersModel.objects.all().order_by('-id')
 
     @property
     def oldest_req(self):
-        return SecondOrdersModel.objects.all().order_by('-id')
+        return SecondOrdersModel.objects.all().order_by('id')
 
     @property
     def search_by_drone_id(self):
@@ -485,6 +485,189 @@ class CombatLogic:
 
                         model.append(model_data)
         return model
+
+
+'''OpenData get request in combat logic'''
+
+
+class OpenDataCombatLogicClass:
+    def __init__(self, *args):
+        self.input_data = args[0]
+
+        self.serial_no = self.input_data.split(' ')[0]
+        self.current_year = self.input_data.split(',')[1].split(' ')[1]
+        self.current_month = self.input_data.split(' ')[1]
+        self.current_day = self.input_data.split(' ')[2].split(',')[0]
+
+    @property
+    def enter_to_detail_data(self):
+        if int(self.current_day) < 10:
+            self.current_day = f'0{self.current_day}'
+
+        if self.current_month == 'March':
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-03-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                'serial_no')
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-03-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                'serial_no')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+
+            }
+
+            return data
+
+        elif self.current_month == "April":
+
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-04-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-04-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+
+            }
+            return data
+
+        elif self.current_month == "May":
+
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-05-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-05-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+
+            }
+            return data
+
+        elif self.current_year == "June":
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-06-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-06-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+            }
+            return data
+
+        elif self.current_year == "July":
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-07-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-07-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+            }
+            return data
+
+        elif self.current_year == "August":
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-08-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-08-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+            }
+            return data
+
+        elif self.current_year == "September":
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-09-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-09-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+            }
+            return data
+
+        elif self.current_year == "October":
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-10-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-10-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+            }
+            return data
+
+        elif self.current_year == "November":
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-11-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-11-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+            }
+            return data
+
+        elif self.current_year == "December":
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-12-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')
+
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-12-{self.current_day}", serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+            }
+            return data
 
 
 '''Combat orders download docx logic'''

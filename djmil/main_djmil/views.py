@@ -1,10 +1,9 @@
-import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
     DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
-    BuildStatistics, LogicAnalyze
+    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
@@ -171,8 +170,6 @@ class OnlineSecondOrders(APIView):
     def get(request):
         model = SecondOrdersModel.objects.all().order_by('-dt')[1:20]
 
-        print(os.getenv('db_pass.py'))
-
         new = request.GET.get('new')
         today = request.GET.get('today')
         old = request.GET.get('old')
@@ -282,83 +279,8 @@ class CombatOrder(APIView):
 
         # personal  detail page
         if open_data:
-
-            serial_no = open_data.split(' ')[0]
-            current_year = open_data.split(',')[1].split(' ')[1]
-            current_month = open_data.split(' ')[1]
-            current_day = open_data.split(' ')[2].split(',')[0]
-
-            if int(current_day) < 10:
-                current_day = f'0{current_day}'
-
-            if current_month == 'March':
-                model_detail = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
-                    'serial_no')
-                model = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
-                    'serial_no')[0]
-
-                data = {
-                    'model': model,
-                    'model_detail': model_detail,
-                    'action': 1,
-
-                }
-
-                return render(request, 'main_djmil/combat_orders.html', data)
-
-            elif current_month == "April":
-
-                model_detail = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-04-{current_day}", serial_no=serial_no).values().order_by(
-                    '-dt')
-
-                model = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-04-{current_day}", serial_no=serial_no).values().order_by(
-                    '-dt')[0]
-
-                data = {
-                    'model': model,
-                    'model_detail': model_detail,
-                    'action': 1,
-
-                }
-                return render(request, 'main_djmil/combat_orders.html', data)
-
-            elif current_month == "May":
-
-                model_detail = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-05-{current_day}", serial_no=serial_no).values().order_by(
-                    '-dt')
-
-                model = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
-                    '-dt')[0]
-
-                data = {
-                    'model': model,
-                    'model_detail': model_detail,
-                    'action': 1,
-
-                }
-                return render(request, 'main_djmil/combat_orders.html', data)
-
-            elif current_year == "July":
-                model_detail = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-06-{current_day}", serial_no=serial_no).values().order_by(
-                    '-dt')
-
-                model = SecondOrdersModel.objects.filter(
-                    dt__icontains=f"{current_year}-03-{current_day}", serial_no=serial_no).values().order_by(
-                    '-dt')[0]
-
-                data = {
-                    'model': model,
-                    'model_detail': model_detail,
-                    'action': 1,
-                }
-                return render(request, 'main_djmil/combat_orders.html', data)
+            logic = OpenDataCombatLogicClass(open_data)
+            return render(request, 'main_djmil/combat_orders.html', logic.enter_to_detail_data)
 
         return render(request, 'main_djmil/combat_orders.html')
 
