@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
@@ -18,7 +19,6 @@ def login_page(request):
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
-        print('ok')
         login(request, user)
         return redirect('main_page')
 
@@ -44,8 +44,8 @@ class MainPage(APIView):
 
             return render(request, "main_djmil/main_page.html", logic.open_data_main_page)
 
-        data = {'model': logic.top_rank,
-                'action': 0}
+        data = {  # 'model': logic.top_rank,
+            'action': 0}
         return render(request, "main_djmil/main_page.html", data)
 
 
@@ -168,15 +168,16 @@ class OnlineSecondOrders(APIView):
 
     @staticmethod
     def get(request):
-        model = SecondOrdersModel.objects.all().order_by('-dt')[1:20]
 
-        new = request.GET.get('new')
+        model = SecondOrdersModel.objects.all().order_by('-id')
+        paginator = Paginator(model, 20)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
         today = request.GET.get('today')
-        old = request.GET.get('old')
         search_by_drone_id = request.GET.get('drone_id')
         download = request.GET.get('download')
         # update_data = request.GET.get('update_data')
-        req = SecondOnlineSQLReq()
         date_search = request.GET.get('date_search')
 
         # req_update = SecondSQLReq()
@@ -212,22 +213,30 @@ class OnlineSecondOrders(APIView):
                 return req_download.download_oldest_order
 
         # search by old,new, drone_id
-        if new:
-            model = req.newest_req
-        elif old:
-            model = req.oldest_req
-        elif search_by_drone_id:
+
+        if search_by_drone_id:
             req = SecondOnlineSQLReq(search_by_drone_id)
             model = req.search_by_drone_id
+
+            data = {'model': model
+                    }
+            return render(request, 'main_djmil/online_second_orders.html', data)
 
         # sort_by_date
         if date_search:
             model = SecondOrdersModel.objects.filter(dt__icontains=date_search).order_by("dt")
+            data = {'model': model}
+            return render(request, 'main_djmil/online_second_orders.html', data)
 
         if today:
-            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%Y-%m-%d'))
+            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%Y-%m-%d')).values()
+            data = {'model': model}
+            return render(request, 'main_djmil/online_second_orders.html', data)
 
-        data = {'model': model}
+        data = {'model': paginator.get_page(page_number).object_list,
+                'page_obj': page_obj,
+                'current_path': request.get_full_path()
+                }
 
         return render(request, 'main_djmil/online_second_orders.html', data)
 
@@ -256,6 +265,16 @@ class CombatOrder(APIView):
             logic = BuildCombatOrders(start_cut, end_cut)
             return logic.build_orders
 
+        # filter by date
+        if date_search:
+            fake_drone = request.GET.get('fakefake')
+            logic = CombatLogic(date_search, fake_drone)
+            data = {
+                'model': logic.search_by_date,
+                'action': 0
+            }
+            return render(request, 'main_djmil/combat_orders.html', data)
+
         # filter by today checkbox
         if today:
             logic = CombatLogic()
@@ -265,16 +284,6 @@ class CombatOrder(APIView):
                 'action': 0
             }
 
-            return render(request, 'main_djmil/combat_orders.html', data)
-
-        # filter by date
-        if date_search:
-            logic = CombatLogic(date_search)
-
-            data = {
-                'model': logic.search_by_date,
-                'action': 0
-            }
             return render(request, 'main_djmil/combat_orders.html', data)
 
         # personal  detail page
@@ -307,7 +316,7 @@ class StatisticsPage(APIView):
 
             return render(request, 'main_djmil/main_statistics.html', data)
 
-        logic = BuildStatistics()
-        data = logic.total_results_for_month
+        # logic = BuildStatistics()
+        # data = logic.total_results_for_month
 
-        return render(request, 'main_djmil/main_statistics.html', data)
+        return render(request, 'main_djmil/main_statistics.html')

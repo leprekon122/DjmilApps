@@ -6,7 +6,8 @@
 <div class="container-fluid orders">
     <div class="orders_search">
         {%load static%}
-        <div class="alert alert-dark alert-search text-light" style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
+        <div class="alert alert-dark alert-search text-light"
+             style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
             <div class="download_orders">
                 <h5 class="title">Завантаження</h5>
                 <form method="get">
@@ -18,22 +19,21 @@
                         <option value="without">без сортування</option>
                     </select>
                     <br>
-                    <button class="btn btn-warning main_btn text-light" name="download" value="download">download</button>
-                     <!--<button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data</button>
-                    -->
+                    <button class="btn btn-warning main_btn text-light" name="download" value="download">download
+                    </button>
+                    <!--<button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data</button>
+                   -->
                 </form>
             </div>
             <br>
             <div class="main_search">
                 <h5 class="title">Сортування</h5>
                 <form method="get">
-                    <input class="form-control" placeholder="drone_id" name="drone_id" type="text">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="new" value="new" id="flexCheckDefault_new">
-                        <label class="form-check-label" for="flexCheckDefault_new">
-                            спершу новіші
-                        </label>
-                    </div>
+                    <label for="drone_id">сортування за drone_id</label>
+                    <input class="form-control" placeholder="drone_id" name="drone_id" id="drone_id" type="text">
+                    <br>
+                    <label for="drone_id" for="date_search">сортування за датою</label>
+                    <input type="date" class="form-control" name="date_search" id="date_search">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="today" value="today"
                                id="flexCheckChecked_today"
@@ -42,14 +42,6 @@
                             за сьогодні
                         </label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="old" value="old" id="flexCheckChecked_old"
-                               >
-                        <label class="form-check-label" for="flexCheckChecked_old">
-                            спершу пізніщі
-                        </label>
-                    </div>
-                    <input type="date" class="form-control" name="date_search">
                     <br>
                     <button class="btn btn-warning search-btn main_btn text-light" type="submit">пошук</button>
                 </form>
@@ -58,7 +50,8 @@
 
             <div class="chose_orders">
                 <div class="dropdown">
-                    <button class="btn btn-warning dropdown-toggle main_btn text-light" type="button" id="dropdownMenuButton"
+                    <button class="btn btn-warning dropdown-toggle main_btn text-light" type="button"
+                            id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         вибери звіт
                     </button>
@@ -73,7 +66,8 @@
         </div>
     </div>
     <div class="main_table_second">
-        <table class="table table-dark  table-hover table-bordered"  style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)" >
+        <table class="table table-dark  table-hover table-bordered"
+               style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
             <thead>
             <tr>
                 <th scope="col">drone id</th>
@@ -81,8 +75,8 @@
                 <th scope="col">координати дрона</th>
                 <th scope="col">height</th>
                 <th scope="col">altitude</th>
-                <th scope="col">координати пульта </th>
-                <th scope="col">координати  homepoint</th>
+                <th scope="col">координати пульта</th>
+                <th scope="col">координати homepoint</th>
                 <th scope="col">dt</th>
             </tr>
             </thead>
@@ -117,19 +111,44 @@
                 <td>{{el.altitude}}</td>
                 <td><span class="text-success">lat</span>: {{el.phone_app_latitude}}
                     <br>
-                    <span class="text-success">lon</span>{{el.phone_app_longitude}}</td>
+                    <span class="text-success">lon</span>{{el.phone_app_longitude}}
+                </td>
 
-                <td id="position" onclick="location_data()"><span class="text-success" >lat</span>: {{el.home_latitude}}
+                <td id="position" onclick="location_data()"><span class="text-success">lat</span>: {{el.home_latitude}}
                     <br>
-                    <span class="text-success">lon</span>: {{el.home_longitude}}</td>
+                    <span class="text-success">lon</span>: {{el.home_longitude}}
+                </td>
                 <td>{{el.dt}}</td>
 
             </tr>
 
             </tbody>
             {%endfor%}
-
         </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+
+                <li class="page-item"><a class="page-link" style="background-color: #deb01b; color: #fff"
+                                         href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {%endif%}
+
+                {%for p in page_obj.paginator.page_range %}
+                {%if p == page_obj.number %}
+                <li class="page-item"><a class="page-link" href="#"
+                                         style="background-color: green; color:#fff">{{p}}</a></li>
+                {%elif p <= page_obj.number|add:+2 and p >= page_obj.number|add:-2 %}
+                <li class="page-item"><a class="page-link" href="?page={{p}}"
+                                         style="background-color: #deb01b; color: #fff">{{p}}</a></li>
+                {%endif%}
+                {%endfor%}
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"
+                                         style="background-color: #deb01b; color: #fff">Next</a></li>
+                {%endif%}
+            </ul>
+        </nav>
     </div>
 </div>
 <script src="/static/main_djmil/js/main_js.js">

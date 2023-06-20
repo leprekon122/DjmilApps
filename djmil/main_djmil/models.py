@@ -38,3 +38,17 @@ class MainOrders(models.Model):
     class Meta:
         verbose_name = 'MainOrders'
         verbose_name_plural = 'MainOrders'
+
+
+class StatisticDataSet(models.Model):
+    serial_no = models.CharField(max_length=255)
+    dt = models.DateTimeField()
+    product_type = models.CharField(max_length=255)
+    quantity = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.serial_no} {self.dt} {self.product_type} {self.quantity}"
+
+    class Meta:
+        verbose_name = 'StatisticDataSet'
+        verbose_name_plural = 'StatisticDataSet'

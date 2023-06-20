@@ -1,13 +1,13 @@
 import csv
 from datetime import datetime
-
 import psycopg2
+
 from django.http import HttpResponse
 from docx import Document
 
-from django.db.models import Count, Max
+from django.db.models import Count
 
-from .models import SecondOrdersModel, MainOrders
+from .models import SecondOrdersModel, MainOrders, StatisticDataSet
 
 
 class SendSqlReq:
@@ -118,14 +118,6 @@ class SecondOnlineSQLReq:
         return SecondOrdersModel.objects.all()
 
     @property
-    def newest_req(self):
-        return SecondOrdersModel.objects.all().order_by('-id')
-
-    @property
-    def oldest_req(self):
-        return SecondOrdersModel.objects.all().order_by('id')
-
-    @property
     def search_by_drone_id(self):
         return SecondOrdersModel.objects.filter(serial_no=self.drone_id[0]).order_by('-dt')
 
@@ -139,23 +131,19 @@ class OnlineSQLReq:
 
     @property
     def standart_req(self):
-        res = MainOrders.objects.all()
-        return res
+        return MainOrders.objects.all()
 
     @property
     def newest_req(self):
-        res = MainOrders.objects.all().order_by('-dt_last')
-        return res
+        return MainOrders.objects.all().order_by('-dt_last')
 
     @property
     def oldest_req(self):
-        res = MainOrders.objects.all().order_by('dt_first')
-        return res
+        return MainOrders.objects.all().order_by('dt_first')
 
     @property
     def search_drone_id(self):
-        res = MainOrders.objects.filter(serial_no=self.drone_id[0])
-        return res
+        return MainOrders.objects.filter(serial_no=self.drone_id[0])
 
 
 '''download orders in local'''
@@ -390,13 +378,19 @@ class DownloadSecondOnlineOrders:
 class CombatLogic:
 
     def __init__(self, *args):
-        if len([*args]) == 0:
+        if len([*args]) is not None == 0:
             self.date_search = []
         else:
-            self.date_search = [*args][0]
+            if len([*args]) > 1:
+                self.date_search = args[0]
+                self.fake_drone = args[1]
+            else:
+                self.date_search = args
+                self.fake_drone = None
 
     @property
     def today_req(self):
+
         model_set = SecondOrdersModel.objects.filter(
             dt__icontains=datetime.today().strftime('%y-%m-%d')).values().order_by(
             'serial_no')
@@ -449,8 +443,11 @@ class CombatLogic:
 
     @property
     def search_by_date(self):
-        model_set = SecondOrdersModel.objects.filter(dt__icontains=self.date_search).values().order_by('serial_no')
-
+        if self.fake_drone is not None:
+            model_set = SecondOrdersModel.objects.filter(dt__icontains=self.date_search).values().exclude(
+                serial_no=self.fake_drone).order_by('serial_no')
+        else:
+            model_set = SecondOrdersModel.objects.filter(dt__icontains=self.date_search).values().order_by('serial_no')
         model = []
         if len(model_set) == 1:
             model.append(model_set)
@@ -470,6 +467,7 @@ class CombatLogic:
                                   }
 
                     model.append(model_data)
+
                 else:
                     if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
                         quantity = SecondOrdersModel.objects.filter(dt__icontains=self.date_search,
@@ -482,9 +480,9 @@ class CombatLogic:
                                       'quantity': quantity,
                                       'action': 0,
                                       }
-
                         model.append(model_data)
-        return model
+
+            return model
 
 
 '''OpenData get request in combat logic'''
@@ -557,7 +555,8 @@ class OpenDataCombatLogicClass:
             }
             return data
 
-        elif self.current_year == "June":
+        elif self.current_month == "June":
+
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-06-{self.current_day}", serial_no=self.serial_no).values().order_by(
                 '-dt')
@@ -589,7 +588,7 @@ class OpenDataCombatLogicClass:
             }
             return data
 
-        elif self.current_year == "August":
+        elif self.current_month == "August":
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-08-{self.current_day}", serial_no=self.serial_no).values().order_by(
                 '-dt')
@@ -605,7 +604,7 @@ class OpenDataCombatLogicClass:
             }
             return data
 
-        elif self.current_year == "September":
+        elif self.current_month == "September":
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-09-{self.current_day}", serial_no=self.serial_no).values().order_by(
                 '-dt')
@@ -621,7 +620,7 @@ class OpenDataCombatLogicClass:
             }
             return data
 
-        elif self.current_year == "October":
+        elif self.current_month == "October":
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-10-{self.current_day}", serial_no=self.serial_no).values().order_by(
                 '-dt')
@@ -637,7 +636,7 @@ class OpenDataCombatLogicClass:
             }
             return data
 
-        elif self.current_year == "November":
+        elif self.current_month == "November":
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-11-{self.current_day}", serial_no=self.serial_no).values().order_by(
                 '-dt')
@@ -653,7 +652,7 @@ class OpenDataCombatLogicClass:
             }
             return data
 
-        elif self.current_year == "December":
+        elif self.current_month == "December":
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-12-{self.current_day}", serial_no=self.serial_no).values().order_by(
                 '-dt')
@@ -815,49 +814,6 @@ class BuildStatistics:
         self.open_data = args
 
     @property
-    def total_results_for_month(self):
-
-        mavic3 = []
-        m300rtk = []
-        mini_2 = []
-        air_2s = []
-        m30 = []
-        mavic2enterprise = []
-        mini_se = []
-
-        for el in self.logic.search_by_date:
-
-            if el['product_type'] == 68:
-                mavic3.append(el['product_type'])
-            elif el['product_type'] == 60:
-                m300rtk.append(el['product_type'])
-            elif el['product_type'] == 63:
-                mini_2.append(el['product_type'])
-            elif el['product_type'] == 66:
-                air_2s.append(el['product_type'])
-            elif el['product_type'] == 67:
-                m30.append(el['product_type'])
-            elif el['product_type'] == 69:
-                mavic2enterprise.append(el['product_type'])
-            elif el['product_type'] == 70:
-                mini_se.append(el['product_type'])
-            else:
-                mavic3.append(el['product_type'])
-
-        data = {'total_value': len(self.logic.search_by_date),
-                'dirty_total_value': len(
-                    SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m'))),
-                'mavic3': len(mavic3),
-                'M300RTK': len(m300rtk),
-                'mini_2': len(mini_2),
-                'air_2s': len(air_2s),
-                'm30': len(m30),
-                'mavic2Enterprise': len(mavic2enterprise),
-                'mini_se': len(mini_se),
-                }
-        return data
-
-    @property
     def total_results_for_chosen_month(self):
         mavic3 = []
         m300rtk = []
@@ -866,7 +822,8 @@ class BuildStatistics:
         m30 = []
         mavic2enterprise = []
         mini_se = []
-        for el in CombatLogic(self.open_data[0]).search_by_date:
+        data_set = CombatLogic(self.open_data[0]).search_by_date
+        for el in data_set:
 
             if el['product_type'] == 68:
                 mavic3.append(el['product_type'])
