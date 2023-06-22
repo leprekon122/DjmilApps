@@ -377,25 +377,21 @@ class DownloadSecondOnlineOrders:
 
 class CombatLogic:
 
-    def __init__(self, *args):
-        if len([*args]) is not None == 0:
-            self.date_search = []
-        else:
-            if len([*args]) > 1:
-                self.date_search = args[0]
-                self.fake_drone = args[1]
-            else:
-                self.date_search = args
-                self.fake_drone = None
+    def __init__(self, date_search=None, fake_drone=None):
+        self.date_search = date_search
+        self.fake_drone = fake_drone
+        self.model_set = SecondOrdersModel.objects.filter(dt__icontains=self.date_search).values().exclude(
+            serial_no=self.fake_drone).order_by('serial_no')
 
     @property
     def today_req(self):
 
         model_set = SecondOrdersModel.objects.filter(
-            dt__icontains=datetime.today().strftime('%y-%m-%d')).values().order_by(
+            dt__icontains=datetime.today().strftime('%y-%m-%d')).values().exclude(serial_no=self.fake_drone).order_by(
             'serial_no')
 
         model = []
+        total_quan = []
 
         if len(model_set) == 1:
             quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d'),
@@ -408,6 +404,7 @@ class CombatLogic:
                           'quantity': quantity,
                           'action': 0,
                           }
+            total_quan.append(quantity)
 
             model.append(model_data)
 
@@ -422,10 +419,10 @@ class CombatLogic:
                                   'dt': model_set[el]['dt'],
                                   'product_type': model_set[el]['product_type'],
                                   'quantity': quantity,
-                                  'action': 0,
                                   }
 
                     model.append(model_data)
+                    total_quan.append(quantity)
                 else:
                     if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
                         quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d'),
@@ -435,52 +432,44 @@ class CombatLogic:
                         model_data = {'serial_no': model_set[el]['serial_no'],
                                       'dt': model_set[el]['dt'],
                                       'quantity': quantity,
-                                      'action': 0,
                                       }
 
                         model.append(model_data)
-        return model
+                        total_quan.append(quantity)
+        return [model, total_quan]
 
     @property
     def search_by_date(self):
-        if self.fake_drone is not None:
-            model_set = SecondOrdersModel.objects.filter(dt__icontains=self.date_search).values().exclude(
-                serial_no=self.fake_drone).order_by('serial_no')
-        else:
-            model_set = SecondOrdersModel.objects.filter(dt__icontains=self.date_search).values().order_by('serial_no')
+
         model = []
-        if len(model_set) == 1:
-            model.append(model_set)
+
+        if len(self.model_set) == 1:
+            model.append(self.model_set)
 
         else:
-            for el in range(len(model_set)):
+            for el in range(len(self.model_set)):
                 if el == 0:
                     quantity = SecondOrdersModel.objects.filter(dt__icontains=self.date_search,
-                                                                serial_no=model_set[el][
+                                                                serial_no=self.model_set[el][
                                                                     'serial_no']).values().count()
 
-                    model_data = {'serial_no': model_set[el]['serial_no'],
-                                  'dt': model_set[el]['dt'],
-                                  'product_type': model_set[el]['product_type'],
+                    model.append({'serial_no': self.model_set[el]['serial_no'],
+                                  'dt': self.model_set[el]['dt'],
+                                  'product_type': self.model_set[el]['product_type'],
                                   'quantity': quantity,
-                                  'action': 0,
-                                  }
-
-                    model.append(model_data)
+                                  })
 
                 else:
-                    if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
+                    if self.model_set[el]['serial_no'] != self.model_set[el - 1]['serial_no']:
                         quantity = SecondOrdersModel.objects.filter(dt__icontains=self.date_search,
-                                                                    serial_no=model_set[el][
+                                                                    serial_no=self.model_set[el][
                                                                         'serial_no']).values().count()
 
-                        model_data = {'serial_no': model_set[el]['serial_no'],
-                                      'dt': model_set[el]['dt'],
-                                      'product_type': model_set[el]['product_type'],
+                        model.append({'serial_no': self.model_set[el]['serial_no'],
+                                      'dt': self.model_set[el]['dt'],
+                                      'product_type': self.model_set[el]['product_type'],
                                       'quantity': quantity,
-                                      'action': 0,
-                                      }
-                        model.append(model_data)
+                                      })
 
             return model
 
@@ -815,43 +804,33 @@ class BuildStatistics:
 
     @property
     def total_results_for_chosen_month(self):
-        mavic3 = []
-        m300rtk = []
-        mini_2 = []
-        air_2s = []
-        m30 = []
-        mavic2enterprise = []
-        mini_se = []
         data_set = CombatLogic(self.open_data[0]).search_by_date
+
+        data_1 = {68: 0,
+                  60: 0,
+                  63: 0,
+                  66: 0,
+                  67: 0,
+                  69: 0,
+                  70: 0
+                  }
+
         for el in data_set:
-
-            if el['product_type'] == 68:
-                mavic3.append(el['product_type'])
-            elif el['product_type'] == 60:
-                m300rtk.append(el['product_type'])
-            elif el['product_type'] == 63:
-                mini_2.append(el['product_type'])
-            elif el['product_type'] == 66:
-                air_2s.append(el['product_type'])
-            elif el['product_type'] == 67:
-                m30.append(el['product_type'])
-            elif el['product_type'] == 69:
-                mavic2enterprise.append(el['product_type'])
-            elif el['product_type'] == 70:
-                mini_se.append(el['product_type'])
+            if el['product_type'] in data_1.keys():
+                data_1[el['product_type']] += 1
             else:
-                mavic3.append(el['product_type'])
+                data_1[68] += 1
 
-        data = {'total_value': len(CombatLogic(self.open_data[0]).search_by_date),
+        data = {'total_value': len(data_set),
                 'dirty_total_value': len(
                     SecondOrdersModel.objects.filter(dt__icontains=self.open_data[0])),
-                'mavic3': len(mavic3),
-                'M300RTK': len(m300rtk),
-                'mini_2': len(mini_2),
-                'air_2s': len(air_2s),
-                'm30': len(m30),
-                'mavic2Enterprise': len(mavic2enterprise),
-                'mini_se': len(mini_se),
+                'mavic3': data_1[68],
+                'M300RTK': data_1[60],
+                'mini_2': data_1[63],
+                'air_2s': data_1[66],
+                'm30': data_1[67],
+                'mavic2Enterprise': data_1[69],
+                'mini_se': data_1[70],
                 }
         return data
 
@@ -859,43 +838,24 @@ class BuildStatistics:
 
     @property
     def top_rank(self):
-        logic = self.logic.search_by_date
-        if len(logic) == 1:
-            self.data_set = {'serial_no': logic[0]['serial_no'],
-                             'quantity': logic[0]['quantity']
-                             }
-            self.model.append(self.data_set)
+        logic = self.logic.today_req
 
-        elif len(logic) == 0:
-            self.model.append('no data')
+        if len(logic[1]) == 0:
+            return 'No data'
+        elif len(logic[1]) > 6:
+            top = sorted(logic[1])[-6:]
         else:
-            for el in range(len(logic)):
-                if el < len(logic) - 1:
-                    if logic[el]['quantity'] > logic[el + 1]['quantity']:
-                        self.data_set = {'serial_no': logic[el]['serial_no'],
-                                         'quantity': logic[el]['quantity']
-                                         }
-                        self.model.append(self.data_set)
-                else:
-                    if logic[el]['quantity'] > logic[el - 1]['quantity']:
-                        self.data_set = {'serial_no': logic[el]['serial_no'],
-                                         'quantity': logic[el]['quantity']
-                                         }
-                    self.model.append(self.data_set)
+            top = sorted(logic[1])
 
+        for el in logic[0]:
+            if el['quantity'] in top:
+                self.data_set = {'serial_no': el['serial_no'],
+                                 'quantity': el['quantity'],
+                                 'dt': el['dt']
+                                         }
+                self.model.append(self.data_set)
         return self.model
 
-    @property
-    def open_data_main_page(self):
-        model_detail = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m'),
-                                                        serial_no=self.open_data[0]).values()
-
-        data = {'model_detail': model_detail,
-                'model': SecondOrdersModel.objects.filter(serial_no=self.open_data[0]).values()[0],
-                'action': 1
-                }
-
-        return data
 
 
 class LogicAnalyze:

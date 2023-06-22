@@ -37,15 +37,8 @@ class MainPage(APIView):
     def get(request):
         logic = BuildStatistics()
 
-        open_data = request.GET.get('open_data')
-
-        if open_data:
-            logic = BuildStatistics(open_data)
-
-            return render(request, "main_djmil/main_page.html", logic.open_data_main_page)
-
-        data = {  # 'model': logic.top_rank,
-            'action': 0}
+        data = {'model': logic.top_rank,
+                'action': 0}
         return render(request, "main_djmil/main_page.html", data)
 
 
@@ -229,7 +222,8 @@ class OnlineSecondOrders(APIView):
             return render(request, 'main_djmil/online_second_orders.html', data)
 
         if today:
-            model = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%Y-%m-%d')).values()
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=datetime.today().strftime('%Y-%m-%d')).values().order_by('-id')
             data = {'model': model}
             return render(request, 'main_djmil/online_second_orders.html', data)
 
@@ -258,6 +252,8 @@ class CombatOrder(APIView):
 
         build_order = request.GET.get('build_order')
 
+        fake_drone = request.GET.get('fakefake')
+
         # build docx file and download
         if build_order:
             start_cut = request.GET.get('start_cut')
@@ -267,20 +263,21 @@ class CombatOrder(APIView):
 
         # filter by date
         if date_search:
-            fake_drone = request.GET.get('fakefake')
+            start = datetime.now()
             logic = CombatLogic(date_search, fake_drone)
             data = {
                 'model': logic.search_by_date,
                 'action': 0
             }
+            print(datetime.now() - start)
             return render(request, 'main_djmil/combat_orders.html', data)
 
         # filter by today checkbox
         if today:
-            logic = CombatLogic()
+            logic = CombatLogic(date_search, fake_drone)
 
             data = {
-                'model': logic.today_req,
+                'model': logic.today_req[0],
                 'action': 0
             }
 

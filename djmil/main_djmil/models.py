@@ -43,7 +43,7 @@ class MainOrders(models.Model):
 class StatisticDataSet(models.Model):
     serial_no = models.CharField(max_length=255)
     dt = models.DateTimeField()
-    product_type = models.CharField(max_length=255)
+    product_type = models.CharField(max_length=255, null=True, blank=True)
     quantity = models.IntegerField()
 
     def __str__(self):
