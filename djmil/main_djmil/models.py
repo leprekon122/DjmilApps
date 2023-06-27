@@ -14,11 +14,12 @@ class SecondOrdersModel(models.Model):
     home_longitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
     dt = models.DateTimeField()
     frame_id = models.IntegerField(blank=True, null=True)
+    status = models.CharField(max_length=60, null=True, blank=True)
 
     def __str__(self):
         return f"{self.serial_no} {self.product_type}, {self.longitude} {self.latitude} {self.height}" \
                f"{self.altitude} {self.phone_app_longitude} {self.phone_app_latitude} {self.home_latitude}" \
-               f"{self.home_longitude} {self.dt} {self.frame_id}"
+               f"{self.home_longitude} {self.dt} {self.frame_id} {self.status}"
 
     class Meta:
         verbose_name = 'SecondOrdersModel'

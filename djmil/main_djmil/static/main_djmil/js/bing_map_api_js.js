@@ -1,10 +1,10 @@
-function TestDataGenerato(){
-    return ['48.90310714879134934563 38.27950588140924992331', '48.90310714879134934563 38.27950588140924992331']
-}
 
 function GetMap()
     {
         var loc = document.getElementById('loc').value.split(' ')
+
+        //var drone_points = document.getElementsByClassName('drone_points')
+
 
 
         var data = document.getElementsByClassName('home_point_cor')
@@ -16,26 +16,35 @@ function GetMap()
         var len_rc = rc_cor[rc_cor.length -1].innerHTML.split('\n')[1].split(' ')[20]
         var lon_rc = rc_cor[rc_cor.length -1].innerHTML.split('\n')[2].split(' ')[20]
 
+        //var len_drone = drone_points[drone_points.length -1].innerHTML.split('\n')[1].split(' ')[20]
+        //var lon_drone = drone_points[drone_points.length -1].innerHTML.split('\n')[2].split(' ')[20]
 
+        var len_drone = document.getElementsByClassName('drone_len')
+        var lon_drone = document.getElementsByClassName('drone_lon')
 
+        var loc_set = []
 
         var map = new Microsoft.Maps.Map(document.getElementById('myMap'));
-
-        map.setView({
-            mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-            center: new Microsoft.Maps.Location(loc[0], loc[1]),
-            zoom: 18,
-
-        });
-
-
 
         var locations = [
           { latitude: len_home_point, longitude: lon_home_point, title: 'Home point', text: 'H' },
           { latitude: len_rc, longitude: lon_rc, title: 'RC', text: 'H' },
-          { latitude: loc[0], longitude: loc[1], title: 'my_pos', text: 'H' }
-          // Add more locations as needed
         ];
+
+        console.log(len_rc, lon_rc)
+        map.setView({
+            mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+            center: new Microsoft.Maps.Location(len_home_point, lon_home_point),
+            zoom: 18,
+        });
+
+
+        for (let item = 0; item < len_drone.length; item++ ){
+             let data_1 = len_drone[item].innerText
+             let data_2 = lon_drone[item].innerText
+             locations.push({ latitude: data_1, longitude: data_2, title: 'drone point_' + item, text: 'H' })
+             }
+
 
         locations.forEach(function(location) {
           var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(location.latitude, location.longitude), {

@@ -4,10 +4,11 @@ from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
     DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
-    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass
+    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, ChoseStatusCombat
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
+from django.db.models import F
 
 '''class for offline sql requests '''
 
@@ -263,13 +264,11 @@ class CombatOrder(APIView):
 
         # filter by date
         if date_search:
-            start = datetime.now()
             logic = CombatLogic(date_search, fake_drone)
             data = {
                 'model': logic.search_by_date,
                 'action': 0
             }
-            print(datetime.now() - start)
             return render(request, 'main_djmil/combat_orders.html', data)
 
         # filter by today checkbox
@@ -288,6 +287,13 @@ class CombatOrder(APIView):
             logic = OpenDataCombatLogicClass(open_data)
             return render(request, 'main_djmil/combat_orders.html', logic.enter_to_detail_data)
 
+        return render(request, 'main_djmil/combat_orders.html')
+
+    @staticmethod
+    def post(request):
+        status = request.POST.get('status').split(' ')
+        logic = ChoseStatusCombat(status)
+        logic.change_status()
         return render(request, 'main_djmil/combat_orders.html')
 
 

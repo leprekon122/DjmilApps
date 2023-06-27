@@ -94,6 +94,47 @@
                     {{el.serial_no}}
                 </button>
             </form>
+            {%if el.status == 'ally'%}
+            <div class="combat_alert_data">
+                <span class="text-success">Дата виявлення:</span>
+                <p class="text-success">{{el.dt}}</p>
+            </div>
+            <div class="combat_alert_data">
+                <span class="text-success">Кількість польтів за дату:</span>
+                <p class="text-success">{{el.quantity}}</p>
+            </div>
+            <form method="post">
+                {%csrf_token%}
+                <select class="form-select" aria-label="Default select example" name="status"
+                        style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d); color: green">
+                    <option selected>оберіть приналежність</option>
+                    <option value="{{el.serial_no}} ally {{el.dt}}">свій</option>
+                    <option value="{{el.serial_no}} enemy {{el.dt}}">чужий</option>
+                    <option value="{{el.serial_no}} neutral {{el.dt}}">нейтральний</option>
+                </select>
+                <button class="btn btn-dark" type="submit">застасувати</button>
+            </form>
+            {%elif el.status == 'enemy'%}
+            <div class="combat_alert_data">
+                <span class="text-danger">Дата виявлення:</span>
+                <p class="text-danger">{{el.dt}}</p>
+            </div>
+            <div class="combat_alert_data">
+                <span class="text-danger">Кількість польтів за дату:</span>
+                <p class="text-danger">{{el.quantity}}</p>
+            </div>
+            <form method="post">
+                {%csrf_token%}
+                <select class="form-select" aria-label="Default select example" name="status"
+                        style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d); color: red">
+                    <option selected>оберіть приналежність</option>
+                    <option value="{{el.serial_no}} ally {{el.dt}}">свій</option>
+                    <option value="{{el.serial_no}} enemy {{el.dt}}">чужий</option>
+                    <option value="{{el.serial_no}} neutral {{el.dt}}">нейтральний</option>
+                </select>
+                <button class="btn btn-dark" type="submit">застасувати</button>
+            </form>
+            {%else%}
             <div class="combat_alert_data">
                 <span class="text-light">Дата виявлення:</span>
                 <p class="text-light">{{el.dt}}</p>
@@ -102,6 +143,18 @@
                 <span class="text-light">Кількість польтів за дату:</span>
                 <p class="text-light">{{el.quantity}}</p>
             </div>
+            <form method="post">
+                {%csrf_token%}
+                <select class="form-select" aria-label="Default select example" name="status"
+                        style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d); color: #fff">
+                    <option selected>оберіть приналежність</option>
+                    <option value="{{el.serial_no}} ally {{el.dt}}">свій</option>
+                    <option value="{{el.serial_no}} enemy {{el.dt}}">чужий</option>
+                    <option value="{{el.serial_no}} neutral {{el.dt}}">нейтральний</option>
+                </select>
+                <button class="btn btn-dark" type="submit">застасувати</button>
+            </form>
+            {%endif%}
         </div>
         {%endfor%}
         {%else%}
@@ -136,7 +189,8 @@
                 <th scope="col">height</th>
                 <th scope="col">altitude</th>
                 <th scope="col">коордінати пульта</th>
-                <th scope="col"">коордінати homepoint</th>
+                <th scope="col"
+                ">коордінати homepoint</th>
 
 
             </tr>
@@ -145,9 +199,11 @@
             <tbody>
             <tr class="main_row">
                 <td>
-                    {{el.latitude}}
-                    {{el.longitude}}
-
+                    <p class="drone_len">
+                        {{el.latitude}}
+                    <p>
+                    <p class="drone_lon">
+                        {{el.longitude}}</p>
                 </td>
                 <td>{{el.height}}</td>
                 <td>{{el.altitude}}</td>
@@ -166,6 +222,8 @@
             </tbody>
             {%endfor%}
         </table>
+        <script type='text/javascript' src="/static/main_djmil/js/bing_map_api_js.js" defer>
+        </script>
         {%endif%}
     </div>
     {%else%}
@@ -175,9 +233,6 @@
     </div>
     {%endif%}
 </div>
-
-<script type='text/javascript' src="/static/main_djmil/js/bing_map_api_js.js">
-</script>
 
 <script src="/static/main_djmil/js/main_js.js">
 </script>

@@ -402,7 +402,7 @@ class CombatLogic:
                           'dt': model_set[0]['dt'],
                           'product_type': model_set[0]['product_type'],
                           'quantity': quantity,
-                          'action': 0,
+                          'status': model_set[0]['status']
                           }
             total_quan.append(quantity)
 
@@ -419,6 +419,7 @@ class CombatLogic:
                                   'dt': model_set[el]['dt'],
                                   'product_type': model_set[el]['product_type'],
                                   'quantity': quantity,
+                                  'status': model_set[el]['status']
                                   }
 
                     model.append(model_data)
@@ -432,6 +433,7 @@ class CombatLogic:
                         model_data = {'serial_no': model_set[el]['serial_no'],
                                       'dt': model_set[el]['dt'],
                                       'quantity': quantity,
+                                      'status': model_set[el]['status']
                                       }
 
                         model.append(model_data)
@@ -457,6 +459,7 @@ class CombatLogic:
                                   'dt': self.model_set[el]['dt'],
                                   'product_type': self.model_set[el]['product_type'],
                                   'quantity': quantity,
+                                  'status': self.model_set[el]['status']
                                   })
 
                 else:
@@ -469,9 +472,40 @@ class CombatLogic:
                                       'dt': self.model_set[el]['dt'],
                                       'product_type': self.model_set[el]['product_type'],
                                       'quantity': quantity,
+                                      'status': self.model_set[el]['status']
                                       })
 
             return model
+
+
+class ChoseStatusCombat:
+
+    def __init__(self, status=None):
+        self.status = status
+
+    def change_status(self):
+        date_set = {
+            'January': '01',
+            'February': '02',
+            'March': '03',
+            'April': '04',
+            'May': '05',
+            'June': '06',
+            'July': '07',
+            'August': '08',
+            'September': '09',
+            'October': '10',
+            'November': '11',
+            'December': '12'
+        }
+
+        year = self.status[4].split(',')[0]
+        month = self.status[2].split(',')[0]
+        day = self.status[3].split(',')[0]
+        whom = self.status[1]
+        SecondOrdersModel.objects.filter(serial_no=self.status[0],
+                                         dt__icontains=f"{year}-{date_set[f'{month}']}-{day}").update(
+            status=whom)
 
 
 '''OpenData get request in combat logic'''
@@ -852,10 +886,9 @@ class BuildStatistics:
                 self.data_set = {'serial_no': el['serial_no'],
                                  'quantity': el['quantity'],
                                  'dt': el['dt']
-                                         }
+                                 }
                 self.model.append(self.data_set)
         return self.model
-
 
 
 class LogicAnalyze:

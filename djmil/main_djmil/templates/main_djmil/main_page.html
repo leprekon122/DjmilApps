@@ -4,10 +4,8 @@
 
 {%block content%}
 <div class="container-fluid">
-    <br>
+    {%if model|length == 0%}
     <div class="main_page">
-
-
         <form method="get" action="/combat_orders">
             <div class="top_rank">
                 {%for el in model%}
@@ -22,8 +20,9 @@
                 {%endfor%}
             </div>
         </form>
-
     </div>
+    {%else%}
+    {%endif%}
 </div>
 
 
