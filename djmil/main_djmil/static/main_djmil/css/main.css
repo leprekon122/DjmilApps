@@ -134,7 +134,7 @@ body {background-color: black
               justify-content: space-around;
              }
 
-.main_map {display: flex;
+/*.main_map {display: flex;
            flex-direction: row;
            justify-content: space-between;
           }
@@ -145,7 +145,9 @@ body {background-color: black
             justify-content: space-around;
             height: 40px;
             width: 40%;}
-#loc {width:70%}
+*/
+
+/*#loc {width:70%} */
 
 .hide {display: flex;
        justify-content: end;

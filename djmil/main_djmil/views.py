@@ -21,7 +21,7 @@ def login_page(request):
 
     if user is not None:
         login(request, user)
-        return redirect('main_page')
+        return redirect('online_second_orders')
 
     # else:
     #    mes = messages.error(request, "oops wrong login or password!")
@@ -294,7 +294,16 @@ class CombatOrder(APIView):
         status = request.POST.get('status').split(' ')
         logic = ChoseStatusCombat(status)
         logic.change_status()
-        return render(request, 'main_djmil/combat_orders.html')
+
+        model = CombatLogic(f"{status[4].split(',')[0]}-{status[2].split(',')[0]}-{status[3].split(',')[0]}",
+                            fake_drone=None)
+
+        data = {
+            'model': model.today_req[0],
+            'action': 0
+        }
+
+        return render(request, 'main_djmil/combat_orders.html', data)
 
 
 class StatisticsPage(APIView):

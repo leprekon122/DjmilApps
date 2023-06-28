@@ -1,11 +1,6 @@
 
 function GetMap()
     {
-        var loc = document.getElementById('loc').value.split(' ')
-
-        //var drone_points = document.getElementsByClassName('drone_points')
-
-
 
         var data = document.getElementsByClassName('home_point_cor')
         var rc_cor = document.getElementsByClassName('rc_cor')
@@ -16,8 +11,6 @@ function GetMap()
         var len_rc = rc_cor[rc_cor.length -1].innerHTML.split('\n')[1].split(' ')[20]
         var lon_rc = rc_cor[rc_cor.length -1].innerHTML.split('\n')[2].split(' ')[20]
 
-        //var len_drone = drone_points[drone_points.length -1].innerHTML.split('\n')[1].split(' ')[20]
-        //var lon_drone = drone_points[drone_points.length -1].innerHTML.split('\n')[2].split(' ')[20]
 
         var len_drone = document.getElementsByClassName('drone_len')
         var lon_drone = document.getElementsByClassName('drone_lon')
@@ -42,14 +35,15 @@ function GetMap()
         for (let item = 0; item < len_drone.length; item++ ){
              let data_1 = len_drone[item].innerText
              let data_2 = lon_drone[item].innerText
-             locations.push({ latitude: data_1, longitude: data_2, title: 'drone point_' + item, text: 'H' })
+             locations.push({ latitude: data_1, longitude: data_2, title: 'drone point_' + item, text: 'H', icon: 'https://www.bingmapsportal.com/Content/images/poi_custom.png'})
              }
 
 
         locations.forEach(function(location) {
           var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(location.latitude, location.longitude), {
             title: location.title,
-            text: location.text
+            text: location.text,
+            icon: location.icon,
           });
 
           map.entities.push(pin);
