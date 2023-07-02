@@ -42,8 +42,6 @@ body {background-color: black
                     height: 85vh;
                     padding-top: 3%;
                     font-size: 8px;
-
-
         }
 
 
@@ -236,3 +234,79 @@ body {background-color: black
 
 .chose_dates button{width: 100%;}
 
+#filter {display: none}
+
+@media screen and (max-width: 450px){
+    .orders {display: flex;
+             flex-direction: column;}
+
+    .orders_search {width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 70vh;
+                    padding-top: 2%;
+                    display: none;
+                    z-index: 2;
+                    }
+
+
+    .main_table_second {
+                    width: 100%;
+                    overflow: auto;
+                    height: 95vh;
+                    padding-top: 3%;
+                    font-size: 8px;
+                    z-index: 1;
+        }
+
+    #filter {display: block}
+
+    .combat_data {display: flex;
+              flex-direction: column;
+              width: 100%;
+              height: 85vh;
+              overflow: auto;
+              padding: 1%;
+            }
+
+    .combat_alert {display: flex;
+                   flex-direction: column;
+                   background-color: black;
+                   justify-content: space-around;
+               }
+    .combat_alert  button{
+                          width: 100%;
+                    }
+
+    .top_rank {width: 100%;
+               height: 85vh;
+               flex-direction:column;
+               display: flex;
+               padding .5%;
+               overflow: auto;
+               justify-column: space-around;
+            }
+
+    .top_rank .alert-dark{height: 15%;
+                          display: flex;
+                          flex-direction: row;
+                          justify-content: space-between;
+                          align-items: center;
+                          background-color: #360e0f;
+                          border-radius: 3%;
+                          width: 100%;
+                          font-size: 12px;
+
+                    }
+
+    .data_for_month {
+
+                width: 100%;
+                border: 1px solid #cc8812;
+                padding: 1%;
+                backdrop-filter: blur(5px);
+
+                 }
+
+}
