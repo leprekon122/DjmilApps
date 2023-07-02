@@ -37,7 +37,6 @@ class MainPage(APIView):
     @staticmethod
     def get(request):
         logic = BuildStatistics()
-
         data = {'model': logic.top_rank,
                 'action': 0}
         return render(request, "main_djmil/main_page.html", data)
@@ -284,6 +283,7 @@ class CombatOrder(APIView):
 
         # personal  detail page
         if open_data:
+
             logic = OpenDataCombatLogicClass(open_data)
             return render(request, 'main_djmil/combat_orders.html', logic.enter_to_detail_data)
 

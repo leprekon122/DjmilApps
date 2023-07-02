@@ -399,7 +399,7 @@ class CombatLogic:
                                                             'serial_no']).values().count()
 
             model_data = {'serial_no': model_set[0]['serial_no'],
-                          'dt': model_set[0]['dt'],
+                          'dt': model_set[0]['dt'].strftime('%m %d, %Y, %H:%M'),
                           'product_type': model_set[0]['product_type'],
                           'quantity': quantity,
                           'status': model_set[0]['status']
@@ -416,7 +416,7 @@ class CombatLogic:
                                                                     'serial_no']).values().count()
 
                     model_data = {'serial_no': model_set[el]['serial_no'],
-                                  'dt': model_set[el]['dt'],
+                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
                                   'product_type': model_set[el]['product_type'],
                                   'quantity': quantity,
                                   'status': model_set[el]['status']
@@ -431,7 +431,7 @@ class CombatLogic:
                                                                         'serial_no']).values().count()
 
                         model_data = {'serial_no': model_set[el]['serial_no'],
-                                      'dt': model_set[el]['dt'],
+                                      'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
                                       'quantity': quantity,
                                       'status': model_set[el]['status']
                                       }
@@ -456,7 +456,7 @@ class CombatLogic:
                                                                     'serial_no']).values().count()
 
                     model.append({'serial_no': self.model_set[el]['serial_no'],
-                                  'dt': self.model_set[el]['dt'],
+                                  'dt': self.model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
                                   'product_type': self.model_set[el]['product_type'],
                                   'quantity': quantity,
                                   'status': self.model_set[el]['status']
@@ -469,7 +469,7 @@ class CombatLogic:
                                                                         'serial_no']).values().count()
 
                         model.append({'serial_no': self.model_set[el]['serial_no'],
-                                      'dt': self.model_set[el]['dt'],
+                                      'dt': self.model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
                                       'product_type': self.model_set[el]['product_type'],
                                       'quantity': quantity,
                                       'status': self.model_set[el]['status']
@@ -540,17 +540,35 @@ class OpenDataCombatLogicClass:
     @property
     def enter_to_detail_data(self):
         if int(self.current_day) < 10:
-            self.current_day = f'0{self.current_day}'
+            current_day_new = f'0{self.current_day}'
 
-        else:
             model_detail = SecondOrdersModel.objects.filter(
-                dt__icontains=f"{self.current_year}-{self.date_set[self.current_month]}-{self.current_day}",
+                dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
                 serial_no=self.serial_no).values().order_by(
                 'serial_no')
             model = SecondOrdersModel.objects.filter(
-                dt__icontains=f"{self.current_year}-{self.date_set[self.current_month]}-{self.current_day}",
+                dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
                 serial_no=self.serial_no).values().order_by(
                 'serial_no')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+
+            }
+
+            return data
+
+        else:
+            model_detail = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
+                serial_no=self.serial_no).values().order_by(
+                '-dt')
+            model = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
+                serial_no=self.serial_no).values().order_by(
+                '-dt')[0]
 
             data = {
                 'model': model,

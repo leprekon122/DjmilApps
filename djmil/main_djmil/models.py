@@ -1,4 +1,5 @@
 from django.db import models
+from time import strftime
 
 
 class SecondOrdersModel(models.Model):
@@ -39,6 +40,9 @@ class MainOrders(models.Model):
     class Meta:
         verbose_name = 'MainOrders'
         verbose_name_plural = 'MainOrders'
+
+
+
 
 
 class StatisticDataSet(models.Model):
