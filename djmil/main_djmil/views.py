@@ -276,7 +276,7 @@ class CombatOrder(APIView):
 
             data = {
                 'model': logic.today_req[0],
-                'action': 0
+                'action': 0,
             }
 
             return render(request, 'main_djmil/combat_orders.html', data)

@@ -540,7 +540,6 @@ class OpenDataCombatLogicClass:
     @property
     def enter_to_detail_data(self):
         if int(self.current_day) < 10:
-
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
                 serial_no=self.serial_no).values().order_by(
