@@ -377,17 +377,26 @@ class DownloadSecondOnlineOrders:
 
 class CombatLogic:
 
-    def __init__(self, date_search=None, fake_drone=None):
+    def __init__(self, date_search=None, fake_drone=None, get_time=None):
         self.date_search = date_search
         self.fake_drone = fake_drone
-        self.model_set = SecondOrdersModel.objects.filter(dt__icontains=self.date_search).values().exclude(
-            serial_no=self.fake_drone).order_by('serial_no')
+        self.get_time = get_time
+
+        if get_time is not None:
+            self.model_set = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.date_search} {self.get_time[:2]}").values().exclude(
+                serial_no=self.fake_drone).order_by('serial_no')
+        else:
+            self.model_set = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{self.date_search} {self.get_time}").values().exclude(
+                serial_no=self.fake_drone).order_by('serial_no')
 
     @property
     def today_req(self):
 
         model_set = SecondOrdersModel.objects.filter(
-            dt__icontains=datetime.today().strftime('%y-%m-%d')).values().exclude(serial_no=self.fake_drone).order_by(
+            dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time}").values().exclude(
+            serial_no=self.fake_drone).order_by(
             'serial_no')
 
         model = []

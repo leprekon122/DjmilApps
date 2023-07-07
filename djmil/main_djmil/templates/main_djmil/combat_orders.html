@@ -22,6 +22,7 @@
                     <form method="get">
                         <input type="date" class="form-control" name="date_search">
                         <br>
+                        <input class="form-control" type="time" name="time">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="fakefake" value="fakefake"
                                    id="fakedrone">
@@ -214,7 +215,7 @@
                     {{el.home_longitude}}
                 </td>
                 <td>
-                    {{el.dt}}
+                    {{el.dt|time:"H:i"}}
                 </td>
 
 
