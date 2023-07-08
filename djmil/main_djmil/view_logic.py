@@ -396,7 +396,7 @@ class CombatLogic:
 
         if self.get_time is not None:
             model_set = SecondOrdersModel.objects.filter(
-                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:2]}").values().exclude(
+                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:3]}").values().exclude(
                 serial_no=self.fake_drone).order_by(
                 'serial_no')
         else:
@@ -558,11 +558,11 @@ class OpenDataCombatLogicClass:
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
                 serial_no=self.serial_no).values().order_by(
-                'serial_no')
+                '-dt')
             model = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
                 serial_no=self.serial_no).values().order_by(
-                'serial_no')[0]
+                '-dt')[0]
 
             data = {
                 'model': model,
@@ -766,7 +766,7 @@ class BuildStatistics:
 
         data = {'total_value': len(data_set),
                 'dirty_total_value': len(
-                    SecondOrdersModel.objects.filter(dt__icontains=self.open_data[0])),
+                    SecondOrdersModel.objects.filter(dt__icontains=self.open_data)),
                 'mavic_2': data_1[41],
                 'M_200_v2': data_1[44],
                 'Mavic_Mini': data_1[53],

@@ -105,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Uzhgorod'
+TIME_ZONE = 'UTC'
 DATETIME_FORMAT = 'y-m-d'
 
 USE_I18N = True

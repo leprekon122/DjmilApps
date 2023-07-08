@@ -36,7 +36,7 @@ class MainPage(APIView):
 
     @staticmethod
     def get(request):
-        logic = BuildStatistics()
+        logic = BuildStatistics(datetime.today().strftime('%y-%m-d')[:7])
         data = {'model': logic.top_rank,
                 'action': 0}
         return render(request, "main_djmil/main_page.html", data)
@@ -267,9 +267,6 @@ class CombatOrder(APIView):
         if date_search:
             logic = CombatLogic(date_search, fake_drone, get_time)
 
-
-            print(CombatLogic([date_search[:7]][0]).search_by_date)
-
             data = {
                 'model': logic.search_by_date,
                 'action': 0
@@ -278,7 +275,7 @@ class CombatOrder(APIView):
 
         # filter by today checkbox
         if today:
-            logic = CombatLogic(date_search)
+            logic = CombatLogic(date_search, fake_drone, get_time)
 
             data = {
                 'model': logic.today_req[0],
@@ -321,6 +318,7 @@ class StatisticsPage(APIView):
         date_2 = request.GET.get('date_2')
 
         # compare two month data
+
         if all([date_1, date_2]):
             logic = LogicAnalyze(date_1, date_2)
             data = logic.make_anylyze
@@ -328,10 +326,9 @@ class StatisticsPage(APIView):
 
         # chose total result for month
         if month:
-            logic = BuildStatistics(month[:7])
-            data = logic.total_results_for_chosen_month
+            logic = BuildStatistics(month[:7]).total_results_for_chosen_month
 
-            return render(request, 'main_djmil/main_statistics.html', data)
+            return render(request, 'main_djmil/main_statistics.html', logic)
 
         # logic = BuildStatistics()
         # data = logic.total_results_for_month
