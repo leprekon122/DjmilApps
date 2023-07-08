@@ -75,10 +75,10 @@ WSGI_APPLICATION = 'djmil.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "",
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
+        'NAME': "vidma",
+        'USER': 'djmil_admin',
+        'PASSWORD': 'djmil67dev',
+        'HOST': '85.209.89.166',
         'PORT': '5432',
     }
 }
@@ -105,12 +105,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Uzhgorod'
 DATETIME_FORMAT = 'y-m-d'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

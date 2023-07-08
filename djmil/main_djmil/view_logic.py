@@ -388,16 +388,22 @@ class CombatLogic:
                 serial_no=self.fake_drone).order_by('serial_no')
         else:
             self.model_set = SecondOrdersModel.objects.filter(
-                dt__icontains=f"{self.date_search} {self.get_time}").values().exclude(
+                dt__icontains=self.date_search).values().exclude(
                 serial_no=self.fake_drone).order_by('serial_no')
 
     @property
     def today_req(self):
 
-        model_set = SecondOrdersModel.objects.filter(
-            dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time}").values().exclude(
-            serial_no=self.fake_drone).order_by(
-            'serial_no')
+        if self.get_time is not None:
+            model_set = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:2]}").values().exclude(
+                serial_no=self.fake_drone).order_by(
+                'serial_no')
+        else:
+            model_set = SecondOrdersModel.objects.filter(
+                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')}").values().exclude(
+                serial_no=self.fake_drone).order_by(
+                'serial_no')
 
         model = []
         total_quan = []
@@ -725,23 +731,31 @@ class MainPageLogic:
 
 class BuildStatistics:
 
-    def __init__(self, *args):
+    def __init__(self, current_day):
         self.logic = CombatLogic(datetime.today().strftime('%y-%m'))
         self.data_set = {}
         self.model = []
-        self.open_data = args
+        self.open_data = current_day
 
     @property
     def total_results_for_chosen_month(self):
-        data_set = CombatLogic(self.open_data[0]).search_by_date
+        data_set = CombatLogic(self.open_data).search_by_date
 
-        data_1 = {68: 0,
+        data_1 = {
+                  41: 0,
+                  44: 0,
+                  53: 0,
+                  58: 0,
+                  68: 0,
                   60: 0,
                   63: 0,
                   66: 0,
                   67: 0,
                   69: 0,
-                  70: 0
+                  70: 0,
+                  73: 0,
+                  77: 0,
+                  86: 0,
                   }
 
         for el in data_set:
@@ -753,13 +767,20 @@ class BuildStatistics:
         data = {'total_value': len(data_set),
                 'dirty_total_value': len(
                     SecondOrdersModel.objects.filter(dt__icontains=self.open_data[0])),
-                'mavic3': data_1[68],
+                'mavic_2': data_1[41],
+                'M_200_v2': data_1[44],
+                'Mavic_Mini': data_1[53],
+                'Mavic_Air_2': data_1[58],
+                'mavic_3': data_1[68],
                 'M300RTK': data_1[60],
                 'mini_2': data_1[63],
                 'air_2s': data_1[66],
                 'm30': data_1[67],
                 'mavic2Enterprise': data_1[69],
                 'mini_se': data_1[70],
+                'mini_3_Pro': data_1[73],
+                'Mavic_3T_3E': data_1[77],
+                'Mavic_3_Classic': data_1[86],
                 }
         return data
 

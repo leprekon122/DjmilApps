@@ -28,11 +28,20 @@
                  >
                 <p class="text-light">Знайдено дронів за місяць: {{total_value}}</p>
                 <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}}</p>
+                {% if mavic_2 != 0 %}
+                <p class="text-light">mavic_2: {{mavic_2}}</p>
+                {%endif%}
+                {% if M_200_v2 != 0 %}
+                <p class="text-light">M_200_v2: {{M_200_v2}}</p>
+                {%endif%}
+                {% if Mavic_Mini != 0 %}
+                <p class="text-light">Mavic_Mini: {{Mavic_Mini}}</p>
+                {%endif%}
+                {% if Mavic_Air_2 != 0 %}
+                <p class="text-light">Mavic_Air_2: {{Mavic_Air_2}}</p>
+                {%endif%}
                 {% if M300RTK != 0 %}
                 <p class="text-light">M 300 RTK: {{M300RTK}}</p>
-                {%endif%}
-                {%if mavic3 != 0%}
-                <p class="text-light">mavic 3: {{mavic3}}</p>
                 {%endif%}
                 {%if mini_2 != 0%}
                 <p class="text-light">mini_2: {{mini_2}}</p>
@@ -48,6 +57,18 @@
                 {%endif%}
                 {%if mini_se != 0 %}
                 <p class="text-light">mini_se: {{mini_se}}</p>
+                {%endif%}
+                {%if mavic3 != 0%}
+                <p class="text-light">mavic 3: {{mavic3}}</p>
+                {%endif%}
+                {% if mini_3_Pro != 0 %}
+                <p class="text-light">mini_3_Pro: {{mini_3_Pro}}</p>
+                {%endif%}
+                {% if Mavic_3T_3E != 0 %}
+                <p class="text-light">Mavic_3T_3E: {{Mavic_3T_3E}}</p>
+                {%endif%}
+                {% if Mavic_3_Classic != 0 %}
+                <p class="text-light">Mavic_3_Classic: {{Mavic_3_Classic}}</p>
                 {%endif%}
             </div>
         </div>

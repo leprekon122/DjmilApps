@@ -11,15 +11,19 @@ class SecondOrdersModel(models.Model):
     altitude = models.IntegerField(blank=True, null=True)
     phone_app_latitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
     phone_app_longitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
+    phone_app_x = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
+    phone_app_y = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
     home_latitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
     home_longitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
+    home_x = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
+    home_y = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
     dt = models.DateTimeField()
     frame_id = models.IntegerField(blank=True, null=True)
     status = models.CharField(max_length=60, null=True, blank=True)
 
     def __str__(self):
         return f"{self.serial_no} {self.product_type}, {self.longitude} {self.latitude} {self.height}" \
-               f"{self.altitude} {self.phone_app_longitude} {self.phone_app_latitude} {self.home_latitude}" \
+               f"{self.altitude} {self.phone_app_longitude} {self.phone_app_latitude} {self.home_latitude} {self.home_x} {self.home_y}" \
                f"{self.home_longitude} {self.dt} {self.frame_id} {self.status}"
 
     class Meta:
@@ -40,9 +44,6 @@ class MainOrders(models.Model):
     class Meta:
         verbose_name = 'MainOrders'
         verbose_name_plural = 'MainOrders'
-
-
-
 
 
 class StatisticDataSet(models.Model):

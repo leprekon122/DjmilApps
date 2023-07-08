@@ -84,7 +84,13 @@
             <tbody>
             <tr class="main_row">
                 <td>{{el.serial_no}}</td>
-                {%if el.product_type == 58 %}
+                {%if el.product_type == 41%}
+                <td>mavic_2</td>
+                {%elif el.product_type == 44 %}
+                <td>M_200_v2</td>
+                {%elif el.product_type == 53 %}
+                <td>Mavic_Mini</td>
+                {%elif el.product_type == 58 %}
                 <td>Mavic Air 2</td>
                 {%elif el.product_type == 60 %}
                 <td>M300 RTK</td>
@@ -100,8 +106,12 @@
                 <td>mavic 2 Enterprise</td>
                 {%elif el.product_type == 70 %}
                 <td>mini se</td>
+                {%elif el.product_type == 73 %}
+                <td>mini_3_Pro</td>
                 {%elif el.product_type == 77 %}
-                <td>mavic 3</td>
+                <td>Mavic_3T_3E</td>
+                {%elif el.product_type == 77 %}
+                <td>Mavic_3_Classic</td>
                 {%endif%}
                 <td><span class="text-success">lon</span>: {{el.longitude}}
                     <br>

@@ -8,7 +8,7 @@
     <div style="width: 100%; height: 90vh; display: flex; justify-content: center; align-items: center">
         <h1 class="text-light">No data</h1>
     </div>
-    {%else%}
+    {%elif model|length > 1%}
     <div class="main_page">
         <form method="get" action="/combat_orders">
             <div class="top_rank">

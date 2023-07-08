@@ -37,7 +37,6 @@ class MainPage(APIView):
     @staticmethod
     def get(request):
         logic = BuildStatistics()
-        print(logic.top_rank)
         data = {'model': logic.top_rank,
                 'action': 0}
         return render(request, "main_djmil/main_page.html", data)
@@ -267,6 +266,10 @@ class CombatOrder(APIView):
         # filter by date
         if date_search:
             logic = CombatLogic(date_search, fake_drone, get_time)
+
+
+            print(CombatLogic([date_search[:7]][0]).search_by_date)
+
             data = {
                 'model': logic.search_by_date,
                 'action': 0
@@ -275,7 +278,7 @@ class CombatOrder(APIView):
 
         # filter by today checkbox
         if today:
-            logic = CombatLogic(date_search, fake_drone, get_time)
+            logic = CombatLogic(date_search)
 
             data = {
                 'model': logic.today_req[0],
