@@ -382,10 +382,11 @@ class CombatLogic:
         self.fake_drone = fake_drone
         self.get_time = get_time
 
-        if get_time is not None:
+        if self.get_time is not None:
             self.model_set = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.date_search} {self.get_time[:2]}").values().exclude(
-                serial_no=self.fake_drone).order_by('serial_no')
+                serial_no=self.fake_drone
+            ).order_by('serial_no')
         else:
             self.model_set = SecondOrdersModel.objects.filter(
                 dt__icontains=self.date_search).values().exclude(
@@ -399,6 +400,7 @@ class CombatLogic:
                 dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:3]}").values().exclude(
                 serial_no=self.fake_drone).order_by(
                 'serial_no')
+
         else:
             model_set = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{datetime.today().strftime('%y-%m-%d')}").values().exclude(
@@ -447,6 +449,7 @@ class CombatLogic:
 
                         model_data = {'serial_no': model_set[el]['serial_no'],
                                       'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'product_type': model_set[el]['product_type'],
                                       'quantity': quantity,
                                       'status': model_set[el]['status']
                                       }
@@ -502,27 +505,12 @@ class ChoseStatusCombat:
         self.status = status
 
     def change_status(self):
-        date_set = {
-            'January': '01',
-            'February': '02',
-            'March': '03',
-            'April': '04',
-            'May': '05',
-            'June': '06',
-            'July': '07',
-            'August': '08',
-            'September': '09',
-            'October': '10',
-            'November': '11',
-            'December': '12'
-        }
-
         year = self.status[4].split(',')[0]
         month = self.status[2].split(',')[0]
         day = self.status[3].split(',')[0]
         whom = self.status[1]
         SecondOrdersModel.objects.filter(serial_no=self.status[0],
-                                         dt__icontains=f"{year}-{date_set[f'{month}']}-{day}").update(
+                                         dt__icontains=f"{year}-{month}-{day}").update(
             status=whom)
 
 
@@ -566,6 +554,7 @@ class OpenDataCombatLogicClass:
 
             data = {
                 'model': model,
+                'product_type': model[0]['product_type'],
                 'model_detail': model_detail,
                 'action': 1,
 
@@ -742,21 +731,21 @@ class BuildStatistics:
         data_set = CombatLogic(self.open_data).search_by_date
 
         data_1 = {
-                  41: 0,
-                  44: 0,
-                  53: 0,
-                  58: 0,
-                  68: 0,
-                  60: 0,
-                  63: 0,
-                  66: 0,
-                  67: 0,
-                  69: 0,
-                  70: 0,
-                  73: 0,
-                  77: 0,
-                  86: 0,
-                  }
+            41: 0,
+            44: 0,
+            53: 0,
+            58: 0,
+            60: 0,
+            63: 0,
+            66: 0,
+            67: 0,
+            68: 0,
+            69: 0,
+            70: 0,
+            73: 0,
+            77: 0,
+            86: 0,
+        }
 
         for el in data_set:
             if el['product_type'] in data_1.keys():
@@ -771,11 +760,11 @@ class BuildStatistics:
                 'M_200_v2': data_1[44],
                 'Mavic_Mini': data_1[53],
                 'Mavic_Air_2': data_1[58],
-                'mavic_3': data_1[68],
                 'M300RTK': data_1[60],
                 'mini_2': data_1[63],
                 'air_2s': data_1[66],
                 'm30': data_1[67],
+                'mavic_3': data_1[68],
                 'mavic2Enterprise': data_1[69],
                 'mini_se': data_1[70],
                 'mini_3_Pro': data_1[73],

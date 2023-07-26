@@ -95,6 +95,35 @@
                     {{el.serial_no}}
                 </button>
             </form>
+            {%if el.product_type == 41 %}
+            <p style="color:#fff">mavic_2</p>
+            {%elif el.product_type == 44 %}
+            <p style="color:#fff">M_200_v2</p>
+            {%elif el.product_type == 53 %}
+            <p style="color:#fff">Mavic_Mini</p>
+            {%elif el.product_type == 58 %}
+            <p style="color:#fff">Mavic_Air_2</p>
+            {%elif el.product_type == 60 %}
+            <p style="color:#fff">M300RTK</p>
+            {%elif el.product_type == 63 %}
+            <p style="color:#fff">mini_2</p>
+            {%elif el.product_type == 66 %}
+            <p style="color:#fff">air_2s</p>
+            {%elif el.product_type == 67 %}
+            <p style="color:#fff">m30</p>
+            {%elif el.product_type == 68 %}
+            <p style="color:#fff">mavic_3</p>
+            {%elif el.product_type == 69 %}
+            <p style="color:#fff">mavic2Enterprise</p>
+            {%elif el.product_type == 70 %}
+            <p style="color:#fff">mini_se</p>
+            {%elif el.product_type == 73 %}
+            <p style="color:#fff">mini_3_Pro</p>
+            {%elif el.product_type == 77 %}
+            <p style="color:#fff">Mavic_3T_3E</p>
+            {%elif el.product_type == 86 %}
+            <p style="color:#fff">Mavic_3_Classic</p>
+            {%endif%}
             {%if el.status == 'ally'%}
             <div class="combat_alert_data">
                 <span class="text-success">Дата виявлення:</span>
@@ -167,6 +196,35 @@
         <div class="alert alert-dark combat_dark"
              style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
             <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.serial_no}}</p>
+            {%if model.product_type == 41 %}
+            <p style="color:#fff">mavic_2</p>
+            {%elif model.product_type == 44 %}
+            <p style="color:#fff">M_200_v2</p>
+            {%elif model.product_type == 53 %}
+            <p style="color:#fff">Mavic_Mini</p>
+            {%elif model.product_type == 58 %}
+            <p style="color:#fff">Mavic_Air_2</p>
+            {%elif model.product_type == 60 %}
+            <p style="color:#fff">M300RTK</p>
+            {%elif model.product_type == 63 %}
+            <p style="color:#fff">mini_2</p>
+            {%elif model.product_type == 66 %}
+            <p style="color:#fff">air_2s</p>
+            {%elif model.product_type == 67 %}
+            <p style="color:#fff">m30</p>
+            {%elif model.product_type == 68 %}
+            <p style="color:#fff">mavic_3</p>
+            {%elif model.product_type == 69 %}
+            <p style="color:#fff">mavic2Enterprise</p>
+            {%elif model.product_type == 70 %}
+            <p style="color:#fff">mini_se</p>
+            {%elif model.product_type == 73 %}
+            <p style="color:#fff">mini_3_Pro</p>
+            {%elif model.product_type == 77 %}
+            <p style="color:#fff">Mavic_3T_3E</p>
+            {%elif model.product_type == 86 %}
+            <p style="color:#fff">Mavic_3_Classic</p>
+            {%endif%}
             <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.dt}}</p>
 
         </div>

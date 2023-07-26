@@ -266,7 +266,6 @@ class CombatOrder(APIView):
         # filter by date
         if date_search:
             logic = CombatLogic(date_search, fake_drone, get_time)
-
             data = {
                 'model': logic.search_by_date,
                 'action': 0
