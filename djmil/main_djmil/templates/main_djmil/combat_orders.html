@@ -195,39 +195,52 @@
 
         <div class="alert alert-dark combat_dark"
              style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
-            <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.serial_no}}</p>
-            {%if model.product_type == 41 %}
+            <p class="text-light"><span class="text-warning">серійний номер:</span> {{model.model.serial_no}}</p>
+            {%if model.model.product_type == 41 %}
             <p style="color:#fff">mavic_2</p>
-            {%elif model.product_type == 44 %}
+            {%elif model.model.product_type == 44 %}
             <p style="color:#fff">M_200_v2</p>
-            {%elif model.product_type == 53 %}
+            {%elif model.model.product_type == 53 %}
             <p style="color:#fff">Mavic_Mini</p>
-            {%elif model.product_type == 58 %}
+            {%elif model.model.product_type == 58 %}
             <p style="color:#fff">Mavic_Air_2</p>
-            {%elif model.product_type == 60 %}
+            {%elif model.model.product_type == 60 %}
             <p style="color:#fff">M300RTK</p>
-            {%elif model.product_type == 63 %}
+            {%elif model.model.product_type == 63 %}
             <p style="color:#fff">mini_2</p>
-            {%elif model.product_type == 66 %}
+            {%elif model.model.product_type == 66 %}
             <p style="color:#fff">air_2s</p>
-            {%elif model.product_type == 67 %}
+            {%elif model.model.product_type == 67 %}
             <p style="color:#fff">m30</p>
-            {%elif model.product_type == 68 %}
+            {%elif model.model.product_type == 68 %}
             <p style="color:#fff">mavic_3</p>
-            {%elif model.product_type == 69 %}
+            {%elif model.model.product_type == 69 %}
             <p style="color:#fff">mavic2Enterprise</p>
-            {%elif model.product_type == 70 %}
+            {%elif model.model.product_type == 70 %}
             <p style="color:#fff">mini_se</p>
-            {%elif model.product_type == 73 %}
+            {%elif model.model.product_type == 73 %}
             <p style="color:#fff">mini_3_Pro</p>
-            {%elif model.product_type == 77 %}
+            {%elif model.model.product_type == 77 %}
             <p style="color:#fff">Mavic_3T_3E</p>
-            {%elif model.product_type == 86 %}
+            {%elif model.model.product_type == 86 %}
             <p style="color:#fff">Mavic_3_Classic</p>
             {%endif%}
-            <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.dt}}</p>
-
+            <p class="text-light"><span class="text-warning">дата выявлення:</span> {{model.model.dt}}</p>
         </div>
+
+        <div class="weather_api" style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
+            <div class="weather_stat">
+                <p style="color: #fff">температура: {{weather.main.temp}}</p>
+                <p style="color: #fff">тиск: {{weather.main.pressure}} pA</p>
+                <p style="color: #fff">видимість: {{weather.visibility}} метрів</p>
+                <p style="color: #fff">вiтер: {{weather.wind.speed}} м/с, {{weather.wind.deg}} градусів </p>
+            </div>
+            <div class="weather_img">
+                <img src="http://openweathermap.org/img/w/{{weather.weather.0.icon}}.png" width="100px" height="100px">
+            </div>
+        </div>
+
+        <br>
 
         <div class="main_map">
             <div id="myMap" style="position:relative;width:1000px;height:400px;">
@@ -252,7 +265,7 @@
 
             </tr>
             </thead>
-            {%for el in model_detail%}
+            {%for el in model.model_detail%}
             <tbody>
             <tr class="main_row">
                 <td>

@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
@@ -8,7 +10,10 @@ from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLRe
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
-from django.db.models import F
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 '''class for offline sql requests '''
 
@@ -285,8 +290,17 @@ class CombatOrder(APIView):
 
         # personal  detail page
         if open_data:
+            api_url = f"https://api.openweathermap.org/data/2.5/weather?lat=48.973403&lon=38.142698&" \
+                      f"units=metric&appid={os.getenv('WEATHER_API_KEY')}"
+
+            req = requests.get(api_url)
+
             logic = OpenDataCombatLogicClass(open_data)
-            return render(request, 'main_djmil/combat_orders.html', logic.enter_to_detail_data)
+
+            data = {'model': logic.enter_to_detail_data,
+                    'weather': req.json(),
+                    }
+            return render(request, 'main_djmil/combat_orders.html', data)
 
         return render(request, 'main_djmil/combat_orders.html')
 

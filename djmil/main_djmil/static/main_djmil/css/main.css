@@ -236,6 +236,25 @@ body {background-color: black
 
 #filter {display: none}
 
+/* weather api settings */
+
+.weather_api {width: 30%;
+              display: flex;
+              flex-direction: row;
+              justify-content: space-around;
+              border: 2px solid #fff;
+              padding: 5px;
+                   }
+
+.weather_stat {font-size: 12px}
+
+.weather_img {display:flex;
+              justify-content: center;
+              align-items: center;
+              }
+
+/* ============ */
+
 @media screen and (max-width: 450px){
     .orders {display: flex;
              flex-direction: column;}
@@ -324,6 +343,26 @@ body {background-color: black
                   font-size: 10px
              }
 
-    .main_map {}
+
+    /* weather api settings */
+
+
+    .weather_api {width: 100%;
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: space-around;
+                  border: 2px solid #fff;
+                  padding: 5px;
+                       }
+
+    .weather_stat {font-size: 12px}
+
+    .weather_img {display:flex;
+                  justify-content: center;
+                  align-items: center;
+                  }
+
+    /* ============ */
+
 
 }

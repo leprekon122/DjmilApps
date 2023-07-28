@@ -19,6 +19,8 @@ function GetMap()
 
         var map = new Microsoft.Maps.Map(document.getElementById('myMap'));
 
+
+
         var bounds = Microsoft.Maps.LocationRect.fromLocations(new Microsoft.Maps.Location(48.97538, 38.138973), new Microsoft.Maps.Location(48.969433, 38.146511));
 
         var boundsBorder = new Microsoft.Maps.Polyline([
@@ -26,7 +28,10 @@ function GetMap()
             new Microsoft.Maps.Location(bounds.getNorthwest().latitude, bounds.getSoutheast().longitude),
             bounds.getSoutheast(),
             new Microsoft.Maps.Location(bounds.getSoutheast().latitude, bounds.getNorthwest().longitude),
-            bounds.getNorthwest()], { strokeColor: 'red', strokeThickness: 5 });
+            bounds.getNorthwest()], { strokeColor: 'yellow', strokeThickness: 5 });
+
+
+
 
         var locations = [
           { latitude: len_home_point, longitude: lon_home_point, title: 'Home point', text: 'H' },
@@ -38,7 +43,6 @@ function GetMap()
             center: new Microsoft.Maps.Location(len_home_point, lon_home_point),
             zoom: 18,
         });
-
 
 
 
