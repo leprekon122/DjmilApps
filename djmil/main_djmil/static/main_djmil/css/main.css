@@ -253,6 +253,48 @@ body {background-color: black
               align-items: center;
               }
 
+.main_recorder_form {
+                     width: 100%;
+                     display: flex;
+                     justify-content: center;
+                     align-items: center;
+                    }
+
+.recorder_form {
+                width: 50%;
+                padding: 3%;
+                border: 2px solid #fff;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+
+                }
+
+
+.date_recorder {display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                padding-top: 15px;
+                padding-bottom: 15px;
+                width: 100%;
+                border: .5 px solid grey;
+                }
+
+
+.date_recorder input {width: 30%;
+                      }
+
+
+
+
+
+.drone_id {display: flex;
+           flex-direction: row;
+           padding-bottom: 15px;
+          }
+
+
+
 /* ============ */
 
 @media screen and (max-width: 450px){

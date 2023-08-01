@@ -1,0 +1,121 @@
+{% extends 'main_djmil/layout.html' %}
+
+
+{% block title%}Flight recorder{% endblock %}
+
+{% block content %}
+<div class="container-fluid orders">
+    <div class="orders_search" id="orders_search">
+        <div class="alert alert-dark alert-search text-light"
+             style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
+
+            <div class="main_search_all">
+                <div class="hide" id="hide">
+                    <i class="fa-solid fa-arrow-up text-danger" onclick="hide_main_search()"></i>
+                </div>
+                <div class="show_btn" id="show">
+                    <i class="fa-solid fa-arrow-down" onclick="show_main_search()"></i>
+                </div>
+                <h5 class="title">Сортування</h5>
+                <div class="main_search" id="main_search">
+                    <form method="get">
+                        <input type="date" class="form-control" name="date_search">
+                        <br>
+                        <input class="form-control" type="time" name="time">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="fakefake" value="fakefake"
+                                   id="fakedrone">
+                            <label class="form-check-label" for="fakedrone">
+                                без fake drone
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="today" value="today"
+                                   id="flexCheckChecked_today">
+                            <label class="form-check-label" for="flexCheckChecked_today">
+                                за сьогодні
+                            </label>
+                        </div>
+                        <br>
+                        <button class="btn btn-warning search-btn text-light main_btn" type="submit">пошук</button>
+                    </form>
+                </div>
+            </div>
+            <br>
+            <div class="chose_orders">
+                <div class="dropdown">
+                    <button class="btn btn-warning dropdown-toggle text-light main_btn" type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        вибери звіт
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
+                        <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <div class="build_orders_all">
+                <div class="hide" id="hide_build_orders_all" onclick="show_and_hide()">
+                    <i class="fa-solid fa-arrow-up text-danger" onclick="hide_build_orders_all()"></i>
+                </div>
+                <div class="show_btn" id="show_build_orders_all">
+                    <i class="fa-solid fa-arrow-down" onclick="show_build_orders_all()"></i>
+                </div>
+                <h5 class="title">Побудувати звіт</h5>
+                <div class="build_orders" id="build_orders">
+                    <form method="get">
+                        Звіт з:
+                        <input type="date" class="form-control" name="start_cut">
+                        Звіт по:
+                        <input type="date" class="form-control" name="end_cup">
+                        <br>
+                        <button class="btn btn-warning text-light main_btn" type="submit" name="build_order"
+                                value="build_order">Збудувати
+                            звіт
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="main_recorder_form">
+            <div class="recorder_form">
+                <select class="form-control" name="drona_type">
+                    <option>Mavic 3</option>
+                    <option>Mavic 3E/3T</option>
+                    <option>Matrice 300</option>
+                    <option>Matrice 200</option>
+                    <option>Matrice 30</option>
+                    <option>Mavic Air 2s</option>
+                    <option>Mavic mini 3</option>
+                    <option>Fpv</option>
+                </select>
+                <div class="date_recorder">
+                    <input class="form-control" type="date" name="date_recorder">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="today_record"
+                               id="date_recorder">
+                        <label class="form-check-label text-light" for="date_recorder">
+                            за сьогодні
+                        </label>
+                    </div>
+                </div>
+                <div class="drone_id">
+                    <input class="form-control" type="text" placeholder="drone_id">
+                    <input class="form-control" type="text" placeholder="coord_x">
+                    <input class="form-control" type="text" placeholder="coord_y">
+                </div>
+                <button style="width:100%" class="btn btn-success" type="submit" name="add_record" value="add_record">
+                    додати
+                    запис
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

@@ -554,7 +554,7 @@ class OpenDataCombatLogicClass:
 
             data = {
                 'model': model,
-                'product_type': model[0]['product_type'],
+                'product_type': model['product_type'],
                 'model_detail': model_detail,
                 'action': 1,
 
@@ -803,82 +803,77 @@ class LogicAnalyze:
         self.date_2 = data_2
         self.data_set_1 = BuildStatistics(self.date_1[:7])
         self.data_set_2 = BuildStatistics(self.date_2[:7])
-        self.data = {}
+        # self.data = {}
+        self.data = {
+            'dirty_total_value': 0,
+            41: 0,
+            44: 0,
+            53: 0,
+            58: 0,
+            60: 0,
+            63: 0,
+            66: 0,
+            67: 0,
+            68: 0,
+            69: 0,
+            70: 0,
+            73: 0,
+            77: 0,
+            86: 0,
+        }
 
     @property
     def make_anylyze(self):
 
-        try:
-            total_value = (self.data_set_1.total_results_for_chosen_month['total_value'] /
-                           self.data_set_2.total_results_for_chosen_month['total_value']) * 100
-            self.data['total_value'] = f"{round(total_value, 2)} %"
-        except Exception:
-            self.data['total_value'] = 'none'
+        # if all([(self.data_set_1.total_results_for_chosen_month['total_value'] != 0),
+        #        (self.data_set_1.total_results_for_chosen_month['total_value'] != 0)]):
+        #    total_value = (self.data_set_1.total_results_for_chosen_month['total_value'] /
+        #                   self.data_set_2.total_results_for_chosen_month['total_value']) * 100
+        #    self.data['total_value'] = f"{round(total_value, 2)} %"
 
-        try:
-            dirty_total_value = (self.data_set_1.total_results_for_chosen_month['dirty_total_value'] /
-                                 self.data_set_2.total_results_for_chosen_month['dirty_total_value']) * 100
-            self.data['dirty_total_value'] = f"{round(dirty_total_value, 2)} %"
+        if all([(len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1)) != 0),
+                (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2)) != 0)]):
+            dirty_total_value = (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1)) /
+                                 (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1)))) * 100
+            self.data['dirty_total_value'] += round(dirty_total_value, 2)
 
-        except Exception:
-            self.data['dirty_total_value'] = 'none'
+        for el in self.data:
+            if el != 'dirty_total_value':
+                if all([(len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el)) != 0),
+                        (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2, product_type=el)) != 0)]):
+                    self.data[el] += ((len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el)) /
+                                      (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2,
+                                                                            product_type=el))))) * 100
 
-        try:
-            mavic3 = (self.data_set_1.total_results_for_chosen_month['mavic3'] /
-                      self.data_set_2.total_results_for_chosen_month['mavic3']) * 100
+                elif len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el)) == 0:
+                    self.data[el] += len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2, product_type=el))
 
-            self.data['mavic3'] = f"{round(mavic3, 2)} %"
-        except Exception:
-            self.data['mavic3'] = 'none'
+                elif len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2, product_type=el)) == 0:
+                    self.data[el] += len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el))
 
-        try:
-            M300RTK = (self.data_set_1.total_results_for_chosen_month['M300RTK'] /
-                       self.data_set_2.total_results_for_chosen_month['M300RTK']) * 100
+        final_data = {
+            'dirty_total_value': self.data['dirty_total_value'],
+            'mavic_2': round(self.data[41], 2),
+            'M_200_v2': round(self.data[44], 2),
+            'Mavic_Mini': round(self.data[53], 2),
+            'Mavic_Air_2': round(self.data[58], 2),
+            'M300RTK': round(self.data[60], 2),
+            'mini_2': round(self.data[63], 2),
+            'air_2s': round(self.data[66],2),
+            'm30': round(self.data[67], 2),
+            'mavic_3': round(self.data[68], 2),
+            'mavic2Enterprise': round(self.data[69], 2),
+            'mini_se': round(self.data[70], 2),
+            'mini_3_Pro': round(self.data[73], 2),
+            'Mavic_3T_3E': round(self.data[77], 2),
+            'Mavic_3_Classic': round(self.data[86], 2),
 
-            self.data['M300RTK'] = f"{round(M300RTK, 2)} %"
-        except Exception:
-            self.data['M300RTK'] = 'none'
-
-        try:
-            mini_2 = (self.data_set_1.total_results_for_chosen_month['mini_2'] /
-                      self.data_set_2.total_results_for_chosen_month['mini_2']) * 100
-
-            self.data['mini_2'] = f"{round(mini_2, 2)} %"
-        except Exception:
-            self.data['mini_2'] = 'none'
-
-        try:
-            air_2s = (self.data_set_1.total_results_for_chosen_month['air_2s'] /
-                      self.data_set_2.total_results_for_chosen_month['air_2s']) * 100
-
-            self.data['air_2s'] = f"{round(air_2s, 2)} %"
-
-        except Exception:
-            self.data['air_2s'] = 'none'
-
-        try:
-            m30 = (self.data_set_1.total_results_for_chosen_month['m30'] /
-                   self.data_set_2.total_results_for_chosen_month['m30']) * 100
-
-            self.data['m30'] = f"{round(m30, 2)} %"
-        except Exception:
-            self.data['m30'] = 'none'
-
-        try:
-            mavic2Enterprise = (self.data_set_1.total_results_for_chosen_month['mavic2Enterprise'] /
-                                self.data_set_2.total_results_for_chosen_month['mavic2Enterprise']) * 100
-
-            self.data['mavic2Enterprise'] = f"{round(mavic2Enterprise, 2)} %"
-
-        except Exception:
-            self.data['mavic2Enterprise'] = 'none'
-
-        try:
-            mini_se = (self.data_set_1.total_results_for_chosen_month['mini_se'] /
-                       self.data_set_2.total_results_for_chosen_month['mini_se']) * 100
-
-            self.data['mini_se'] = f"{round(mini_se, 2)} %"
-        except Exception:
-            self.data['mini_se'] = 'none'
+        }
 
         return self.data
+
+
+class AddFlightRecorderData():
+
+    def __init__(self):
+        pass

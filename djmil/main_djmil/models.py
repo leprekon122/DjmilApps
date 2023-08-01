@@ -58,3 +58,18 @@ class StatisticDataSet(models.Model):
     class Meta:
         verbose_name = 'StatisticDataSet'
         verbose_name_plural = 'StatisticDataSet'
+
+
+class FlightRecorderModel(models.Model):
+    drone_type = models.CharField(max_length=50)
+    record_data = models.DateTimeField()
+    drone_id = models.CharField(max_length=255, null=True, blank=True)
+    coord_x = models.CharField(max_length=100)
+    coord_y = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.drone_type} {self.record_data} {self.drone_id} {self.coord_x} {self.coord_y}"
+
+    class Meta:
+        verbose_name = 'FlightRecorderModel'
+        verbose_name_plural = 'FlightRecorderModel'

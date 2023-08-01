@@ -335,6 +335,7 @@ class StatisticsPage(APIView):
         if all([date_1, date_2]):
             logic = LogicAnalyze(date_1, date_2)
             data = logic.make_anylyze
+            print(data)
             return render(request, 'main_djmil/main_statistics.html', data)
 
         # chose total result for month
@@ -347,3 +348,25 @@ class StatisticsPage(APIView):
         # data = logic.total_results_for_month
 
         return render(request, 'main_djmil/main_statistics.html')
+
+
+class FlightRecorder(APIView):
+
+    @staticmethod
+    def get(request):
+
+        return render(request, 'main_djmil/flight_recorder.html')
+
+
+    @staticmethod
+    def post(request):
+        add_record = request.POST.get('add_record')
+        drona_type = request.POST.get('drona_type')
+        today_record = request.POST.get('today_record')
+        drone_id = request.POST.get('drone_id')
+        coord_x = request.POST.get('coord_x')
+        coord_y = request.POST.get('coord_x')
+
+        if add_record:
+            print(drona_type, today_record, drone_id, coord_x, coord_y)
+        return render(request, 'main_djmil/flight_recorder.html')

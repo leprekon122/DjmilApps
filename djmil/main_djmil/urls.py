@@ -14,6 +14,7 @@ urlpatterns = [
     path('online_second_orders/', views.OnlineSecondOrders.as_view(), name='online_second_orders'),
     path('combat_orders/', views.CombatOrder.as_view(), name="combat_orders"),
     path('statistics/', views.StatisticsPage.as_view(), name='statistics'),
+    path('flight_recorder/', views.FlightRecorder.as_view(), name='flight_recorder')
 
 ]
 if settings.DEBUG:
