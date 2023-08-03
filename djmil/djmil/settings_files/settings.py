@@ -16,7 +16,7 @@ SECRET_KEY = os.path.join('secret_key.py')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 # Application definition
 
@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'djmil.wsgi.application'
 #        'NAME': BASE_DIR / 'db.sqlite3',
 #    }
 # }
+
 
 DATABASES = {
     'default': {
