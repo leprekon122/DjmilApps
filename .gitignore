@@ -1,4 +1,6 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-/djmil/settings_files
+/djmil/djmil/settings_files
+/djmil/djmil/.env
+

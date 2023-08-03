@@ -6,7 +6,8 @@ from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
     DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
-    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, ChoseStatusCombat
+    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, ChoseStatusCombat, AddFlightRecorderData, \
+    FilterFlightRecordData
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
@@ -354,19 +355,32 @@ class FlightRecorder(APIView):
 
     @staticmethod
     def get(request):
+        date_search = request.GET.get('date_search')
+        find_time = request.GET.get('time')
+        today = request.GET.get('today')
 
-        return render(request, 'main_djmil/flight_recorder.html')
+        if today:
+            today_data = datetime.today().strftime('%y-%m-%d')
+            logic = FilterFlightRecordData(today_data, find_time, date_search)
+            model = logic.find_by_today_filter()
+            data = {'logic': model,
+                    'count': 1,
+                    }
+            return render(request, 'main_djmil/flight_recorder.html', data)
 
+        data = {'count': 0}
+
+        return render(request, 'main_djmil/flight_recorder.html',data)
 
     @staticmethod
     def post(request):
         add_record = request.POST.get('add_record')
         drona_type = request.POST.get('drona_type')
-        today_record = request.POST.get('today_record')
         drone_id = request.POST.get('drone_id')
         coord_x = request.POST.get('coord_x')
         coord_y = request.POST.get('coord_x')
 
         if add_record:
-            print(drona_type, today_record, drone_id, coord_x, coord_y)
+            logic = AddFlightRecorderData(drona_type, drone_id, coord_x, coord_y)
+            logic.add_data()
         return render(request, 'main_djmil/flight_recorder.html')

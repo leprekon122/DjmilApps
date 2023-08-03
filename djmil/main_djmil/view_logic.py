@@ -7,13 +7,13 @@ from docx import Document
 
 from django.db.models import Count
 
-from .models import SecondOrdersModel, MainOrders, StatisticDataSet
+from .models import SecondOrdersModel, MainOrders, FlightRecorderModel
 
 
 class SendSqlReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect(f"dbname= user= password=AxqwKNn4")
+        self.conn = psycopg2.connect(f"dbname= user= password=")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -52,7 +52,7 @@ class SendSqlReq:
 class SecondSQLReq:
 
     def __init__(self, *args):
-        self.conn = psycopg2.connect(f"dbname= user= password=AxqwKNn4")
+        self.conn = psycopg2.connect(f"dbname= user= password=")
         self.curs = self.conn.cursor()
         self.drone_id = args
 
@@ -841,9 +841,10 @@ class LogicAnalyze:
             if el != 'dirty_total_value':
                 if all([(len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el)) != 0),
                         (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2, product_type=el)) != 0)]):
-                    self.data[el] += ((len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el)) /
-                                      (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2,
-                                                                            product_type=el))))) * 100
+                    self.data[el] += ((
+                            len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el)) /
+                            (len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2,
+                                                                  product_type=el))))) * 100
 
                 elif len(SecondOrdersModel.objects.filter(dt__icontains=self.date_1, product_type=el)) == 0:
                     self.data[el] += len(SecondOrdersModel.objects.filter(dt__icontains=self.date_2, product_type=el))
@@ -859,7 +860,7 @@ class LogicAnalyze:
             'Mavic_Air_2': round(self.data[58], 2),
             'M300RTK': round(self.data[60], 2),
             'mini_2': round(self.data[63], 2),
-            'air_2s': round(self.data[66],2),
+            'air_2s': round(self.data[66], 2),
             'm30': round(self.data[67], 2),
             'mavic_3': round(self.data[68], 2),
             'mavic2Enterprise': round(self.data[69], 2),
@@ -873,7 +874,26 @@ class LogicAnalyze:
         return self.data
 
 
-class AddFlightRecorderData():
+class AddFlightRecorderData:
 
-    def __init__(self):
-        pass
+    def __init__(self, drone_type, drone_id, coord_x, coord_y):
+        self.drona_type = drone_type
+        self.drone_id = drone_id
+        self.coord_x = coord_x
+        self.coord_y = coord_y
+
+    def add_data(self):
+        FlightRecorderModel.objects.create(drone_type=self.drona_type, drone_id=self.drone_id, coord_x=self.coord_x,
+                                           coord_y=self.coord_y)
+
+
+class FilterFlightRecordData:
+
+    def __init__(self, date_search=None, find_time=None, today=None):
+        self.date_search = date_search
+        self.find_time = find_time
+        self.today = today
+
+    def find_by_today_filter(self):
+        data = FlightRecorderModel.objects.filter(record_data__icontains=self.today)
+        return data

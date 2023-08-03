@@ -23,13 +23,6 @@
                         <br>
                         <input class="form-control" type="time" name="time">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fakefake" value="fakefake"
-                                   id="fakedrone">
-                            <label class="form-check-label" for="fakedrone">
-                                без fake drone
-                            </label>
-                        </div>
-                        <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="today" value="today"
                                    id="flexCheckChecked_today">
                             <label class="form-check-label" for="flexCheckChecked_today">
@@ -56,32 +49,13 @@
                 </div>
 
             </div>
-            <br>
-            <div class="build_orders_all">
-                <div class="hide" id="hide_build_orders_all" onclick="show_and_hide()">
-                    <i class="fa-solid fa-arrow-up text-danger" onclick="hide_build_orders_all()"></i>
-                </div>
-                <div class="show_btn" id="show_build_orders_all">
-                    <i class="fa-solid fa-arrow-down" onclick="show_build_orders_all()"></i>
-                </div>
-                <h5 class="title">Побудувати звіт</h5>
-                <div class="build_orders" id="build_orders">
-                    <form method="get">
-                        Звіт з:
-                        <input type="date" class="form-control" name="start_cut">
-                        Звіт по:
-                        <input type="date" class="form-control" name="end_cup">
-                        <br>
-                        <button class="btn btn-warning text-light main_btn" type="submit" name="build_order"
-                                value="build_order">Збудувати
-                            звіт
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
-        <div class="main_recorder_form">
+
+    {%if count == 0%}
+    <div class="main_recorder_form">
+        <form method="post">
+            {% csrf_token %}
             <div class="recorder_form">
                 <select class="form-control" name="drona_type">
                     <option>Mavic 3</option>
@@ -93,28 +67,48 @@
                     <option>Mavic mini 3</option>
                     <option>Fpv</option>
                 </select>
-                <div class="date_recorder">
-                    <input class="form-control" type="date" name="date_recorder">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="today_record"
-                               id="date_recorder">
-                        <label class="form-check-label text-light" for="date_recorder">
-                            за сьогодні
-                        </label>
-                    </div>
-                </div>
+
                 <div class="drone_id">
-                    <input class="form-control" type="text" placeholder="drone_id">
-                    <input class="form-control" type="text" placeholder="coord_x">
-                    <input class="form-control" type="text" placeholder="coord_y">
+                    <input class="form-control" type="text" placeholder="drone_id" name="drone_id">
+                    <input class="form-control" type="text" placeholder="coord_x" name="coord_x">
+                    <input class="form-control" type="text" placeholder="coord_y" name="coord_y">
                 </div>
                 <button style="width:100%" class="btn btn-success" type="submit" name="add_record" value="add_record">
                     додати
                     запис
                 </button>
             </div>
+        </form>
+    </div>
+
+    {% elif count == 1%}
+    <div class="combat_data">
+        {%for el in logic%}
+        <div class="alert alert-warning combat_alert"
+             style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
+            <form method="get">
+                <button class="btn btn-warning main_btn text-light" type="submit" name="open_data"
+                        value="{{el.serial_no}} {{el.dt}}">
+                    {{el.drone_id}}
+                </button>
+            </form>
+
+            <p class="text-light">{{el.drone_type}}</p>
+
+            <div class="combat_alert_data">
+                <span class="text-light">Кількість польтів за дату:</span>
+                <p class="text-light"></p>
+            </div>
+            <div class="combat_alert_data">
+                <span class="text-light">Дата виявлення:</span>
+                <p class="text-light">{{el.record_data}}</p>
+            </div>
+
         </div>
-    </form>
+        {% endfor %}
+    </div>
+    {%endif%}
+
 
 </div>
 

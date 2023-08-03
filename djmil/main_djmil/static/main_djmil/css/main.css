@@ -291,6 +291,7 @@ body {background-color: black
 .drone_id {display: flex;
            flex-direction: row;
            padding-bottom: 15px;
+           padding-top: 15 px;
           }
 
 

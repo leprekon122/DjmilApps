@@ -62,7 +62,7 @@ class StatisticDataSet(models.Model):
 
 class FlightRecorderModel(models.Model):
     drone_type = models.CharField(max_length=50)
-    record_data = models.DateTimeField()
+    record_data = models.DateTimeField(auto_now=True)
     drone_id = models.CharField(max_length=255, null=True, blank=True)
     coord_x = models.CharField(max_length=100)
     coord_y = models.CharField(max_length=100)
