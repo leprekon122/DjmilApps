@@ -17,8 +17,37 @@ function GetMap()
 
         var loc_set = []
 
-        var map = new Microsoft.Maps.Map(document.getElementById('myMap'));
 
+        var count = 0
+        var dist_set = []
+        var map = new Microsoft.Maps.Map(document.getElementById('myMap', {}));
+
+
+        //Microsoft.Maps.Events.addHandler(map, 'click', function (e) { set_latitudes_and_longitude(e); })
+        Microsoft.Maps.Events.addHandler(map, 'click', function (e) {
+        var point = new Microsoft.Maps.Point(e.getX(), e.getY());
+        var location = e.target.tryPixelToLocation(point);
+
+        var latitude = location.latitude;
+        var longitude = location.longitude;
+        console.log(latitude, longitude)
+
+        document.getElementById('lat_data').value = latitude
+        document.getElementById('lon_data').value = longitude
+
+
+
+        // Calculate the distance between the two locations using the SpatialMath module
+
+
+
+        })
+
+        Microsoft.Maps.loadModule('Microsoft.Maps.DrawingTools', function () {
+        var tools = new Microsoft.Maps.DrawingTools(map);
+        tools.showDrawingManager(function (manager) {
+         });
+            });
 
 
         var bounds = Microsoft.Maps.LocationRect.fromLocations(new Microsoft.Maps.Location(48.97538, 38.138973), new Microsoft.Maps.Location(48.969433, 38.146511));
@@ -32,9 +61,8 @@ function GetMap()
 
 
 
-
         var locations = [
-          { latitude: len_home_point, longitude: lon_home_point, title: 'Home point', text: 'H' },
+          { latitude: len_home_point, longitude: lon_home_point, title: 'Home point', text: 'H'},
           { latitude: len_rc, longitude: lon_rc, title: 'RC', text: 'H' },
         ];
 
@@ -63,23 +91,33 @@ function GetMap()
         });
 
     }
-        //var center = map.getCenter();
-
-        //Create custom Pushpin
-        /*var pin = new Microsoft.Maps.Pushpin(center,{
-            title: 'home point',
-            text: 'H',
-
-
-        }); */
-
-        //Add the pushpin to the map
-        //map.entities.push(pin);
 
 
 
+var btn = 0
+var data_cor = []
+
+function set_latitudes_and_longitude(map)
+    {
+        btn += 1
+        var coord_1 = null
+        var coord_2 = null
+        var coord_3 = null
+        var coord_4 = null
 
 
+        if (btn % 2 == 1){
+           coord_1 = (map.location.latitude);
+           coord_2 = (map.location.longitude);
+           data_cor += [coord_1, coord_2]
 
+           //location_1 = new Microsoft.Maps.Location(coord_1, coord_2);
+        } else if(btn % 2 == 0) {
+            coord_3 = (map.location.latitude)
+            coord_4 = (map.location.longitude)
+
+        }
+
+    }
 
 

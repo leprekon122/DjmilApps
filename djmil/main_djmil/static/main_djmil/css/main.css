@@ -294,7 +294,15 @@ body {background-color: black
            padding-top: 15 px;
           }
 
+/* data under map */
 
+.data_from_map {display: flex;
+                flex-direction: row;
+                width: 100%;
+                justify-content: space-between
+                }
+.latitude {width: 45%;}
+.longitude {width: 45%;}
 
 /* ============ */
 

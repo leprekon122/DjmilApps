@@ -60,6 +60,21 @@ class StatisticDataSet(models.Model):
         verbose_name_plural = 'StatisticDataSet'
 
 
+class DataForCombatLogic(models.Model):
+    serial_no = models.CharField(max_length=100)
+    dt = models.DateTimeField()
+    product_type = models.CharField(max_length=25)
+    quantity = models.IntegerField()
+    status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.serial_no} {self.dt} {self.product_type} {self.quantity} {self.status}"
+
+    class Meta:
+        verbose_name = 'DataForCombatLogic'
+        verbose_name_plural = 'DataForCombatLogic'
+
+
 class FlightRecorderModel(models.Model):
     drone_type = models.CharField(max_length=50)
     record_data = models.DateTimeField(auto_now=True)

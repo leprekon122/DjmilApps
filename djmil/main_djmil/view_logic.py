@@ -7,7 +7,7 @@ from docx import Document
 
 from django.db.models import Count
 
-from .models import SecondOrdersModel, MainOrders, FlightRecorderModel
+from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, DataForCombatLogic
 
 
 class SendSqlReq:
@@ -897,3 +897,13 @@ class FilterFlightRecordData:
     def find_by_today_filter(self):
         data = FlightRecorderModel.objects.filter(record_data__icontains=self.today)
         return data
+
+
+
+
+
+
+
+
+
+
