@@ -1,6 +1,7 @@
 import asyncio
 from djmil.celery import app
-from .SkySafeApi import make_api_call
+from .SkySafeApi import  make_api_call
+from .models import SkySafeData
 
 @app.task
 def start_task():
@@ -8,3 +9,6 @@ def start_task():
     task = loop.create_task(make_api_call())
     loop.run_until_complete(task)
     loop.run_forever()
+
+
+

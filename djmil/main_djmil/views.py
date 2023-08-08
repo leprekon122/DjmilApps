@@ -14,6 +14,8 @@ from datetime import datetime
 import requests
 from dotenv import load_dotenv
 from .tasks import start_task
+from celery.result import AsyncResult
+
 
 load_dotenv()
 
@@ -46,9 +48,6 @@ class MainPage(APIView):
         start = request.GET.get('start')
         if start:
             start_task.apply_async()
-
-
-
         logic = BuildStatistics(datetime.today().strftime('%y-%m-d')[:7])
         data = {'model': logic.top_rank,
                 'action': 0}
@@ -377,7 +376,7 @@ class FlightRecorder(APIView):
 
         data = {'count': 0}
 
-        return render(request, 'main_djmil/flight_recorder.html',data)
+        return render(request, 'main_djmil/flight_recorder.html', data)
 
     @staticmethod
     def post(request):
@@ -391,3 +390,6 @@ class FlightRecorder(APIView):
             logic = AddFlightRecorderData(drona_type, drone_id, coord_x, coord_y)
             logic.add_data()
         return render(request, 'main_djmil/flight_recorder.html')
+
+
+

@@ -14,12 +14,10 @@ urlpatterns = [
     path('online_second_orders/', views.OnlineSecondOrders.as_view(), name='online_second_orders'),
     path('combat_orders/', views.CombatOrder.as_view(), name="combat_orders"),
     path('statistics/', views.StatisticsPage.as_view(), name='statistics'),
-    path('flight_recorder/', views.FlightRecorder.as_view(), name='flight_recorder')
+    path('flight_recorder/', views.FlightRecorder.as_view(), name='flight_recorder'),
 
 ]
 if settings.DEBUG:
-    #urlpatterns += [static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-    #                ]
     urlpatterns += [
         re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
         re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT})

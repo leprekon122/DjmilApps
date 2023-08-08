@@ -112,5 +112,5 @@ class SkySafeData(models.Model):
                f"{self.tgt_position} {self.tgt_alt_msl} {self.tgt_alt_hae} {self.tgt_alt_prs}"
 
     class Meta:
-        verbose_name = 'FlightRecorderModel'
-        verbose_name_plural = 'FlightRecorderModel'
+        verbose_name = 'SkySafeData'
+        verbose_name_plural = 'SkySafeData'
