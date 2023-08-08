@@ -88,3 +88,29 @@ class FlightRecorderModel(models.Model):
     class Meta:
         verbose_name = 'FlightRecorderModel'
         verbose_name_plural = 'FlightRecorderModel'
+
+
+class SkySafeData(models.Model):
+    sensor_id = models.CharField(max_length=255, null=True, blank=True)
+    station_id = models.CharField(max_length=255, null=True, blank=True)
+    persistent_id = models.CharField(max_length=255, null=True, blank=True)
+    tgt_model = models.CharField(max_length=255, null=True, blank=True)
+    rc_id = models.CharField(max_length=255, null=True, blank=True)
+    dl_freq = models.CharField(max_length=255, null=True, blank=True)
+    dl_rssi = models.CharField(max_length=255, null=True, blank=True)
+    ul_rssi = models.CharField(max_length=255, null=True, blank=True)
+    home_position = models.CharField(max_length=255, null=True, blank=True)
+    app_position = models.CharField(max_length=255, null=True, blank=True)
+    tgt_position = models.CharField(max_length=255, null=True, blank=True)
+    tgt_alt_msl = models.CharField(max_length=255, null=True, blank=True)
+    tgt_alt_hae = models.CharField(max_length=255, null=True, blank=True)
+    tgt_alt_prs = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.sensor_id} {self.station_id} {self.persistent_id} {self.tgt_model} {self.rc_id}" \
+               f"{self.dl_freq} {self.dl_rssi} {self.ul_rssi} {self.home_position} {self.app_position}" \
+               f"{self.tgt_position} {self.tgt_alt_msl} {self.tgt_alt_hae} {self.tgt_alt_prs}"
+
+    class Meta:
+        verbose_name = 'FlightRecorderModel'
+        verbose_name_plural = 'FlightRecorderModel'

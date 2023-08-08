@@ -13,6 +13,7 @@ from rest_framework import permissions
 from datetime import datetime
 import requests
 from dotenv import load_dotenv
+from .tasks import start_task
 
 load_dotenv()
 
@@ -42,6 +43,12 @@ class MainPage(APIView):
 
     @staticmethod
     def get(request):
+        start = request.GET.get('start')
+        if start:
+            start_task.apply_async()
+
+
+
         logic = BuildStatistics(datetime.today().strftime('%y-%m-d')[:7])
         data = {'model': logic.top_rank,
                 'action': 0}
