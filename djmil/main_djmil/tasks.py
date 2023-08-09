@@ -1,7 +1,7 @@
 import asyncio
 from djmil.celery import app
 from .SkySafeApi import  make_api_call
-from .models import SkySafeData
+
 
 @app.task
 def start_task():

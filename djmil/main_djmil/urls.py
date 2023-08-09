@@ -8,8 +8,6 @@ from . import views
 urlpatterns = [
     path('', views.login_page, name='login'),
     path("main_page", views.MainPage.as_view(), name="main_page"),
-    path("orders/", views.Orders.as_view(), name="orders"),
-    path('second_orders/', views.SecondOrder.as_view(), name='second_order'),
     path('online_orders/', views.OnlineOrders.as_view(), name='online_orders'),
     path('online_second_orders/', views.OnlineSecondOrders.as_view(), name='online_second_orders'),
     path('combat_orders/', views.CombatOrder.as_view(), name="combat_orders"),

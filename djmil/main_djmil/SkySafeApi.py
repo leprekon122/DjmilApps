@@ -1,10 +1,9 @@
 import asyncio
 import os
-import psycopg2
 import websockets
 import json
 from .models import SkySafeData
-from asgiref.sync import sync_to_async
+
 
 
 async def make_api_call():

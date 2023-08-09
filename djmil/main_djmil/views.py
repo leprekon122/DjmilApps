@@ -4,8 +4,8 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
 from .models import MainOrders, SecondOrdersModel
-from .view_logic import CombatLogic, SecondSQLReq, SendSqlReq, SecondOnlineSQLReq, OnlineSQLReq, DownloadOrders, \
-    DownloadSecondOrders, DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
+from .view_logic import CombatLogic,  SecondOnlineSQLReq, OnlineSQLReq, \
+    DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
     BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, ChoseStatusCombat, AddFlightRecorderData, \
     FilterFlightRecordData
 from rest_framework.views import APIView
@@ -14,7 +14,7 @@ from datetime import datetime
 import requests
 from dotenv import load_dotenv
 from .tasks import start_task
-from celery.result import AsyncResult
+
 
 
 load_dotenv()
@@ -53,75 +53,6 @@ class MainPage(APIView):
                 'action': 0}
         return render(request, "main_djmil/main_page.html", data)
 
-
-class Orders(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    @staticmethod
-    def get(request):
-        req = SendSqlReq()
-
-        data = {'res': req.standart_req
-                }
-        new = request.GET.get('new')
-        old = request.GET.get('old')
-        search_by_drone_id = request.GET.get('drone_id')
-        download = request.GET.get('download')
-        if new:
-            data = {'res': req.newest_req}
-        elif old:
-            data = {'res': req.oldest_req}
-        elif search_by_drone_id:
-            req = SendSqlReq(search_by_drone_id)
-            data = {'res': req.search_drone_id}
-        elif download:
-            options = request.GET.get('options')
-            if options == 'without':
-                download = DownloadOrders()
-                return download.download_order
-            elif options == 'newest':
-                download = DownloadOrders()
-                return download.download_newest_order
-            elif options == 'oldest':
-                download = DownloadOrders()
-                return download.download_oldest_order
-
-        return render(request, "main_djmil/orders.html", data)
-
-
-class SecondOrder(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    @staticmethod
-    def get(request):
-        req = SecondSQLReq()
-        data = {'res': req.make_sql}
-
-        new = request.GET.get('new')
-        old = request.GET.get('old')
-        drone_id = request.GET.get('drone_id')
-        download = request.GET.get('download')
-
-        if new:
-            data = {'res': req.newest_req}
-        elif old:
-            data = {'res': req.oldest_req}
-        elif drone_id:
-            req = SecondSQLReq(drone_id)
-            data = {'res': req.search_by_drone_id}
-        elif download:
-            options = request.GET.get('options')
-
-            if options == 'without':
-                download = DownloadSecondOrders
-                return download.download_order
-            elif options == 'newest':
-                return download.download_newest_order
-            elif options == 'oldest':
-                download = DownloadOrders()
-                return download.download_oldest_order
-
-        return render(request, 'main_djmil/second_order.html', data)
 
 
 class OnlineOrders(APIView):
