@@ -5,10 +5,9 @@ import json
 from .models import SkySafeData
 
 
-
 async def make_api_call():
-    async with websockets.connect(f"{os.getenv('SkySafeUrl')}", extra_headers={
-        "Authorization": f"bearer {os.getenv('SkySafeApiKey')}"}) as wb:
+    async with websockets.connect(f"{os.getenv('SkySafeUrl')}",
+                                  extra_headers={"Authorization": f"bearer {os.getenv('SkySafeApiKey')}"}) as wb:
         while True:
             res = json.loads(await wb.recv())
 

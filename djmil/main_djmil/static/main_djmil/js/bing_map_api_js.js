@@ -1,4 +1,10 @@
-
+count = 0
+data_1 = null
+data_2 = null
+data_3 = null
+data_4 = null
+test = null
+test2 = null
 function GetMap()
     {
 
@@ -17,9 +23,6 @@ function GetMap()
 
         var loc_set = []
 
-
-        var count = 0
-        var dist_set = []
         var map = new Microsoft.Maps.Map(document.getElementById('myMap', {}));
 
 
@@ -30,8 +33,20 @@ function GetMap()
 
         var latitude = location.latitude;
         var longitude = location.longitude;
-        console.log(latitude, longitude)
+        count += 1
+        if (count % 2 == 1){
 
+            lat1 = location.latitude;
+            lon1 = location.longitude;
+
+
+        } else if (count % 2 == 0){
+            lat2 = location.latitude;
+            lon2 = location.longitude;
+
+            calculateDistance(lat1, lon1, lat2, lon2)
+
+            }
         document.getElementById('lat_data').value = latitude
         document.getElementById('lon_data').value = longitude
 
@@ -94,30 +109,25 @@ function GetMap()
 
 
 
-var btn = 0
-var data_cor = []
 
-function set_latitudes_and_longitude(map)
-    {
-        btn += 1
-        var coord_1 = null
-        var coord_2 = null
-        var coord_3 = null
-        var coord_4 = null
+function calculateDistance() {
+  const earthRadius = 6371; // Radius of the Earth in kilometers
 
+  const degToRad = (degrees) => {
+    return degrees * (Math.PI / 180);
+  };
 
-        if (btn % 2 == 1){
-           coord_1 = (map.location.latitude);
-           coord_2 = (map.location.longitude);
-           data_cor += [coord_1, coord_2]
+  const dLat = degToRad(lat2 - lat1);
+  const dLon = degToRad(lon2 - lon1);
 
-           //location_1 = new Microsoft.Maps.Location(coord_1, coord_2);
-        } else if(btn % 2 == 0) {
-            coord_3 = (map.location.latitude)
-            coord_4 = (map.location.longitude)
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        }
+  const distance = earthRadius * c; // Distance in kilometers
+  document.getElementById('distance').value = distance.toFixed(2) + ' ' + 'km'
 
-    }
+}
 
 

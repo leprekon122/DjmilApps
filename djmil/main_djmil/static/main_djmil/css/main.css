@@ -416,4 +416,17 @@ body {background-color: black
     /* ============ */
 
 
+    /* data under map */
+
+    .data_from_map {display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    justify-content: space-between
+                    }
+    .latitude {width: 100%;}
+    .longitude {width: 100%;}
+    .distance {width: 100%;}
+
+/* ============ */
+
 }
