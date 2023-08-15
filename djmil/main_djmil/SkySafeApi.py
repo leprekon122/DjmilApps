@@ -3,6 +3,7 @@ import os
 import websockets
 import json
 from .models import SkySafeData
+from datetime import datetime
 
 
 async def make_api_call():
@@ -24,7 +25,7 @@ async def make_api_call():
                                                   tgt_position=res['msg']['tgt_position'],
                                                   tgt_alt_msl=res['msg']['tgt_alt_msl'],
                                                   tgt_alt_hae=res['msg']['tgt_alt_hae'],
-                                                  tgt_alt_prs=res['msg']['tgt_alt_prs']
-
+                                                  tgt_alt_prs=res['msg']['tgt_alt_prs'],
+                                                  write_time=datetime.today()
                                                   )
             await asyncio.sleep(2)

@@ -105,11 +105,12 @@ class SkySafeData(models.Model):
     tgt_alt_msl = models.CharField(max_length=255, null=True, blank=True)
     tgt_alt_hae = models.CharField(max_length=255, null=True, blank=True)
     tgt_alt_prs = models.CharField(max_length=255, null=True, blank=True)
+    write_time = models.DateTimeField()
 
     def __str__(self):
         return f"{self.sensor_id} {self.station_id} {self.persistent_id} {self.tgt_model} {self.rc_id}" \
                f"{self.dl_freq} {self.dl_rssi} {self.ul_rssi} {self.home_position} {self.app_position}" \
-               f"{self.tgt_position} {self.tgt_alt_msl} {self.tgt_alt_hae} {self.tgt_alt_prs}"
+               f"{self.tgt_position} {self.tgt_alt_msl} {self.tgt_alt_hae} {self.tgt_alt_prs} {self.write_time}"
 
     class Meta:
         verbose_name = 'SkySafeData'

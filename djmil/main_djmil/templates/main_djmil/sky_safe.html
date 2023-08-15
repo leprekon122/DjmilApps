@@ -1,0 +1,70 @@
+{%extends 'main_djmil/layout.html'%}
+
+{%block title%}Second order{%endblock%}
+
+{%block content%}
+<div class="container-fluid orders">
+    <div class="orders_search" id="orders_search">
+        {%load static%}
+        <div class="alert alert-dark alert-search text-light"
+             style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
+            <div class="download_orders">
+                <h5 class="title">Завантаження</h5>
+                <form method="get">
+                    <select name="options" class="form-control" aria-label="Default select example">
+                        <option selected>типи звітів для завантаження</option>
+                        <option value="today_orders">Сортування за сьогодні</option>
+                        <option value="newest">Сортування за новими</option>
+                        <option value="oldest">Сортування за старими</option>
+                        <option value="without">без сортування</option>
+                    </select>
+                    <br>
+                    <button class="btn btn-warning main_btn text-light" name="download" value="download">download
+                    </button>
+                    <!--<button class="btn btn-dark" name="update_data" value="update_data" id="update_data">update_data</button>
+                   -->
+                </form>
+            </div>
+            <br>
+            <div class="main_search">
+                <h5 class="title">Сортування</h5>
+                <form method="get">
+                    <label for="drone_id">сортування за drone_id</label>
+                    <input class="form-control" placeholder="drone_id" name="drone_id" id="drone_id" type="text">
+                    <br>
+                    <label for="drone_id" for="date_search">сортування за датою</label>
+                    <input type="date" class="form-control" name="date_search" id="date_search">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="today" value="today"
+                               id="flexCheckChecked_today"
+                        >
+                        <label class="form-check-label" for="flexCheckChecked_today">
+                            за сьогодні
+                        </label>
+                    </div>
+                    <br>
+                    <button class="btn btn-warning search-btn main_btn text-light" type="submit" id="find_btn">пошук</button>
+                </form>
+            </div>
+            <br>
+
+            <div class="chose_orders">
+                <div class="dropdown">
+                    <button class="btn btn-warning dropdown-toggle main_btn text-light" type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        вибери звіт
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <!--<a class="dropdown-item" href="{% url 'online_orders' %}">Поверховий Звіт</a>-->
+                        <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
+                        <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
+                        <a class="dropdown-item" href="{% url 'sky_safe' %}">SkySafe звіт</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{%endblock%}

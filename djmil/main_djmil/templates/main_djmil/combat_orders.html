@@ -6,7 +6,7 @@
 
 {%block content%}
 <div class="container-fluid orders" xmlns="http://www.w3.org/1999/html">
-    <div class="container orders_search" id="orders_search">
+    <div class="orders_search" id="orders_search">
         <div class="alert alert-dark alert-search text-light"
              style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
 
@@ -53,6 +53,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="{% url 'online_second_orders' %}">Детальній Звіт</a>
                         <a class="dropdown-item" href="{% url 'combat_orders' %}">Бойоввий звіт</a>
+                        <a class="dropdown-item" href="{% url 'sky_safe' %}">SkySafe звіт</a>
                     </div>
                 </div>
 

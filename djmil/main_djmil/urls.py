@@ -13,6 +13,7 @@ urlpatterns = [
     path('combat_orders/', views.CombatOrder.as_view(), name="combat_orders"),
     path('statistics/', views.StatisticsPage.as_view(), name='statistics'),
     path('flight_recorder/', views.FlightRecorder.as_view(), name='flight_recorder'),
+    path('sky_safe/', views.SkySafeOrder.as_view(), name='sky_safe')
 
 ]
 if settings.DEBUG:

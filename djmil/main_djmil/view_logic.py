@@ -1,16 +1,12 @@
 import csv
 from datetime import datetime
 
-
 from django.http import HttpResponse
 from docx import Document
 
 from django.db.models import Count
 
 from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, DataForCombatLogic
-
-
-
 
 
 class SecondOnlineSQLReq:
@@ -49,8 +45,6 @@ class OnlineSQLReq:
     @property
     def search_drone_id(self):
         return MainOrders.objects.filter(serial_no=self.drone_id[0])
-
-
 
 
 class DownloadOnlineOrders:
@@ -682,13 +676,3 @@ class FilterFlightRecordData:
     def find_by_today_filter(self):
         data = FlightRecorderModel.objects.filter(record_data__icontains=self.today)
         return data
-
-
-
-
-
-
-
-
-
-

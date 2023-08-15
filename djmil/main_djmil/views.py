@@ -323,4 +323,11 @@ class FlightRecorder(APIView):
         return render(request, 'main_djmil/flight_recorder.html')
 
 
+class SkySafeOrder(APIView):
+
+    @staticmethod
+    def get(request):
+        return render(request, 'main_djmil/sky_safe.html')
+
+
 
