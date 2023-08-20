@@ -99,9 +99,12 @@ class SkySafeData(models.Model):
     dl_freq = models.CharField(max_length=255, null=True, blank=True)
     dl_rssi = models.CharField(max_length=255, null=True, blank=True)
     ul_rssi = models.CharField(max_length=255, null=True, blank=True)
-    home_position = models.CharField(max_length=255, null=True, blank=True)
-    app_position = models.CharField(max_length=255, null=True, blank=True)
-    tgt_position = models.CharField(max_length=255, null=True, blank=True)
+    home_position_lan = models.DecimalField(max_digits=45, decimal_places=20, null=True, blank=True)
+    home_position_lon = models.DecimalField(max_digits=45, decimal_places=20, null=True, blank=True)
+    app_position_lan = models.DecimalField(max_digits=45, decimal_places=20, null=True, blank=True)
+    app_position_lon = models.DecimalField(max_digits=45, decimal_places=20, null=True, blank=True)
+    tgt_position_lan = models.DecimalField(max_digits=45, decimal_places=20, null=True, blank=True)
+    tgt_position_lon = models.DecimalField(max_digits=45, decimal_places=20, null=True, blank=True)
     tgt_alt_msl = models.CharField(max_length=255, null=True, blank=True)
     tgt_alt_hae = models.CharField(max_length=255, null=True, blank=True)
     tgt_alt_prs = models.CharField(max_length=255, null=True, blank=True)
@@ -109,8 +112,10 @@ class SkySafeData(models.Model):
 
     def __str__(self):
         return f"{self.sensor_id} {self.station_id} {self.persistent_id} {self.tgt_model} {self.rc_id}" \
-               f"{self.dl_freq} {self.dl_rssi} {self.ul_rssi} {self.home_position} {self.app_position}" \
-               f"{self.tgt_position} {self.tgt_alt_msl} {self.tgt_alt_hae} {self.tgt_alt_prs} {self.write_time}"
+               f"{self.dl_freq} {self.dl_rssi} {self.ul_rssi} {self.home_position_lan} {self.home_position_lon}" \
+               f"{self.app_position_lan} {self.app_position_lon}" \
+               f"{self.tgt_position_lan} {self.tgt_position_lon} {self.tgt_alt_msl} {self.tgt_alt_hae}" \
+               f" {self.tgt_alt_prs} {self.write_time}"
 
     class Meta:
         verbose_name = 'SkySafeData'

@@ -3,19 +3,17 @@ import os
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
-from .models import MainOrders, SecondOrdersModel
-from .view_logic import CombatLogic,  SecondOnlineSQLReq, OnlineSQLReq, \
+from .models import MainOrders, SecondOrdersModel, SkySafeData
+from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
     DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
     BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, ChoseStatusCombat, AddFlightRecorderData, \
-    FilterFlightRecordData
+    FilterFlightRecordData, SkySafeLogic, OpenDataSkySafeClass
 from rest_framework.views import APIView
 from rest_framework import permissions
 from datetime import datetime
 import requests
 from dotenv import load_dotenv
 from .tasks import start_task
-
-
 
 load_dotenv()
 
@@ -50,9 +48,9 @@ class MainPage(APIView):
             start_task.apply_async()
         logic = BuildStatistics(datetime.today().strftime('%y-%m-d')[:7])
         data = {'model': logic.top_rank,
-                'action': 0}
+                'action': 0,
+                'username': request.user}
         return render(request, "main_djmil/main_page.html", data)
-
 
 
 class OnlineOrders(APIView):
@@ -327,7 +325,60 @@ class SkySafeOrder(APIView):
 
     @staticmethod
     def get(request):
+
+        date_search = request.GET.get('date_search')
+
+        open_data = request.GET.get('open_data')
+
+        today = request.GET.get('today')
+
+        build_order = request.GET.get('build_order')
+
+        fake_drone = request.GET.get('fakefake')
+
+        get_time = request.GET.get('time')
+
+
+        # build docx file and download
+        if build_order:
+            start_cut = request.GET.get('start_cut')
+            end_cut = request.GET.get('end_cup')
+            logic = BuildCombatOrders(start_cut, end_cut)
+            return logic.build_orders
+
+        # filter by date
+        if date_search:
+            logic = SkySafeLogic(date_search, fake_drone, get_time)
+            data = {
+                'model': logic.search_by_date,
+                'action': 0
+            }
+            return render(request, 'main_djmil/sky_safe.html', data)
+
+        # filter by today checkbox
+        if today:
+            logic = SkySafeLogic(date_search, fake_drone, get_time)
+
+            data = {
+                'model': logic.today_req[0],
+                'action': 0,
+            }
+
+            return render(request, 'main_djmil/sky_safe.html', data)
+
+        # personal  detail page
+        if open_data:
+            api_url = f"https://api.openweathermap.org/data/2.5/weather?lat=48.973403&lon=38.142698&" \
+                      f"units=metric&appid={os.getenv('WEATHER_API_KEY')}"
+
+            req = requests.get(api_url)
+
+            logic = OpenDataSkySafeClass(open_data)
+
+            data = {'model': logic.enter_to_detail_data,
+
+                    'weather': req.json(),
+                    }
+            return render(request, 'main_djmil/sky_safe.html', data)
+
         return render(request, 'main_djmil/sky_safe.html')
-
-
-

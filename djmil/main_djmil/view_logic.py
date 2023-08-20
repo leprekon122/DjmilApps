@@ -6,7 +6,7 @@ from docx import Document
 
 from django.db.models import Count
 
-from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, DataForCombatLogic
+from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, DataForCombatLogic, SkySafeData
 
 
 class SecondOnlineSQLReq:
@@ -676,3 +676,179 @@ class FilterFlightRecordData:
     def find_by_today_filter(self):
         data = FlightRecorderModel.objects.filter(record_data__icontains=self.today)
         return data
+
+
+class SkySafeLogic:
+
+    def __init__(self, date_search=None, fake_drone=None, get_time=None):
+        self.date_search = date_search
+        self.fake_drone = fake_drone
+        self.get_time = get_time
+
+        if self.get_time is not None:
+            self.model_set = SkySafeData.objects.filter(
+                write_time__icontains=f"{self.date_search} {self.get_time[:3]}").values().exclude(
+                persistent_id=self.fake_drone
+            ).order_by('persistent_id')
+        else:
+            self.model_set = SkySafeData.objects.filter(
+                write_time__icontains=self.date_search).values().exclude(
+                persistent_id=self.fake_drone).order_by('persistent_id')
+
+    @property
+    def today_req(self):
+
+        model = []
+        total_quan = []
+
+        if len(self.model_set) == 1:
+            quantity = SkySafeData.objects.filter(write_time__icontains=datetime.today().strftime('%y-%m-%d'),
+                                                  persistent_id=self.model_set[0][
+                                                      'persistent_id']).values().count()
+
+            model_data = {'serial_no': self.model_set[0]['persistent_id'],
+                          'dt': self.model_set[0]['write_time'].strftime('%m %d, %Y, %H:%M'),
+                          'product_type': self.model_set[0]['tgt_model'],
+                          'quantity': quantity,
+                          }
+            total_quan.append(quantity)
+
+            model.append(model_data)
+
+        else:
+            for el in range(len(self.model_set)):
+                if el == 0:
+                    quantity = SkySafeData.objects.filter(write_time__icontains=datetime.today().strftime('%y-%m-%d'),
+                                                          persistent_id=self.model_set[el][
+                                                              'persistent_id']).values().count()
+
+                    model_data = {'serial_no': self.model_set[0]['persistent_id'],
+                                  'dt': self.model_set[0]['write_time'].strftime('%m %d, %Y, %H:%M'),
+                                  'product_type': self.model_set[0]['tgt_model'],
+                                  'quantity': quantity,
+
+                                  }
+
+                    model.append(model_data)
+                    total_quan.append(quantity)
+                else:
+                    if self.model_set[el]['persistent_id'] != self.model_set[el - 1]['persistent_id']:
+                        quantity = SkySafeData.objects.filter(
+                            write_time__icontains=datetime.today().strftime('%y-%m-%d'),
+                            persistent_id=self.model_set[el][
+                                'persistent_id']).values().count()
+
+                        model_data = {'serial_no': self.model_set[el]['persistent_id'],
+                                      'dt': self.model_set[el]['write_time'].strftime('%m %d, %Y, %H:%M'),
+                                      'product_type': self.model_set[el]['tgt_model'],
+                                      'quantity': quantity,
+                                      }
+
+                        model.append(model_data)
+                        total_quan.append(quantity)
+        return [model, total_quan, self.model_set, self.date_search, self.get_time]
+
+    @property
+    def search_by_date(self):
+
+        model = []
+
+        if len(self.model_set) == 1:
+            model.append(self.model_set)
+
+        else:
+            for el in range(len(self.model_set)):
+                if el == 0:
+                    quantity = SkySafeData.objects.filter(write_time__icontains=self.date_search,
+                                                          persistent_id=self.model_set[el][
+                                                              'persistent_id']).values().count()
+
+                    model.append({'serial_no': self.model_set[el]['persistent_id'],
+                                  'dt': self.model_set[el]['write_time'].strftime('%m %d, %Y, %H:%M'),
+                                  'product_type': self.model_set[el]['tgt_model'],
+                                  'quantity': quantity,
+
+                                  })
+
+                else:
+                    if self.model_set[el]['persistent_id'] != self.model_set[el - 1]['persistent_id']:
+                        quantity = SkySafeData.objects.filter(write_time__icontains=self.date_search,
+                                                              persistent_id=self.model_set[el][
+                                                                  'persistent_id']).values().count()
+
+                        model.append({'serial_no': self.model_set[el]['persistent_id'],
+                                      'dt': self.model_set[el]['write_time'].strftime('%m %d, %Y, %H:%M'),
+                                      'product_type': self.model_set[el]['tgt_model'],
+                                      'quantity': quantity,
+
+                                      })
+
+            return model
+
+
+'''OpenData get request in SkySafe logic'''
+
+
+class OpenDataSkySafeClass:
+    def __init__(self, *args):
+        self.input_data = args[0]
+
+        self.serial_no = self.input_data.split(' ')[0]
+        self.current_year = self.input_data.split(',')[1].split(' ')[1]
+        self.current_month = self.input_data.split(' ')[1]
+        self.current_day = self.input_data.split(' ')[2].split(',')[0]
+        self.date_set = {
+            'January': '01',
+            'February': '02',
+            'March': '03',
+            'April': '04',
+            'May': '05',
+            'June': '06',
+            'July': '07',
+            'August': '08',
+            'September': '09',
+            'October': '10',
+            'November': '11',
+            'December': '12'
+        }
+
+    @property
+    def enter_to_detail_data(self):
+        if int(self.current_day) < 10:
+            model_detail = SkySafeData.objects.filter(
+                write_time__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
+                persistent_id=self.serial_no).values().order_by(
+                '-write_time')
+            model = SkySafeData.objects.filter(
+                write_time__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
+                persistent_id=self.serial_no).values().order_by(
+                '-write_time')[0]
+
+            data = {
+                'model': model,
+                'product_type': model['persistent_id'],
+                'model_detail': model_detail,
+                'action': 1,
+
+            }
+
+            return data
+
+        else:
+            model_detail = SkySafeData.objects.filter(
+                write_time__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
+                persistent_id=self.serial_no).values().order_by(
+                '-write_time')
+            model = SkySafeData.objects.filter(
+                write_time__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
+                persistent_id=self.serial_no).values().order_by(
+                '-write_time')[0]
+
+            data = {
+                'model': model,
+                'model_detail': model_detail,
+                'action': 1,
+
+            }
+
+            return data
