@@ -1,23 +1,21 @@
 import os
-
+from datetime import datetime
+import requests
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
-from .models import MainOrders, SecondOrdersModel, SkySafeData
-from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
-    DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, MainPageLogic, \
-    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, ChoseStatusCombat, AddFlightRecorderData, \
-    FilterFlightRecordData, SkySafeLogic, OpenDataSkySafeClass
+from dotenv import load_dotenv
 from rest_framework.views import APIView
 from rest_framework import permissions
-from datetime import datetime
-import requests
-from dotenv import load_dotenv
+from .models import MainOrders, SecondOrdersModel
+from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
+    DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, \
+    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass,\
+    ChoseStatusCombat, AddFlightRecorderData, \
+    FilterFlightRecordData, SkySafeLogic, OpenDataSkySafeClass
 from .tasks import start_task
 
 load_dotenv()
-
-'''class for offline sql requests '''
 
 
 def login_page(request):
@@ -39,6 +37,7 @@ def login_page(request):
 
 
 class MainPage(APIView):
+    """MainPage logic class"""
     permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
@@ -54,6 +53,7 @@ class MainPage(APIView):
 
 
 class OnlineOrders(APIView):
+    """logic in OnlineOrders page"""
     permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
@@ -73,9 +73,9 @@ class OnlineOrders(APIView):
             req_download = DownloadOnlineOrders()
             if options == 'without':
                 return req_download.download_order
-            elif options == 'newest':
+            if options == 'newest':
                 return req_download.download_newest_order
-            elif options == 'oldest':
+            if options == 'oldest':
                 return req_download.download_oldest_order
 
         if new:
@@ -98,6 +98,7 @@ class OnlineOrders(APIView):
 
 
 class OnlineSecondOrders(APIView):
+    """logic in OnlineSecondOrders page"""
     permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
@@ -141,9 +142,9 @@ class OnlineSecondOrders(APIView):
             req_download = DownloadSecondOnlineOrders()
             if options == 'without':
                 return req_download.download_order
-            elif options == 'newest':
+            if options == 'newest':
                 return req_download.download_newest_order
-            elif options == 'oldest':
+            if options == 'oldest':
                 return req_download.download_oldest_order
 
         # search by old,new, drone_id
@@ -176,10 +177,8 @@ class OnlineSecondOrders(APIView):
         return render(request, 'main_djmil/online_second_orders.html', data)
 
 
-"""combat_order page view"""
-
-
 class CombatOrder(APIView):
+    """combat_order page view"""
     permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
@@ -226,7 +225,8 @@ class CombatOrder(APIView):
 
         # personal  detail page
         if open_data:
-            api_url = f"https://api.openweathermap.org/data/2.5/weather?lat=48.973403&lon=38.142698&" \
+            api_url = f"https://api.openweathermap.org/data/2.5/weather?" \
+                      f"lat=48.973403&lon=38.142698&" \
                       f"units=metric&appid={os.getenv('WEATHER_API_KEY')}"
 
             req = requests.get(api_url)
@@ -246,7 +246,8 @@ class CombatOrder(APIView):
         logic = ChoseStatusCombat(status)
         logic.change_status()
 
-        model = CombatLogic(f"{status[4].split(',')[0]}-{status[2].split(',')[0]}-{status[3].split(',')[0]}",
+        model = CombatLogic(f"{status[4].split(',')[0]}-{status[2].split(',')[0]}-"
+                            f"{status[3].split(',')[0]}",
                             fake_drone=None)
 
         data = {
@@ -258,11 +259,13 @@ class CombatOrder(APIView):
 
 
 class StatisticsPage(APIView):
+    """StaticPage logic"""
     permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
     def get(request):
         month = request.GET.get('month')
+        today = request.GET.get('today')
         date_1 = request.GET.get('date_1')
         date_2 = request.GET.get('date_2')
 
@@ -271,7 +274,6 @@ class StatisticsPage(APIView):
         if all([date_1, date_2]):
             logic = LogicAnalyze(date_1, date_2)
             data = logic.make_anylyze
-            print(data)
             return render(request, 'main_djmil/main_statistics.html', data)
 
         # chose total result for month
@@ -280,13 +282,18 @@ class StatisticsPage(APIView):
 
             return render(request, 'main_djmil/main_statistics.html', logic)
 
-        # logic = BuildStatistics()
-        # data = logic.total_results_for_month
+        # statistics for today
+        if today:
+            logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")) \
+                .total_results_for_chosen_month
+            return render(request, 'main_djmil/main_statistics.html', logic)
 
         return render(request, 'main_djmil/main_statistics.html')
 
 
 class FlightRecorder(APIView):
+    """logic fir fly_recorder page"""
+    permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
     def get(request):
@@ -322,6 +329,9 @@ class FlightRecorder(APIView):
 
 
 class SkySafeOrder(APIView):
+    """logic for sky_safe order page"""
+
+    permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod
     def get(request):
@@ -337,7 +347,6 @@ class SkySafeOrder(APIView):
         fake_drone = request.GET.get('fakefake')
 
         get_time = request.GET.get('time')
-
 
         # build docx file and download
         if build_order:
@@ -368,7 +377,8 @@ class SkySafeOrder(APIView):
 
         # personal  detail page
         if open_data:
-            api_url = f"https://api.openweathermap.org/data/2.5/weather?lat=48.973403&lon=38.142698&" \
+            api_url = f"https://api.openweathermap.org/data/2.5/weather?" \
+                      f"lat=48.973403&lon=38.142698&" \
                       f"units=metric&appid={os.getenv('WEATHER_API_KEY')}"
 
             req = requests.get(api_url)

@@ -10,6 +10,13 @@
             <div class="alert alert-dark chose_month"
                  style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
                 <input type="date" class="form-control text-light" style="background-color: black" name="month">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="today" value="today"
+                           id="flexCheckChecked_today">
+                    <label class="form-check-label text-light" for="flexCheckChecked_today">
+                        за сьогодні
+                    </label>
+                </div>
                 <button class="btn btn-dark" type="submit">обрати</button>
             </div>
         </form>
@@ -25,7 +32,7 @@
         <br>
         <div class="main_statistic">
             <div class="total_result_for_month"
-                 >
+            >
                 <p class="text-light">Знайдено дронів за місяць: {{total_value}}</p>
                 <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}}</p>
                 {% if mavic_2 != 0 %}
