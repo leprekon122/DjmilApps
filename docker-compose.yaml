@@ -4,15 +4,20 @@ services:
 
   django:
     build: .
-    command: sh -c "python manage.py migrate --settings=djmil.settings_files.settings
-      && python manage.py runserver 0.0.0.0:8000 --settings=djmil.settings_files.settings
+    command: sh -c "python manage.py migrate --settings=djmil.settings_files.settings        
+      &&  python manage.py runserver 0.0.0.0:8000 --settings=djmil.settings_files.settings
       "
 
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     ports:
       - '8000:8000'
     depends_on:
       - pgdb
       - redis
+
 
 
 
@@ -26,10 +31,24 @@ services:
       - '5432:5432'
     container_name: pgdb
 
+
   redis:
     image: redis:latest
-    ports:
-      - "6379:6379"
+    container_name: redis_container
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - pgdb
+
+
+
+
+
+
+
+
 
 
 

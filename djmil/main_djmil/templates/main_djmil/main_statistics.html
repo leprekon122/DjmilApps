@@ -77,6 +77,15 @@
                 {% if Mavic_3_Classic != 0 %}
                 <p class="text-light">Mavic_3_Classic: {{Mavic_3_Classic}}</p>
                 {%endif%}
+                {%if ally != 0%}
+                    <p class="text-light">наші: {{ally}}</p>
+                {%endif%}
+                {%if fag != 0%}
+                    <p class="text-light">ворожі: {{fag}}</p>
+                {%endif%}
+                {% if unknown != 0%}
+                    <p class="text-light">fake_gps: {{unknown}}</p>
+                {%endif%}
             </div>
         </div>
     </div>

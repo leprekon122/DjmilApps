@@ -1,5 +1,6 @@
 import csv
 from datetime import datetime
+from decimal import Decimal
 
 from django.http import HttpResponse
 from docx import Document
@@ -254,6 +255,8 @@ class CombatLogic:
 
                     model.append({'serial_no': self.model_set[el]['serial_no'],
                                   'dt': self.model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'longitude': str(Decimal(self.model_set[el]['longitude'])),
+                                  'latitude': str(Decimal(self.model_set[el]['latitude'])),
                                   'product_type': self.model_set[el]['product_type'],
                                   'quantity': quantity,
                                   'status': self.model_set[el]['status']
@@ -267,6 +270,8 @@ class CombatLogic:
 
                         model.append({'serial_no': self.model_set[el]['serial_no'],
                                       'dt': self.model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'longitude': str(Decimal(self.model_set[el]['longitude'])),
+                                      'latitude': str(Decimal(self.model_set[el]['latitude'])),
                                       'product_type': self.model_set[el]['product_type'],
                                       'quantity': quantity,
                                       'status': self.model_set[el]['status']
@@ -524,11 +529,37 @@ class BuildStatistics:
             73: 0,
             77: 0,
             86: 0,
+            'ally': 0,
+            'fag': 0,
+            'unknown': 0
         }
 
         for el in data_set:
             if el['product_type'] in data_1.keys():
                 data_1[el['product_type']] += 1
+                if any([el['latitude'].startswith('48.9731'),
+                        el['latitude'].startswith('48.9732'),
+                        el['latitude'].startswith('48.9733'),
+                        el['latitude'].startswith('48.9734'),
+                        el['latitude'].startswith('48.9735'),
+                        el['latitude'].startswith('48.961'),
+                        el['latitude'].startswith('48.962'),
+                        el['latitude'].startswith('48.963'),
+                        el['latitude'].startswith('48.964'),
+                        el['latitude'].startswith('48.965'),
+                        el['latitude'].startswith('48.966'),
+                        el['latitude'].startswith('48.956'),
+                        el['latitude'].startswith('48.955'),
+                        el['latitude'].startswith('48.954'),
+                        el['latitude'].startswith('48.953'),
+                        el['latitude'].startswith('48.952'),
+                        el['latitude'].startswith('48.951'),
+                        ]):
+                    data_1['ally'] += 1
+                elif el['longitude'].startswith('-'):
+                    data_1['unknown'] += 1
+                else:
+                    data_1['fag'] += 1
             else:
                 data_1[68] += 1
 
@@ -549,6 +580,9 @@ class BuildStatistics:
                 'mini_3_Pro': data_1[73],
                 'Mavic_3T_3E': data_1[77],
                 'Mavic_3_Classic': data_1[86],
+                'ally': data_1['ally'],
+                'fag': data_1['fag'],
+                'unknown': data_1['unknown'],
                 }
         return data
 
