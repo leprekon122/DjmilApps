@@ -1,11 +1,12 @@
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.http import HttpResponse
 from docx import Document
 
 from django.db.models import Count
+from django.db.models import Q
 
 from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, DataForCombatLogic, SkySafeData
 
@@ -275,6 +276,83 @@ class CombatLogic:
                                       'product_type': self.model_set[el]['product_type'],
                                       'quantity': quantity,
                                       'status': self.model_set[el]['status']
+                                      })
+
+            return model
+
+    '''built data for today statistics order '''
+
+    @property
+    def search_by_today_statistics(self):
+        cur_date = datetime.today().strftime("%y-%m-%d")
+        cur_month = datetime.today().strftime("%y-%m")
+        tommorow_date = (datetime.today() - timedelta(days=1)).strftime("%d")
+
+        model_set = SecondOrdersModel.objects.filter(
+            Q(dt__icontains=cur_date) | Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 16:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 17:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 18:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 19:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 20:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 21:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 22:") | Q(
+                dt__icontains=f"{cur_month}-{tommorow_date} 23:")).values().exclude(
+            serial_no=self.fake_drone
+        ).order_by('serial_no')
+
+        model = []
+
+        if len(model_set) == 1:
+            model.append(self.model_set)
+
+        else:
+            for el in range(len(model_set)):
+                if el == 0:
+                    quantity = SecondOrdersModel.objects.filter(
+                        Q(dt__icontains=cur_date) | Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 16:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 17:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 18:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 19:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 20:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 21:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 22:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 23:"),
+                        serial_no=model_set[el][
+                            'serial_no']).values().count()
+
+                    model.append({'serial_no': model_set[el]['serial_no'],
+                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'longitude': str(Decimal(model_set[el]['longitude'])),
+                                  'latitude': str(Decimal(model_set[el]['latitude'])),
+                                  'product_type': model_set[el]['product_type'],
+                                  'quantity': quantity,
+                                  'status': model_set[el]['status']
+                                  })
+
+                else:
+                    if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
+                        quantity = SecondOrdersModel.objects.filter(
+                            Q(dt__icontains=cur_date) | Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 16:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 17:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 18:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 19:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 20:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 21:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 22:") | Q(
+                                dt__icontains=f"{cur_month}-{tommorow_date} 23:"),
+                            serial_no=model_set[el][
+                                'serial_no']).values().count()
+
+                        model.append({'serial_no': model_set[el]['serial_no'],
+                                      'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'longitude': str(Decimal(model_set[el]['longitude'])),
+                                      'latitude': str(Decimal(model_set[el]['latitude'])),
+                                      'product_type': model_set[el]['product_type'],
+                                      'quantity': quantity,
+                                      'status': model_set[el]['status']
                                       })
 
             return model
@@ -566,6 +644,96 @@ class BuildStatistics:
         data = {'total_value': len(data_set),
                 'dirty_total_value': len(
                     SecondOrdersModel.objects.filter(dt__icontains=self.open_data)),
+                'mavic_2': data_1[41],
+                'M_200_v2': data_1[44],
+                'Mavic_Mini': data_1[53],
+                'Mavic_Air_2': data_1[58],
+                'M300RTK': data_1[60],
+                'mini_2': data_1[63],
+                'air_2s': data_1[66],
+                'm30': data_1[67],
+                'mavic_3': data_1[68],
+                'mavic2Enterprise': data_1[69],
+                'mini_se': data_1[70],
+                'mini_3_Pro': data_1[73],
+                'Mavic_3T_3E': data_1[77],
+                'Mavic_3_Classic': data_1[86],
+                'ally': data_1['ally'],
+                'fag': data_1['fag'],
+                'unknown': data_1['unknown'],
+                }
+        return data
+
+    """today statistics order"""
+
+    @property
+    def today_statistics_order(self):
+        data_set = CombatLogic(self.open_data).search_by_today_statistics
+        cur_date = datetime.today().strftime("%y-%m-%d")
+        cur_month = datetime.today().strftime("%y-%m")
+        tommorow_date = (datetime.today() - timedelta(days=1)).strftime("%d")
+
+        data_1 = {
+            41: 0,
+            44: 0,
+            53: 0,
+            58: 0,
+            60: 0,
+            63: 0,
+            66: 0,
+            67: 0,
+            68: 0,
+            69: 0,
+            70: 0,
+            73: 0,
+            77: 0,
+            86: 0,
+            'ally': 0,
+            'fag': 0,
+            'unknown': 0
+        }
+
+        for el in data_set:
+            if el['product_type'] in data_1.keys():
+                data_1[el['product_type']] += 1
+                if any([el['latitude'].startswith('48.9731'),
+                        el['latitude'].startswith('48.9732'),
+                        el['latitude'].startswith('48.9733'),
+                        el['latitude'].startswith('48.9734'),
+                        el['latitude'].startswith('48.9735'),
+                        el['latitude'].startswith('48.961'),
+                        el['latitude'].startswith('48.962'),
+                        el['latitude'].startswith('48.963'),
+                        el['latitude'].startswith('48.964'),
+                        el['latitude'].startswith('48.965'),
+                        el['latitude'].startswith('48.966'),
+                        el['latitude'].startswith('48.956'),
+                        el['latitude'].startswith('48.955'),
+                        el['latitude'].startswith('48.954'),
+                        el['latitude'].startswith('48.953'),
+                        el['latitude'].startswith('48.952'),
+                        el['latitude'].startswith('48.951'),
+                        ]):
+                    data_1['ally'] += 1
+                elif el['longitude'].startswith('-'):
+                    data_1['unknown'] += 1
+                else:
+                    data_1['fag'] += 1
+            else:
+                data_1[68] += 1
+
+        data = {'total_value': len(data_set),
+                'dirty_total_value': len(
+                    SecondOrdersModel.objects.filter(
+                        Q(dt__icontains=cur_date) | Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 16:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 17:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 18:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 19:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 20:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 21:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 22:") | Q(
+                            dt__icontains=f"{cur_month}-{tommorow_date} 23:"))),
                 'mavic_2': data_1[41],
                 'M_200_v2': data_1[44],
                 'Mavic_Mini': data_1[53],

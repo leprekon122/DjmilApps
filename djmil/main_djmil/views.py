@@ -1,6 +1,5 @@
 import os
-from datetime import datetime
-
+from datetime import datetime, timedelta
 
 import requests
 from django.shortcuts import render, redirect
@@ -12,7 +11,7 @@ from rest_framework import permissions
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
     DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, \
-    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass,\
+    BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, \
     ChoseStatusCombat, AddFlightRecorderData, \
     FilterFlightRecordData, SkySafeLogic, OpenDataSkySafeClass
 from .tasks import start_task
@@ -286,15 +285,17 @@ class StatisticsPage(APIView):
 
         # statistics for today
         if today:
-            logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")) \
-                .total_results_for_chosen_month
+            # logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")) \
+            #    .total_results_for_chosen_month
+            logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")).today_statistics_order
+
             return render(request, 'main_djmil/main_statistics.html', logic)
 
         return render(request, 'main_djmil/main_statistics.html')
 
 
 class FlightRecorder(APIView):
-    """logic fir fly_recorder page"""
+    """logic for fly_recorder page"""
     permission_classes = [permissions.IsAuthenticated]
 
     @staticmethod

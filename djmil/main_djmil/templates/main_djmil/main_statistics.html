@@ -33,7 +33,7 @@
         <div class="main_statistic">
             <div class="total_result_for_month"
             >
-                <p class="text-light">Знайдено дронів за місяць: {{total_value}}</p>
+                <p class="text-light">Знайдено дронів за місяць: <span id="total_val_drones">{{total_value}}</span></p>
                 <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}}</p>
                 {% if mavic_2 != 0 %}
                 <p class="text-light">mavic_2: {{mavic_2}}</p>
@@ -78,20 +78,46 @@
                 <p class="text-light">Mavic_3_Classic: {{Mavic_3_Classic}}</p>
                 {%endif%}
                 {%if ally != 0%}
-                    <p class="text-light">наші: {{ally}}</p>
+                <p class="text-light">наші: <span id="ally">{{ally}}</span></p>
                 {%endif%}
                 {%if fag != 0%}
-                    <p class="text-light">ворожі: {{fag}}</p>
+                <p class="text-light">ворожі: <span id="fag">{{fag}}</span></p>
                 {%endif%}
                 {% if unknown != 0%}
-                    <p class="text-light">fake_gps: {{unknown}}</p>
+                <p class="text-light">fake_gps: <span id="fake_gps">{{unknown}}</span></p>
                 {%endif%}
             </div>
         </div>
     </div>
+    <div class="whose_drones_main">
+        <div class="whose_drones_name">
+            <h5 class="text-light"> Приналежність у %</h5>
+        </div>
+        <div class="whose_drones">
+            <span class="our_drones text-light" id="our_drones"> </span>
+            <span class="enemies_drones text-light" id="enemies_drones"></span>
+            <span class="unknown_drones text-light" id="unknown_drones"></span>
+        </div>
+
+        <div class="type_of_owe">
+            <p class="text-light" id="type_of_owe_our">наші</p>
+            <p class="text-light" id="type_of_owe_enemies">ворожі</p>
+            <p class="text-light" id="type_of_owe_our_fake">fake gps</p>
+        </div>
+    </div>
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
 
 </div>
 
+
 <script src="/static/main_djmil/js/statistics.js">
 </script>
+
+<script>
+
+
+</script>
+
 {%endblock%}
