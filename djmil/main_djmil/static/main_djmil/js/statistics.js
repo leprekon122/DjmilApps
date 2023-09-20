@@ -14,21 +14,21 @@ function whose_drones() {
 
     if (document.getElementById('ally') != null) {
         data_1.push(Math.round((document.getElementById('ally').innerHTML / total_val_drones) * 100))
-        data_2.push(document.getElementById('ally').innerHTML)
+        data_2.push('наші')
     }
 
 
     if (document.getElementById('fag') != null ) {
         data_1.push(Math.round((document.getElementById('fag').innerHTML / total_val_drones) * 100))
-        data_2.push(document.getElementById('fag').innerHTML)
+        data_2.push('ворожі')
     }
 
 
     if (document.getElementById('fake_gps') != null ) {
         data_1.push(Math.round((document.getElementById('fake_gps').innerHTML / total_val_drones) * 100))
-        data_2.push(document.getElementById('fake_gps').innerHTML)
+        data_2.push('fake_gps')
     }
-    console.log(data_1)
+
     const ctx = document.getElementById('myChart1');
 
     new Chart(ctx, {
