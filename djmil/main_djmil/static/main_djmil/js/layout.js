@@ -1,4 +1,5 @@
 var count = 0
+
 function show_filter_panel(){
     count += 1
     if (count % 2 == 1){
@@ -11,3 +12,4 @@ function show_filter_panel(){
         document.getElementById('orders_search').style.display = 'none'
     }
 }
+

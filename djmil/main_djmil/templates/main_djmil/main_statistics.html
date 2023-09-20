@@ -36,46 +36,55 @@
                 <p class="text-light">Знайдено дронів за місяць: <span id="total_val_drones">{{total_value}}</span></p>
                 <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}}</p>
                 {% if mavic_2 != 0 %}
-                <p class="text-light">mavic_2: {{mavic_2}}</p>
+                <p class="text-light"><span id="mavic_2_title">mavic_2</span>: <span id="mavic_2">{{mavic_2}}</span></p>
                 {%endif%}
                 {% if M_200_v2 != 0 %}
-                <p class="text-light">M_200_v2: {{M_200_v2}}</p>
+                <p class="text-light"><span id="M_200_v2_title">M_200_v2</span>: <span id="M_200_v2">{{M_200_v2}}</span>
+                </p>
                 {%endif%}
                 {% if Mavic_Mini != 0 %}
-                <p class="text-light">Mavic_Mini: {{Mavic_Mini}}</p>
+                <p class="text-light"><span id="Mavic_Mini_title">Mavic_Mini</span>: <span id="Mavic_Mini">{{Mavic_Mini}}</span>
+                </p>
                 {%endif%}
                 {% if Mavic_Air_2 != 0 %}
-                <p class="text-light">Mavic_Air_2: {{Mavic_Air_2}}</p>
+                <p class="text-light"><span id="Mavic_Air_2_title">Mavic_Air_2</span>: <span id="Mavic_Air_2">{{Mavic_Air_2}}</span>
+                </p>
                 {%endif%}
                 {% if M300RTK != 0 %}
-                <p class="text-light">M 300 RTK: {{M300RTK}}</p>
+                <p class="text-light"><span id="M300RTK_title">M 300 RTK</span>: <span id="M300RTK">{{M300RTK}}</span>
+                </p>
                 {%endif%}
                 {%if mini_2 != 0%}
-                <p class="text-light">mini_2: {{mini_2}}</p>
+                <p class="text-light"><span id="mini_2_title">mini_2</span>: <span id="mini_2">{{mini_2}}</span></p>
                 {%endif%}
                 {%if air_2s != 0 %}
-                <p class="text-light">air_2s: {{air_2s}}</p>
+                <p class="text-light"><span id="air_2s_title">air_2s</span>: <span id="air_2s">{{air_2s}}</span></p>
                 {%endif%}
                 {%if m30 != 0%}
-                <p class="text-light">M30: {{m30}}</p>
+                <p class="text-light"><span id="M30_title">M30</span>: <span id="M30">{{m30}}</span</p>
                 {%endif%}
                 {%if mavic2Enterprise != 0%}
-                <p class="text-light">mavic2Enterprise: {{mavic2Enterprise}}</p>
+                <p class="text-light"><span id="mavic2Enterprise_title">mavic2Enterprise</span>: <span
+                        id="mavic2Enterprise">{{mavic2Enterprise}}</span></p>
                 {%endif%}
                 {%if mini_se != 0 %}
-                <p class="text-light">mini_se: {{mini_se}}</p>
+                <p class="text-light"><span id="mini_se_title">mini_se</span>: <span id="mini_se">{{mini_se}}</span></p>
                 {%endif%}
                 {%if mavic_3 != 0%}
-                <p class="text-light">mavic 3: {{mavic_3}}</p>
+                <p class="text-light"><span id="mavic_3_title">mavic 3</span>: <span id="mavic_3">{{mavic_3}}</span></p>
                 {%endif%}
                 {% if mini_3_Pro != 0 %}
-                <p class="text-light">mini_3_Pro: {{mini_3_Pro}}</p>
+                <p class="text-light"><span id="mini_3_Pro_title">mini_3_Pro<span>: <span
+                        id="mini_3_Pro">{{mini_3_Pro}}</span></p>
                 {%endif%}
                 {% if Mavic_3T_3E != 0 %}
-                <p class="text-light">Mavic_3T_3E: {{Mavic_3T_3E}}</p>
+                <p class="text-light"><span id="Mavic_3T_3E_title">Mavic_3T_3E</span><span>: <span
+                        id="Mavic_3T_3E">{{Mavic_3T_3E}}</span>
+                </p>
                 {%endif%}
                 {% if Mavic_3_Classic != 0 %}
-                <p class="text-light">Mavic_3_Classic: {{Mavic_3_Classic}}</p>
+                <p class="text-light"><span id="Mavic_3_Classic_title">Mavic_3_Classic</span>: <span
+                        id="Mavic_3_Classic">{{Mavic_3_Classic}}</span></p>
                 {%endif%}
                 {%if ally != 0%}
                 <p class="text-light">наші: <span id="ally">{{ally}}</span></p>
@@ -89,32 +98,28 @@
             </div>
         </div>
     </div>
+
     <div class="whose_drones_main">
-        <div class="whose_drones_name ">
-            <h5 class="text-light"> Приналежність у %</h5>
-        </div>
-        <div class="whose_drones">
-            <span class="our_drones text-light" id="our_drones"> </span>
-            <span class="enemies_drones text-light" id="enemies_drones"></span>
-            <span class="unknown_drones text-light" id="unknown_drones"></span>
+        <div class="type_of_drone_diagram">
+            <div class="whose_drones_name">
+                <h5 class="text-dark"> Приналежність у %</h5>
+            </div>
+            <canvas id="myChart1"></canvas>
         </div>
 
-        <div class="type_of_owe">
-            <p class="text-light" id="type_of_owe_our">наші</p>
-            <p class="text-light" id="type_of_owe_enemies">ворожі</p>
-            <p class="text-light" id="type_of_owe_our_fake">fake gps</p>
+        <div class="round_diagram">
+            <div class="round_diagram_title">
+                <h5 class="text-dark">Типи дронів у %</h5>
+            </div>
+            <div class="second_diagram">
+                <canvas id="myChart"></canvas>
+            </div>
         </div>
     </div>
 
-</div>
+
+    <script src="/static/main_djmil/js/statistics.js">
+    </script>
 
 
-<script src="/static/main_djmil/js/statistics.js">
-</script>
-
-<script>
-
-
-</script>
-
-{%endblock%}
+    {%endblock%}
