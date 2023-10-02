@@ -10,12 +10,21 @@
             <div class="alert alert-dark chose_month"
                  style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
                 <input type="date" class="form-control text-light" style="background-color: black" name="month">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="today" value="today"
-                           id="flexCheckChecked_today">
-                    <label class="form-check-label text-light" for="flexCheckChecked_today">
-                        за сьогодні
-                    </label>
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="today" value="today"
+                               id="flexCheckChecked_today">
+                        <label class="form-check-label text-light" for="flexCheckChecked_today">
+                            за сьогодні
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="weak" value="weak"
+                               id="flexCheckChecked_weak">
+                        <label class="form-check-label text-light" for="flexCheckChecked_weak">
+                            за неділю
+                        </label>
+                    </div>
                 </div>
                 <button class="btn btn-dark" type="submit">обрати</button>
             </div>
@@ -30,73 +39,192 @@
             </div>
         </form>
         <br>
+        {%if count == 'today'%}
         <div class="main_statistic">
             <div class="total_result_for_month"
             >
-                <p class="text-light">Знайдено дронів за місяць: <span id="total_val_drones">{{total_value}}</span></p>
-                <p class="text-light">Загальна кількість виявлень: {{dirty_total_value}}</p>
-                {% if mavic_2 != 0 %}
-                <p class="text-light"><span id="mavic_2_title">mavic_2</span>: <span id="mavic_2">{{mavic_2}}</span></p>
-                {%endif%}
-                {% if M_200_v2 != 0 %}
-                <p class="text-light"><span id="M_200_v2_title">M_200_v2</span>: <span id="M_200_v2">{{M_200_v2}}</span>
+                <p class="text-light">Знайдено дронів за місяць: <span
+                        id="total_val_drones">{{logic.total_value}}</span></p>
+                <p class="text-light">Загальна кількість виявлень: {{logic.dirty_total_value}}</p>
+                {% if logic.mavic_2 != 0 %}
+                <p class="text-light"><span id="mavic_2_title">mavic_2</span>: <span
+                        id="mavic_2">{{logic.mavic_2}}</span>
                 </p>
                 {%endif%}
-                {% if Mavic_Mini != 0 %}
-                <p class="text-light"><span id="Mavic_Mini_title">Mavic_Mini</span>: <span id="Mavic_Mini">{{Mavic_Mini}}</span>
+                {% if logic.M_200_v2 != 0 or ''%}
+                <p class="text-light"><span id="M_200_v2_title">M_200_v2</span>: <span
+                        id="M_200_v2">{{logic.M_200_v2}}</span>
                 </p>
                 {%endif%}
-                {% if Mavic_Air_2 != 0 %}
-                <p class="text-light"><span id="Mavic_Air_2_title">Mavic_Air_2</span>: <span id="Mavic_Air_2">{{Mavic_Air_2}}</span>
+                {% if logic.Mavic_Mini != 0 %}
+                <p class="text-light"><span id="Mavic_Mini_title">Mavic_Mini</span>: <span
+                        id="Mavic_Mini">{{logic.Mavic_Mini}}</span>
                 </p>
                 {%endif%}
-                {% if M300RTK != 0 %}
-                <p class="text-light"><span id="M300RTK_title">M 300 RTK</span>: <span id="M300RTK">{{M300RTK}}</span>
+                {% if logic.Mavic_Air_2 != 0 %}
+                <p class="text-light"><span id="Mavic_Air_2_title">Mavic_Air_2</span>: <span
+                        id="Mavic_Air_2">{{logic.Mavic_Air_2}}</span>
                 </p>
                 {%endif%}
-                {%if mini_2 != 0%}
-                <p class="text-light"><span id="mini_2_title">mini_2</span>: <span id="mini_2">{{mini_2}}</span></p>
+                {% if logic.M300RTK != 0 %}
+                <p class="text-light"><span id="M300RTK_title">M 300 RTK</span>: <span
+                        id="M300RTK">{{logic.M300RTK}}</span>
+                </p>
                 {%endif%}
-                {%if air_2s != 0 %}
-                <p class="text-light"><span id="air_2s_title">air_2s</span>: <span id="air_2s">{{air_2s}}</span></p>
+                {%if logic.mini_2 != 0%}
+                <p class="text-light"><span id="mini_2_title">mini_2</span>: <span
+                        id="mini_2">{{logic.mini_2}}</span></p>
                 {%endif%}
-                {%if m30 != 0%}
-                <p class="text-light"><span id="M30_title">M30</span>: <span id="M30">{{m30}}</span</p>
+                {%if logic.air_2s != 0 %}
+                <p class="text-light"><span id="air_2s_title">air_2s</span>: <span
+                        id="air_2s">{{logic.air_2s}}</span></p>
                 {%endif%}
-                {%if mavic2Enterprise != 0%}
+                {%if logic.m30 != 0%}
+                <p class="text-light"><span id="M30_title">M30</span>: <span id="M30">{{logic.m30}}</span></p>
+                {%endif%}
+                {%if logic.mavic2Enterprise != 0%}
                 <p class="text-light"><span id="mavic2Enterprise_title">mavic2Enterprise</span>: <span
-                        id="mavic2Enterprise">{{mavic2Enterprise}}</span></p>
+                        class="mavic2Enterprise"
+                        id="mavic2Enterprise">{{logic.mavic2Enterprise}}</span></p>
                 {%endif%}
-                {%if mini_se != 0 %}
-                <p class="text-light"><span id="mini_se_title">mini_se</span>: <span id="mini_se">{{mini_se}}</span></p>
-                {%endif%}
-                {%if mavic_3 != 0%}
-                <p class="text-light"><span id="mavic_3_title">mavic 3</span>: <span id="mavic_3">{{mavic_3}}</span></p>
-                {%endif%}
-                {% if mini_3_Pro != 0 %}
-                <p class="text-light"><span id="mini_3_Pro_title">mini_3_Pro<span>: <span
-                        id="mini_3_Pro">{{mini_3_Pro}}</span></p>
-                {%endif%}
-                {% if Mavic_3T_3E != 0 %}
-                <p class="text-light"><span id="Mavic_3T_3E_title">Mavic_3T_3E</span><span>: <span
-                        id="Mavic_3T_3E">{{Mavic_3T_3E}}</span>
+                {%if logic.mini_se != 0 %}
+                <p class="text-light"><span id="mini_se_title">mini_se</span>: <span
+                        id="mini_se">{{logic.mini_se}}</span>
                 </p>
                 {%endif%}
-                {% if Mavic_3_Classic != 0 %}
+                {%if logic.mavic_3 != 0%}
+                <p class="text-light"><span id="mavic_3_title">mavic 3</span>: <span
+                        id="mavic_3">{{logic.mavic_3}}</span>
+                </p>
+                {%endif%}
+                {% if logic.mini_3_Pro != 0 %}
+                <p class="text-light"><span id="mini_3_Pro_title">mini_3_Pro</span>: <span
+                        id="mini_3_Pro">{{logic.mini_3_Pro}}</span>
+                </p>
+                {%endif%}
+                {% if logic.Mavic_3T_3E != 0 %}
+                <p class="text-light"><span id="Mavic_3T_3E_title">Mavic_3T_3E</span>: <span class="Mavic_3T_3E"
+                                                                                             id="Mavic_3T_3E">{{logic.Mavic_3T_3E}}</span>
+                </p>
+                {%endif%}
+                {% if logic.Mavic_3_Classic != 0 %}
                 <p class="text-light"><span id="Mavic_3_Classic_title">Mavic_3_Classic</span>: <span
-                        id="Mavic_3_Classic">{{Mavic_3_Classic}}</span></p>
+                        class="Mavic_3_Classic"
+                        id="Mavic_3_Classic">{{logic.Mavic_3_Classic}}</span></p>
                 {%endif%}
-                {%if ally != 0%}
-                <p class="text-light">наші: <span id="ally">{{ally}}</span></p>
+                {%if logic.ally != 0%}
+                <p class="text-light">наші: <span class="ally" id="ally">{{logic.ally}}</span></p>
                 {%endif%}
-                {%if fag != 0%}
-                <p class="text-light">ворожі: <span id="fag">{{fag}}</span></p>
+                {%if logic.fag != 0%}
+                <p class="text-light">ворожі: <span class="fag" id="fag">{{logic.fag}}</span></p>
                 {%endif%}
-                {% if unknown != 0%}
-                <p class="text-light">fake_gps: <span id="fake_gps">{{unknown}}</span></p>
+                {% if logic.unknown != 0%}
+                <p class="text-light">fake_gps: <span class="fake_gps" id="fake_gps">{{logic.unknown}}</span></p>
                 {%endif%}
             </div>
         </div>
+        {%elif count == 'week'%}
+        <div class="main_statistic">
+            <div class="total_result_for_month"
+            >
+                <p class="text-light">Знайдено дронів за місяць: <span
+                        id="total_val_drones">{{model.total_value}}</span></p>
+                <p class="text-light">Загальна кількість виявлень: {{model.dirty_total_value}}</p>
+                {% if model.mavic_2 != 0 %}
+                <p class="text-light"><span id="mavic_2_title">mavic_2</span>: <span
+                        id="mavic_2">{{model.mavic_2}}</span>
+                </p>
+                {%endif%}
+                {% if model.M_200_v2 != 0 %}
+                <p class="text-light"><span id="M_200_v2_title">M_200_v2</span>: <span
+                        id="M_200_v2">{{model.M_200_v2}}</span>
+                </p>
+                {%endif%}
+                {% if model.Mavic_Mini != 0 %}
+                <p class="text-light"><span id="Mavic_Mini_title">Mavic_Mini</span>: <span
+                        id="Mavic_Mini">{{model.Mavic_Mini}}</span>
+                </p>
+                {%endif%}
+                {% if model.Mavic_Air_2 != 0 %}
+                <p class="text-light"><span id="Mavic_Air_2_title">Mavic_Air_2</span>: <span
+                        id="Mavic_Air_2">{{model.Mavic_Air_2}}</span>
+                </p>
+                {%endif%}
+                {% if model.M300RTK != 0 %}
+                <p class="text-light"><span id="M300RTK_title">M 300 RTK</span>: <span
+                        id="M300RTK">{{model.M300RTK}}</span>
+                </p>
+                {%endif%}
+                {%if model.mini_2 != 0%}
+                <p class="text-light"><span id="mini_2_title">mini_2</span>: <span
+                        id="mini_2">{{model.mini_2}}</span></p>
+                {%endif%}
+                {%if model.air_2s != 0 %}
+                <p class="text-light"><span id="air_2s_title">air_2s</span>: <span
+                        id="air_2s">{{model.air_2s}}</span></p>
+                {%endif%}
+                {%if model.m30 != 0%}
+                <p class="text-light"><span id="M30_title">M30</span>: <span id="M30">{{model.m30}}</span></p>
+                {%endif%}
+                {%if model.mavic2Enterprise != 0%}
+                <p class="text-light"><span id="mavic2Enterprise_title">mavic2Enterprise</span>: <span
+                        class="mavic2Enterprise"
+                        id="mavic2Enterprise">{{model.mavic2Enterprise}}</span></p>
+                {%endif%}
+                {%if model.mini_se != 0 %}
+                <p class="text-light"><span id="mini_se_title">mini_se</span>: <span
+                        id="mini_se">{{mmodel.mini_se}}</span>
+                </p>
+                {%endif%}
+                {%if model.mavic_3 != 0%}
+                <p class="text-light"><span id="mavic_3_title">mavic 3</span>: <span
+                        id="mavic_3">{{model.mavic_3}}</span>
+                </p>
+                {%endif%}
+                {% if model.mini_3_Pro != 0 %}
+                <p class="text-light"><span id="mini_3_Pro_title">mini_3_Pro</span>: <span
+                        id="mini_3_Pro">{{model.mini_3_Pro}}</span>
+                </p>
+                {%endif%}
+                {% if model.Mavic_3T_3E != 0 %}
+                <p class="text-light"><span id="Mavic_3T_3E_title">Mavic_3T_3E</span>: <span class="Mavic_3T_3E"
+                                                                                             id="Mavic_3T_3E">{{model.Mavic_3T_3E}}</span>
+                </p>
+                {%endif%}
+                {% if model.Mavic_3_Classic != 0 %}
+                <p class="text-light"><span id="Mavic_3_Classic_title">Mavic_3_Classic</span>: <span
+                        class="Mavic_3_Classic"
+                        id="Mavic_3_Classic">{{model.Mavic_3_Classic}}</span></p>
+                {%endif%}
+                {%if model.ally != 0%}
+                <p class="text-light">наші: <span id="ally">{{model.ally}}</span></p>
+                {%endif%}
+                {%if model.fag != 0%}
+                <p class="text-light">ворожі: <span id="fag">{{model.fag}}</span></p>
+                {%endif%}
+                {% if model.unknown != 0%}
+                <p class="text-light">fake_gps: <span id="fake_gps">{{model.unknown}}</span></p>
+                {%endif%}
+                <p class="text-light"><span id="day_1">{{date_set.day_1}}</span>: <span id="day_1_quan">{{quan_by_date.day_1}}</span>
+                </p>
+                <p class="text-light"><span id="day_2">{{date_set.day_2}}</span>: <span id="day_2_quan">{{quan_by_date.day_2}}</span>
+                </p>
+                <p class="text-light"><span id="day_3">{{date_set.day_3}}</span>: <span id="day_3_quan">{{quan_by_date.day_3}}</span>
+                </p>
+                <p class="text-light"><span id="day_4">{{date_set.day_4}}</span>: <span id="day_4_quan">{{quan_by_date.day_4}}</span>
+                </p>
+                <p class="text-light"><span id="day_5">{{date_set.day_5}}</span>: <span id="day_5_quan">{{quan_by_date.day_5}}</span>
+                </p>
+                <p class="text-light"><span id="day_6">{{date_set.day_6}}</span>: <span id="day_6_quan">{{quan_by_date.day_6}}</span>
+                </p>
+                <p class="text-light"><span id="day_7">{{date_set.day_7}}</span>: <span id="day_7_quan"> {{quan_by_date.day_7}}</span>
+                </p>
+
+
+            </div>
+        </div>
+        {%endif%}
+
     </div>
 
     <div class="whose_drones_main">
@@ -115,11 +243,25 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+
+        {%if count == 'week'%}
+        <div class="line_diagram_for_drones_per_week">
+            <div class="line_diagram_title">
+                <h5 class="text-dark">Кільскість дронів за неділю</h5>
+            </div>
+            <div class="second_diagram">
+                <canvas id="myChart2"></canvas>
+            </div>
+        </div>
+        {%endif%}
+
     </div>
 
+</div>
+</div>
 
-    <script src="/static/main_djmil/js/statistics.js">
-    </script>
 
-
-    {%endblock%}
+<script src="/static/main_djmil/js/statistics.js">
+</script>
+</div>
+{%endblock%}

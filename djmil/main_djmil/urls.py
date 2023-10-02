@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import path, re_path
 from django.views.static import serve
 
@@ -13,9 +12,9 @@ urlpatterns = [
     path('combat_orders/', views.CombatOrder.as_view(), name="combat_orders"),
     path('statistics/', views.StatisticsPage.as_view(), name='statistics'),
     path('flight_recorder/', views.FlightRecorder.as_view(), name='flight_recorder'),
-    path('sky_safe/', views.SkySafeOrder.as_view(), name='sky_safe')
-
+    path('sky_safe/', views.SkySafeOrder.as_view(), name='sky_safe'),
 ]
+
 if settings.DEBUG:
     urlpatterns += [
         re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

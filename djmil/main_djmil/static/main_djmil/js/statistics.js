@@ -125,3 +125,46 @@ function round_diagram(){
 }
 round_diagram()
 
+
+function line_diagram(){
+
+  var day_1 = document.getElementById('day_1').innerHTML
+  var day_2 = document.getElementById('day_2').innerHTML
+  var day_3 = document.getElementById('day_3').innerHTML
+  var day_4 = document.getElementById('day_4').innerHTML
+  var day_5 = document.getElementById('day_5').innerHTML
+  var day_6 = document.getElementById('day_6').innerHTML
+  var day_7 = document.getElementById('day_7').innerHTML
+
+  var day_1_quan = document.getElementById('day_1_quan').innerHTML
+  var day_2_quan = document.getElementById('day_2_quan').innerHTML
+  var day_3_quan = document.getElementById('day_3_quan').innerHTML
+  var day_4_quan = document.getElementById('day_4_quan').innerHTML
+  var day_5_quan = document.getElementById('day_5_quan').innerHTML
+  var day_6_quan = document.getElementById('day_6_quan').innerHTML
+  var day_7_quan = document.getElementById('day_7_quan').innerHTML
+
+
+  const ctx = document.getElementById('myChart2');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [day_1, day_2, day_3, day_4, day_5, day_6, day_7],
+      datasets: [{
+        label: '# of Votes',
+        data: [day_1_quan, day_2_quan, day_3_quan, day_4_quan, day_5_quan, day_6_quan, day_7_quan],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+}
+line_diagram()

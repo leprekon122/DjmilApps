@@ -357,9 +357,78 @@ class CombatLogic:
 
             return model
 
+    @property
+    def search_by_week_statistics(self):
+        day_1 = (datetime.today() - timedelta(days=1)).strftime("%y-%m-%d")
+        day_2 = (datetime.today() - timedelta(days=2)).strftime("%y-%m-%d")
+        day_3 = (datetime.today() - timedelta(days=3)).strftime("%y-%m-%d")
+        day_4 = (datetime.today() - timedelta(days=4)).strftime("%y-%m-%d")
+        day_5 = (datetime.today() - timedelta(days=5)).strftime("%y-%m-%d")
+        day_6 = (datetime.today() - timedelta(days=6)).strftime("%y-%m-%d")
+        day_7 = (datetime.today() - timedelta(days=7)).strftime("%y-%m-%d")
 
-'''change status drone on combat_data page'''
+        model_set = SecondOrdersModel.objects.filter(
+            Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                dt__icontains=day_3) | Q(
+                dt__icontains=day_4) | Q(
+                dt__icontains=day_5) | Q(
+                dt__icontains=day_6) | Q(
+                dt__icontains=day_7) ).values().exclude(
+            serial_no=self.fake_drone
+        ).order_by('serial_no')
 
+        model = []
+
+        if len(model_set) == 1:
+            model.append(self.model_set)
+
+        else:
+            for el in range(len(model_set)):
+                if el == 0:
+                    quantity = SecondOrdersModel.objects.filter(
+                        Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                            dt__icontains=day_3) | Q(
+                            dt__icontains=day_4) | Q(
+                            dt__icontains=day_5) | Q(
+                            dt__icontains=day_6) | Q(
+                            dt__icontains=day_7),
+                        serial_no=model_set[el][
+                            'serial_no']).values().count()
+
+                    model.append({'serial_no': model_set[el]['serial_no'],
+                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'longitude': str(Decimal(model_set[el]['longitude'])),
+                                  'latitude': str(Decimal(model_set[el]['latitude'])),
+                                  'product_type': model_set[el]['product_type'],
+                                  'quantity': quantity,
+                                  'status': model_set[el]['status']
+                                  })
+
+                else:
+                    if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
+                        quantity = SecondOrdersModel.objects.filter(
+                            Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                                dt__icontains=day_3) | Q(
+                                dt__icontains=day_4) | Q(
+                                dt__icontains=day_5) | Q(
+                                dt__icontains=day_6) | Q(
+                                dt__icontains=day_7),
+                            serial_no=model_set[el][
+                                'serial_no']).values().count()
+
+                        model.append({'serial_no': model_set[el]['serial_no'],
+                                      'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'longitude': str(Decimal(model_set[el]['longitude'])),
+                                      'latitude': str(Decimal(model_set[el]['latitude'])),
+                                      'product_type': model_set[el]['product_type'],
+                                      'quantity': quantity,
+                                      'status': model_set[el]['status']
+                                      })
+
+            return model
+
+
+# change status drone on combat_data page
 
 class ChoseStatusCombat:
 
@@ -664,8 +733,6 @@ class BuildStatistics:
                 }
         return data
 
-    """today statistics order"""
-
     @property
     def today_statistics_order(self):
         data_set = CombatLogic(self.open_data).search_by_today_statistics
@@ -754,7 +821,112 @@ class BuildStatistics:
                 }
         return data
 
-    """Rate function"""
+    @property
+    def weak_statistics_order(self):
+        data_set = CombatLogic(self.open_data).search_by_week_statistics
+        day_1 = (datetime.today() - timedelta(days=1)).strftime("%y-%m-%d")
+        day_2 = (datetime.today() - timedelta(days=2)).strftime("%y-%m-%d")
+        day_3 = (datetime.today() - timedelta(days=3)).strftime("%y-%m-%d")
+        day_4 = (datetime.today() - timedelta(days=4)).strftime("%y-%m-%d")
+        day_5 = (datetime.today() - timedelta(days=5)).strftime("%y-%m-%d")
+        day_6 = (datetime.today() - timedelta(days=6)).strftime("%y-%m-%d")
+        day_7 = (datetime.today() - timedelta(days=7)).strftime("%y-%m-%d")
+
+        date_data_set = {'day_1': day_1,
+                         'day_2': day_2,
+                         'day_3': day_3,
+                         'day_4': day_4,
+                         'day_5': day_5,
+                         'day_6': day_6,
+                         'day_7': day_7,
+                         }
+        quan_by_date = {'day_1': len(SecondOrdersModel.objects.filter(dt__icontains=day_1)),
+                        'day_2': len(SecondOrdersModel.objects.filter(dt__icontains=day_2)),
+                        'day_3': len(SecondOrdersModel.objects.filter(dt__icontains=day_3)),
+                        'day_4': len(SecondOrdersModel.objects.filter(dt__icontains=day_4)),
+                        'day_5': len(SecondOrdersModel.objects.filter(dt__icontains=day_5)),
+                        'day_6': len(SecondOrdersModel.objects.filter(dt__icontains=day_6)),
+                        'day_7': len(SecondOrdersModel.objects.filter(dt__icontains=day_7))
+                        }
+        data_1 = {
+            41: 0,
+            44: 0,
+            53: 0,
+            58: 0,
+            60: 0,
+            63: 0,
+            66: 0,
+            67: 0,
+            68: 0,
+            69: 0,
+            70: 0,
+            73: 0,
+            77: 0,
+            86: 0,
+            'ally': 0,
+            'fag': 0,
+            'unknown': 0
+        }
+
+        for el in data_set:
+            if el['product_type'] in data_1.keys():
+                data_1[el['product_type']] += 1
+                if any([el['latitude'].startswith('48.9731'),
+                        el['latitude'].startswith('48.9732'),
+                        el['latitude'].startswith('48.9733'),
+                        el['latitude'].startswith('48.9734'),
+                        el['latitude'].startswith('48.9735'),
+                        el['latitude'].startswith('48.961'),
+                        el['latitude'].startswith('48.962'),
+                        el['latitude'].startswith('48.963'),
+                        el['latitude'].startswith('48.964'),
+                        el['latitude'].startswith('48.965'),
+                        el['latitude'].startswith('48.966'),
+                        el['latitude'].startswith('48.956'),
+                        el['latitude'].startswith('48.955'),
+                        el['latitude'].startswith('48.954'),
+                        el['latitude'].startswith('48.953'),
+                        el['latitude'].startswith('48.952'),
+                        el['latitude'].startswith('48.951'),
+                        ]):
+                    data_1['ally'] += 1
+                elif el['longitude'].startswith('-'):
+                    data_1['unknown'] += 1
+                else:
+                    data_1['fag'] += 1
+            else:
+                data_1[68] += 1
+
+        data = {'total_value': len(data_set),
+                'dirty_total_value': len(
+                    SecondOrdersModel.objects.filter(
+                        Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                            dt__icontains=day_3) | Q(
+                            dt__icontains=day_4) | Q(
+                            dt__icontains=day_5) | Q(
+                            dt__icontains=day_6) | Q(
+                            dt__icontains=day_7) )),
+                'mavic_2': data_1[41],
+                'M_200_v2': data_1[44],
+                'Mavic_Mini': data_1[53],
+                'Mavic_Air_2': data_1[58],
+                'M300RTK': data_1[60],
+                'mini_2': data_1[63],
+                'air_2s': data_1[66],
+                'm30': data_1[67],
+                'mavic_3': data_1[68],
+                'mavic2Enterprise': data_1[69],
+                'mini_se': data_1[70],
+                'mini_3_Pro': data_1[73],
+                'Mavic_3T_3E': data_1[77],
+                'Mavic_3_Classic': data_1[86],
+                'ally': data_1['ally'],
+                'fag': data_1['fag'],
+                'unknown': data_1['unknown'],
+                }
+        return [data, date_data_set, quan_by_date]
+
+    # function for rating onn main page
 
     @property
     def top_rank(self):

@@ -1,6 +1,4 @@
 import os
-from datetime import datetime, timedelta
-
 import requests
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
@@ -8,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from dotenv import load_dotenv
 from rest_framework.views import APIView
 from rest_framework import permissions
+from datetime import datetime
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
     DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, \
@@ -20,19 +19,14 @@ load_dotenv()
 
 
 def login_page(request):
-    username = request.GET.get('login')
-    password = request.GET.get('password')
+    username = request.POST.get('login')
+    password = request.POST.get('password')
 
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
         login(request, user)
         return redirect('online_second_orders')
-
-    # else:
-    #    mes = messages.error(request, "oops wrong login or password!")
-    #    data = {'mes': mes}
-    #    return render(request, 'main_djmil/login_page.html', data)
 
     return render(request, 'main_djmil/login_page.html')
 
@@ -49,7 +43,8 @@ class MainPage(APIView):
         logic = BuildStatistics(datetime.today().strftime('%y-%m-d')[:7])
         data = {'model': logic.top_rank,
                 'action': 0,
-                'username': request.user}
+                'username': request.user,
+                }
         return render(request, "main_djmil/main_page.html", data)
 
 
@@ -91,14 +86,16 @@ class OnlineOrders(APIView):
             model = MainOrders.objects.filter(dt_first__icontains=date_search)
 
         if today:
-            model = MainOrders.objects.filter(dt_first__icontains=datetime.today().strftime('%Y-%m-%d'))
+            model = MainOrders.objects.filter(dt_first__icontains=datetime.today()
+                                              .strftime('%Y-%m-%d'))
 
         data = {'model': model}
 
         return render(request, 'main_djmil/online_orders.html', data)
 
 
-class OnlineSecondOrders(APIView):
+class OnlineSecondOrders(APIView,
+                         ):
     """logic in OnlineSecondOrders page"""
     permission_classes = [permissions.IsAuthenticated]
 
@@ -154,25 +151,27 @@ class OnlineSecondOrders(APIView):
             req = SecondOnlineSQLReq(search_by_drone_id)
             model = req.search_by_drone_id
 
-            data = {'model': model
+            data = {'model': model,
                     }
             return render(request, 'main_djmil/online_second_orders.html', data)
 
         # sort_by_date
         if date_search:
             model = SecondOrdersModel.objects.filter(dt__icontains=date_search).order_by("dt")
-            data = {'model': model}
+            data = {'model': model,
+                    }
             return render(request, 'main_djmil/online_second_orders.html', data)
 
         if today:
             model = SecondOrdersModel.objects.filter(
                 dt__icontains=datetime.today().strftime('%Y-%m-%d')).values().order_by('-id')
-            data = {'model': model}
+            data = {'model': model,
+                    }
             return render(request, 'main_djmil/online_second_orders.html', data)
 
         data = {'model': paginator.get_page(page_number).object_list,
                 'page_obj': page_obj,
-                'current_path': request.get_full_path()
+                'current_path': request.get_full_path(),
                 }
 
         return render(request, 'main_djmil/online_second_orders.html', data)
@@ -267,6 +266,7 @@ class StatisticsPage(APIView):
     def get(request):
         month = request.GET.get('month')
         today = request.GET.get('today')
+        weak = request.GET.get('weak')
         date_1 = request.GET.get('date_1')
         date_2 = request.GET.get('date_2')
 
@@ -285,11 +285,22 @@ class StatisticsPage(APIView):
 
         # statistics for today
         if today:
-            # logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")) \
-            #    .total_results_for_chosen_month
             logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")).today_statistics_order
 
-            return render(request, 'main_djmil/main_statistics.html', logic)
+            return render(request, 'main_djmil/main_statistics.html', {'logic': logic,
+                                                                       'count': 'today'
+                                                                       })
+
+        # logic for result per weak
+        if weak:
+            logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")).weak_statistics_order
+
+            data = {'model': logic[0],
+                    'date_set': logic[1],
+                    'quan_by_date': logic[2],
+                    'count': 'week'
+                    }
+            return render(request, 'main_djmil/main_statistics.html', data)
 
         return render(request, 'main_djmil/main_statistics.html')
 
@@ -338,6 +349,8 @@ class SkySafeOrder(APIView):
 
     @staticmethod
     def get(request):
+
+        """sky_safe page GET request func """
 
         date_search = request.GET.get('date_search')
 
