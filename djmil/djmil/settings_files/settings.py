@@ -32,10 +32,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     "main_djmil",
-
+    'rest_framework_simplejwt',
     "rest_framework",
     "import_export"
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,7 +50,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'djmil.urls'
-
 
 TEMPLATES = [
     {

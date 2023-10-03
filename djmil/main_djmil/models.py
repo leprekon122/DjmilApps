@@ -3,7 +3,7 @@ from time import strftime
 
 
 class SecondOrdersModel(models.Model):
-    serial_no = models.CharField(max_length=16)
+    serial_no = models.CharField(max_length=16, default='unknown')
     product_type = models.IntegerField()
     longitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
     latitude = models.DecimalField(max_digits=45, decimal_places=20)

@@ -1,14 +1,12 @@
 import csv
 from datetime import datetime, timedelta
 from decimal import Decimal
-
-from django.http import HttpResponse
 from docx import Document
-
+from django.http import HttpResponse
 from django.db.models import Count
 from django.db.models import Q
 
-from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, DataForCombatLogic, SkySafeData
+from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, SkySafeData
 
 
 class SecondOnlineSQLReq:
@@ -18,34 +16,39 @@ class SecondOnlineSQLReq:
 
     @property
     def make_sql(self):
+        """make sql query"""
         return SecondOrdersModel.objects.all()
 
     @property
     def search_by_drone_id(self):
+        """logic for filter in second_online orders page"""
         return SecondOrdersModel.objects.filter(serial_no=self.drone_id[0]).order_by('-dt')
 
 
-'''sql req on production'''
-
-
 class OnlineSQLReq:
+    """Logic for Online sql req"""
+
     def __init__(self, *args):
         self.drone_id = args
 
     @property
     def standart_req(self):
+        """function for first req in OnlineOrder"""
         return MainOrders.objects.all()
 
     @property
     def newest_req(self):
+        """filter logic for newest data"""
         return MainOrders.objects.all().order_by('-dt_last')
 
     @property
     def oldest_req(self):
+        """filter logic for oldest data"""
         return MainOrders.objects.all().order_by('dt_first')
 
     @property
     def search_drone_id(self):
+        """searching by drone_id"""
         return MainOrders.objects.filter(serial_no=self.drone_id[0])
 
 
@@ -53,7 +56,7 @@ class DownloadOnlineOrders:
 
     @property
     def download_order(self):
-
+        """logic for download order in Online Second Order page """
         model = MainOrders.objects.values()
         response = HttpResponse(
             content_type='text/csv',
@@ -62,13 +65,14 @@ class DownloadOnlineOrders:
 
         writer = csv.writer(response)
         writer.writerow(['id', 'serial_no', 'product_type', 'dt_first', 'dt_last'])
-        for el in model:
-            writer.writerow(el.values())
+        for elem in model:
+            writer.writerow(elem.values())
 
         return response
 
     @property
     def download_newest_order(self):
+        """function for downloading newest order """
         model = MainOrders.objects.values().order_by('-dt_last')
         response = HttpResponse(
             content_type='text/csv',
@@ -84,6 +88,7 @@ class DownloadOnlineOrders:
 
     @property
     def download_oldest_order(self):
+        """function for downloading oldest order """
         model = MainOrders.objects.values().order_by('id')
         response = HttpResponse(
             content_type='text/csv',
@@ -92,20 +97,20 @@ class DownloadOnlineOrders:
 
         writer = csv.writer(response)
         writer.writerow(['id', 'serial_no', 'product_type', 'dt_first', 'dt_last'])
-        for el in model:
-            writer.writerow(el.values())
+        for elem in model:
+            writer.writerow(elem.values())
 
         return response
 
 
-'''download second orders on production '''
+"""download second orders on production """
 
 
 class DownloadSecondOnlineOrders:
 
     @property
     def download_order(self):
-
+        """function for downloading order"""
         model = SecondOrdersModel.objects.values()
         response = HttpResponse(
             content_type='text/csv',
@@ -115,13 +120,14 @@ class DownloadSecondOnlineOrders:
         writer = csv.writer(response)
         writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
                          'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
-        for el in model:
-            writer.writerow(el.values())
+        for elem in model:
+            writer.writerow(elem.values())
 
         return response
 
     @property
     def download_newest_order(self):
+        """function for downloading by newest filter"""
         model = SecondOrdersModel.objects.values().order_by('-dt')
         response = HttpResponse(
             content_type='text/csv',
@@ -129,15 +135,18 @@ class DownloadSecondOnlineOrders:
         )
 
         writer = csv.writer(response)
-        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
-                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
-        for el in model:
-            writer.writerow(el.values())
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height,'
+                         ' altitude,'
+                         'phone_app_latitude, phone_app_longitude, home_latitude,'
+                         ' home_longitude, dt'])
+        for elem in model:
+            writer.writerow(elem.values())
 
         return response
 
     @property
     def download_oldest_order(self):
+        """download_oldest_order function"""
         model = SecondOrdersModel.objects.values().order_by('dt')
         response = HttpResponse(
             content_type='text/csv',
@@ -147,13 +156,13 @@ class DownloadSecondOnlineOrders:
         writer = csv.writer(response)
         writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
                          'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
-        for el in model:
-            writer.writerow(el.values())
+        for elem in model:
+            writer.writerow(elem.values())
 
         return response
 
 
-'''logic for CombatOrder'''
+"""logic for CombatOrder"""
 
 
 class CombatLogic:
@@ -175,10 +184,11 @@ class CombatLogic:
 
     @property
     def today_req(self):
-
+        """logic for today filer"""
         if self.get_time is not None:
             model_set = SecondOrdersModel.objects.filter(
-                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:3]}").values().exclude(
+                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:3]}") \
+                .values().exclude(
                 serial_no=self.fake_drone).order_by(
                 'serial_no')
 
@@ -192,7 +202,8 @@ class CombatLogic:
         total_quan = []
 
         if len(model_set) == 1:
-            quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d'),
+            quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today()
+                                                        .strftime('%y-%m-%d'),
                                                         serial_no=model_set[0][
                                                             'serial_no']).values().count()
 
@@ -207,32 +218,35 @@ class CombatLogic:
             model.append(model_data)
 
         else:
-            for el in range(len(model_set)):
-                if el == 0:
-                    quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d'),
-                                                                serial_no=model_set[el][
+            for elem in range(len(model_set)):
+                if elem == 0:
+                    quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today()
+                                                                .strftime('%y-%m-%d'),
+                                                                serial_no=model_set[elem][
                                                                     'serial_no']).values().count()
 
-                    model_data = {'serial_no': model_set[el]['serial_no'],
-                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                  'product_type': model_set[el]['product_type'],
+                    model_data = {'serial_no': model_set[elem]['serial_no'],
+                                  'dt': model_set[elem]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'product_type': model_set[elem]['product_type'],
                                   'quantity': quantity,
-                                  'status': model_set[el]['status']
+                                  'status': model_set[elem]['status']
                                   }
 
                     model.append(model_data)
                     total_quan.append(quantity)
                 else:
-                    if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
-                        quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today().strftime('%y-%m-%d'),
-                                                                    serial_no=model_set[el][
+                    if model_set[elem]['serial_no'] != \
+                            model_set[elem - 1]['serial_no']:
+                        quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today()
+                                                                    .strftime('%y-%m-%d'),
+                                                                    serial_no=model_set[elem][
                                                                         'serial_no']).values().count()
 
-                        model_data = {'serial_no': model_set[el]['serial_no'],
-                                      'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                      'product_type': model_set[el]['product_type'],
+                        model_data = {'serial_no': model_set[elem]['serial_no'],
+                                      'dt': model_set[elem]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'product_type': model_set[elem]['product_type'],
                                       'quantity': quantity,
-                                      'status': model_set[el]['status']
+                                      'status': model_set[elem]['status']
                                       }
 
                         model.append(model_data)
@@ -241,6 +255,7 @@ class CombatLogic:
 
     @property
     def search_by_date(self):
+        """logic for loading by date filter"""
 
         model = []
 
@@ -248,42 +263,40 @@ class CombatLogic:
             model.append(self.model_set)
 
         else:
-            for el in range(len(self.model_set)):
-                if el == 0:
+            for elem in range(len(self.model_set)):
+                if elem == 0:
                     quantity = SecondOrdersModel.objects.filter(dt__icontains=self.date_search,
-                                                                serial_no=self.model_set[el][
+                                                                serial_no=self.model_set[elem][
                                                                     'serial_no']).values().count()
 
-                    model.append({'serial_no': self.model_set[el]['serial_no'],
-                                  'dt': self.model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                  'longitude': str(Decimal(self.model_set[el]['longitude'])),
-                                  'latitude': str(Decimal(self.model_set[el]['latitude'])),
-                                  'product_type': self.model_set[el]['product_type'],
+                    model.append({'serial_no': self.model_set[elem]['serial_no'],
+                                  'dt': self.model_set[elem]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'longitude': str(Decimal(self.model_set[elem]['longitude'])),
+                                  'latitude': str(Decimal(self.model_set[elem]['latitude'])),
+                                  'product_type': self.model_set[elem]['product_type'],
                                   'quantity': quantity,
-                                  'status': self.model_set[el]['status']
+                                  'status': self.model_set[elem]['status']
                                   })
 
                 else:
-                    if self.model_set[el]['serial_no'] != self.model_set[el - 1]['serial_no']:
+                    if self.model_set[elem]['serial_no'] != self.model_set[elem - 1]['serial_no']:
                         quantity = SecondOrdersModel.objects.filter(dt__icontains=self.date_search,
-                                                                    serial_no=self.model_set[el][
+                                                                    serial_no=self.model_set[elem][
                                                                         'serial_no']).values().count()
 
-                        model.append({'serial_no': self.model_set[el]['serial_no'],
-                                      'dt': self.model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                      'longitude': str(Decimal(self.model_set[el]['longitude'])),
-                                      'latitude': str(Decimal(self.model_set[el]['latitude'])),
-                                      'product_type': self.model_set[el]['product_type'],
+                        model.append({'serial_no': self.model_set[elem]['serial_no'],
+                                      'dt': self.model_set[elem]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'longitude': str(Decimal(self.model_set[elem]['longitude'])),
+                                      'latitude': str(Decimal(self.model_set[elem]['latitude'])),
+                                      'product_type': self.model_set[elem]['product_type'],
                                       'quantity': quantity,
-                                      'status': self.model_set[el]['status']
+                                      'status': self.model_set[elem]['status']
                                       })
-
             return model
-
-    '''built data for today statistics order '''
 
     @property
     def search_by_today_statistics(self):
+        """built data for today statistics order """
         cur_date = datetime.today().strftime("%y-%m-%d")
         cur_month = datetime.today().strftime("%y-%m")
         tommorow_date = (datetime.today() - timedelta(days=1)).strftime("%d")
@@ -373,7 +386,7 @@ class CombatLogic:
                 dt__icontains=day_4) | Q(
                 dt__icontains=day_5) | Q(
                 dt__icontains=day_6) | Q(
-                dt__icontains=day_7) ).values().exclude(
+                dt__icontains=day_7)).values().exclude(
             serial_no=self.fake_drone
         ).order_by('serial_no')
 
@@ -473,6 +486,7 @@ class OpenDataCombatLogicClass:
 
     @property
     def enter_to_detail_data(self):
+        """entering to detail data in combar order page """
         if int(self.current_day) < 10:
             model_detail = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.current_year}-{self.current_month}-{self.current_day}",
@@ -513,55 +527,43 @@ class OpenDataCombatLogicClass:
             return data
 
 
-'''Combat orders download docx logic'''
+"""Combat orders download docx logic"""
 
 
 class BuildCombatOrders:
 
-    def __init__(self, *args):
-        self.start_cut = args[0]
-        self.end_cut = args[1]
-
     @property
     def build_orders(self):
+        """logic for building order docx on CombatOrders page"""
 
-        drone_id = []
+        logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")).today_statistics_order
 
-        logic = CombatLogic(self.start_cut)
+        drones = {}
+        drone_str = ''
 
-        if len(logic.search_by_date) == 0:
+        for key, value in logic.items():
+            if value != 0:
+                if key == 'total_value':
+                    pass
+                elif key == 'dirty_total_value':
+                    pass
+                elif key == 'ally':
+                    drones['свої'] = value
+                    drone_str += f"\t * свої - {value}\n"
+                elif key == 'fag':
+                    drones['ворожі'] = value
+                    drone_str += f"\t * ворожі - {value}\n"
+                elif key == 'unknown':
+                    drones['fake_gps'] = value
+                    drone_str += f"\t * fake_gps - {value}\n"
+                else:
+                    drones[key] = value
+                    drone_str += f"\t * {key} - {value}\n"
+
+        if len(logic) == 0:
             text = Document()
-            text.add_heading(f"""Доповідь командира СПР Око 1го СтрБ 67ї ОМБр ДУК станом на 03:00, {self.start_cut}.
-                            """, level=1)
 
-            text.add_paragraph(f"""Обстановка в смузі відповідальності бригади стабільна, контрольована.
-
-Змін в стані та положенні підрозділів бригади  немає.
-
-Аероскоп: За період 16:00 {self.start_cut} - 03:00 {self.end_cut} в повітрі над зоною н.п. Липці - Лук'янці - Борисівна - Зелене - Середа- Нескучне  не зафіксовано жодних БпЛА системи DJI та схожої з нею системи.
-
-Розвідка технічними засобами підрозділу від 16:00 {self.start_cut} до 03:00 {self.end_cut}:
-            1.Технічними засобами спостереження, відеофіксації та розвідки СПР Око 1го СтрБ 67ї ОМБр ДУК  за звітний період не зафіксовано ніяких значущих подій.         
-            
-            2.Засобами аеророзвідки за звітний період  не зафіксовано ніяких значущих подій з причини підготовки обладнання та технічних засобів до виконання бойових завдань.
-Спостереження, розвідка з використанням технічних засобів підрозділу триває.
-
-Втрати:
-    о/с- 0
-    в/т- 0
-    а/т- 0
-
-Виконання вогневих завдань- не виконувались. 
-Обладнання територій в інженерному та фортифікаційному відношенні - без змін.
-Розвідка - 1 сб проводив огляд місцевості (позицій, розвідку) за допомогою технічних засобів відеоспостереження, розрахунків БпЛА та іншого обладнання, пристроїв СПР Око 1го СтрБ 67ї ОМБр ДУК.
-
-Заходи бойової підготовки:
-    Проведена роботи по злагодженю та взаємодії між особовим складом підрозділу із бойової підготовки. Також особовий склад провів закріплення правил поведінки в умовах бойових дій в складі підрозділу.
-    Проблемні питання - відсутні.
-
-Оперативний черговий                                                                              Володимир Расько.                
-солдат                                                          
-                            """)
+            text.add_paragraph("""Немає данних за обраний період""")
 
             response = HttpResponse(
                 content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -571,61 +573,12 @@ class BuildCombatOrders:
             return response
 
         else:
-            for el in logic.search_by_date:
-                if el['product_type'] == 58:
-                    drone_id.append('mavic air')
-                elif el['product_type'] == 60:
-                    drone_id.append('M 300 RTK')
-                elif el['product_type'] == 63:
-                    drone_id.append('mini 2')
-                elif el['product_type'] == 66:
-                    drone_id.append('Air 2s')
-                elif el['product_type'] == 67:
-                    drone_id.append('M 30')
-                elif el['product_type'] == 68:
-                    drone_id.append('mavic 3')
-                elif el['product_type'] == 69:
-                    drone_id.append('mavic 2 Enterprise')
-                elif el['product_type'] == 70:
-                    drone_id.append('mini se')
-                elif el['product_type'] == 77:
-                    drone_id.append('mavic 3')
-                else:
-                    drone_id.append('mavic 3')
-
             text = Document()
-            text.add_heading(f"Доповідь командира СПР Око 1го СтрБ 67ї ОМБр ДУК станом на 03:00 {self.start_cut}.",
-                             level=1)
-            text.add_paragraph(f"""
-Обстановка в смузі відповідальності бригади стабільна, контрольована
-Змін в стані та положенні підрозділів бригади  немає
-
-Аероскоп: За період 16:00 {self.start_cut} - 03:00 {self.end_cut} в повітрі над зоною н.п. Липці - Лук'янці - Борисівна - Зелене - Середа- Нескучне  зафіксовано  такі дрони {*drone_id,}
-
-Розвідка технічними засобами підрозділу від 16:00 {self.start_cut} до 03:00 {self.end_cut}:
-        1. Технічними засобами спостереження, відеофіксації та розвідки СПР Око 1го СтрБ 67ї ОМБр ДУК  за звітний період не зафіксовано ніяких значущих подій.
-        
-        2. Засобами аеророзвідки за звітний період  не зафіксовано ніяких значущих подій з причини підготовки обладнання та технічних засобів до виконання бойових завдань.
-
-Спостереження, розвідка з використанням технічних засобів підрозділу триває.
-
-Втрати:
-    о/с- 0
-    в/т- 0
-    а/т- 0
-
-Виконання вогневих завдань- не виконувались. 
-
-Обладнання територій в інженерному та фортифікаційному відношенні - без змін.
-
-Розвідка - 1 сб проводив огляд місцевості (позицій, розвідку) за допомогою технічних засобів відеоспостереження, розрахунків БпЛА та іншого обладнання, пристроїв СПР Око 1го СтрБ 67ї ОМБр ДУК.
-Заходи бойової підготовки:
-    Проведена роботи по злагодженю та взаємодії між особовим складом підрозділу із бойової підготовки. Також особовий склад провів закріплення правил поведінки в умовах бойових дій в складі підрозділу.
-    Проблемні питання - відсутні.
-    
-Оперативний черговий                                                   Володимир Расько.
-солдат                  					                            
-                """)
+            text.add_paragraph(f"""На південно-східних околицях н.п. Дронівка встановлено систему Джміль для виявлення БпЛА виробництва DJI:
+• За звітній період було виявлено {logic['total_value']} унікальних БпЛА, кількість детекцій за добу {logic['dirty_total_value']};
+• Було виявлено наступний модельний ряд та кількість:
+    {drone_str}
+""")
 
             response = HttpResponse(
                 content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -642,6 +595,7 @@ class MainPageLogic:
 
     @property
     def total_month_result(self):
+        """count total month result"""
         total_value = SecondOrdersModel.objects.filter(
             dt__icontains=datetime.today().strftime('%y-%m')).aggregate(
             Count('serial_no'))
@@ -735,6 +689,7 @@ class BuildStatistics:
 
     @property
     def today_statistics_order(self):
+        """built statistics by today in statistics page """
         data_set = CombatLogic(self.open_data).search_by_today_statistics
         cur_date = datetime.today().strftime("%y-%m-%d")
         cur_month = datetime.today().strftime("%y-%m")
@@ -792,7 +747,8 @@ class BuildStatistics:
         data = {'total_value': len(data_set),
                 'dirty_total_value': len(
                     SecondOrdersModel.objects.filter(
-                        Q(dt__icontains=cur_date) | Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
+                        Q(dt__icontains=cur_date) |
+                        Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 16:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 17:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 18:") | Q(
@@ -823,6 +779,7 @@ class BuildStatistics:
 
     @property
     def weak_statistics_order(self):
+        """built statistics by the week on statistics page"""
         data_set = CombatLogic(self.open_data).search_by_week_statistics
         day_1 = (datetime.today() - timedelta(days=1)).strftime("%y-%m-%d")
         day_2 = (datetime.today() - timedelta(days=2)).strftime("%y-%m-%d")
@@ -905,7 +862,7 @@ class BuildStatistics:
                             dt__icontains=day_4) | Q(
                             dt__icontains=day_5) | Q(
                             dt__icontains=day_6) | Q(
-                            dt__icontains=day_7) )),
+                            dt__icontains=day_7))),
                 'mavic_2': data_1[41],
                 'M_200_v2': data_1[44],
                 'Mavic_Mini': data_1[53],
@@ -930,6 +887,7 @@ class BuildStatistics:
 
     @property
     def top_rank(self):
+        """built top rank order in main page"""
         logic = self.logic.today_req
 
         if len(logic[1]) == 0:

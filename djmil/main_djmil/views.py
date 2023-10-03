@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 import requests
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
@@ -6,7 +7,6 @@ from django.contrib.auth import authenticate, login
 from dotenv import load_dotenv
 from rest_framework.views import APIView
 from rest_framework import permissions
-from datetime import datetime
 from .models import MainOrders, SecondOrdersModel
 from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
     DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, \
@@ -19,11 +19,10 @@ load_dotenv()
 
 
 def login_page(request):
+    """function for login on login page"""
     username = request.POST.get('login')
     password = request.POST.get('password')
-
     user = authenticate(request, username=username, password=password)
-
     if user is not None:
         login(request, user)
         return redirect('online_second_orders')
@@ -37,6 +36,7 @@ class MainPage(APIView):
 
     @staticmethod
     def get(request):
+        """function for het request in main page"""
         start = request.GET.get('start')
         if start:
             start_task.apply_async()
@@ -54,6 +54,7 @@ class OnlineOrders(APIView):
 
     @staticmethod
     def get(request):
+        """function for get request in OnlineOrdersPage page"""
         model = MainOrders.objects.all()
 
         new = request.GET.get('new')
@@ -101,6 +102,7 @@ class OnlineSecondOrders(APIView,
 
     @staticmethod
     def get(request):
+        """function for het request in OnlineSecondOrders page"""
 
         model = SecondOrdersModel.objects.all().order_by('-id')
         paginator = Paginator(model, 20)
@@ -173,7 +175,6 @@ class OnlineSecondOrders(APIView,
                 'page_obj': page_obj,
                 'current_path': request.get_full_path(),
                 }
-
         return render(request, 'main_djmil/online_second_orders.html', data)
 
 
@@ -183,6 +184,7 @@ class CombatOrder(APIView):
 
     @staticmethod
     def get(request):
+        """function for get request in CombatOrder page"""
 
         date_search = request.GET.get('date_search')
 
@@ -198,9 +200,7 @@ class CombatOrder(APIView):
 
         # build docx file and download
         if build_order:
-            start_cut = request.GET.get('start_cut')
-            end_cut = request.GET.get('end_cup')
-            logic = BuildCombatOrders(start_cut, end_cut)
+            logic = BuildCombatOrders()
             return logic.build_orders
 
         # filter by date
@@ -229,7 +229,7 @@ class CombatOrder(APIView):
                       f"lat=48.973403&lon=38.142698&" \
                       f"units=metric&appid={os.getenv('WEATHER_API_KEY')}"
 
-            req = requests.get(api_url)
+            req = requests.get(api_url, timeout=20)
 
             logic = OpenDataCombatLogicClass(open_data)
 
@@ -242,6 +242,7 @@ class CombatOrder(APIView):
 
     @staticmethod
     def post(request):
+        """function for POST request in CombatOrder page"""
         status = request.POST.get('status').split(' ')
         logic = ChoseStatusCombat(status)
         logic.change_status()
@@ -264,6 +265,7 @@ class StatisticsPage(APIView):
 
     @staticmethod
     def get(request):
+        """function for get request in StatisticsPage """
         month = request.GET.get('month')
         today = request.GET.get('today')
         weak = request.GET.get('weak')
@@ -286,7 +288,7 @@ class StatisticsPage(APIView):
         # statistics for today
         if today:
             logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")).today_statistics_order
-
+            print(logic)
             return render(request, 'main_djmil/main_statistics.html', {'logic': logic,
                                                                        'count': 'today'
                                                                        })
@@ -311,6 +313,7 @@ class FlightRecorder(APIView):
 
     @staticmethod
     def get(request):
+        """ function for get request in FlightRecorder page """
         date_search = request.GET.get('date_search')
         find_time = request.GET.get('time')
         today = request.GET.get('today')
@@ -330,6 +333,7 @@ class FlightRecorder(APIView):
 
     @staticmethod
     def post(request):
+        """ function for POST request in FlightRecorder page """
         add_record = request.POST.get('add_record')
         drona_type = request.POST.get('drona_type')
         drone_id = request.POST.get('drone_id')
@@ -397,7 +401,7 @@ class SkySafeOrder(APIView):
                       f"lat=48.973403&lon=38.142698&" \
                       f"units=metric&appid={os.getenv('WEATHER_API_KEY')}"
 
-            req = requests.get(api_url)
+            req = requests.get(api_url, timeout=20)
 
             logic = OpenDataSkySafeClass(open_data)
 
