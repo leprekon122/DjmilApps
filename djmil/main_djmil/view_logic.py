@@ -10,13 +10,14 @@ from .models import SecondOrdersModel, MainOrders, FlightRecorderModel, SkySafeD
 
 
 class SecondOnlineSQLReq:
+    """SecondOnlineSQLReq class"""
 
     def __init__(self, *args):
         self.drone_id = args
 
     @property
     def make_sql(self):
-        """make sql query"""
+        '''make sql query'''
         return SecondOrdersModel.objects.all()
 
     @property
@@ -53,7 +54,7 @@ class OnlineSQLReq:
 
 
 class DownloadOnlineOrders:
-
+    """class for downloading order """
     @property
     def download_order(self):
         """logic for download order in Online Second Order page """
@@ -103,10 +104,8 @@ class DownloadOnlineOrders:
         return response
 
 
-"""download second orders on production """
-
-
 class DownloadSecondOnlineOrders:
+    """download second orders on production """
 
     @property
     def download_order(self):
@@ -162,11 +161,8 @@ class DownloadSecondOnlineOrders:
         return response
 
 
-"""logic for CombatOrder"""
-
-
 class CombatLogic:
-
+    """class for combat order page"""
     def __init__(self, date_search=None, fake_drone=None, get_time=None):
         self.date_search = date_search
         self.fake_drone = fake_drone
@@ -458,10 +454,11 @@ class ChoseStatusCombat:
             status=whom)
 
 
-'''OpenData get request in combat logic'''
+
 
 
 class OpenDataCombatLogicClass:
+    """OpenData get request in combat logic"""
     def __init__(self, *args):
         self.input_data = args[0]
 
@@ -527,10 +524,9 @@ class OpenDataCombatLogicClass:
             return data
 
 
-"""Combat orders download docx logic"""
-
 
 class BuildCombatOrders:
+    """Combat orders download docx logic"""
 
     @property
     def build_orders(self):
@@ -589,6 +585,7 @@ class BuildCombatOrders:
 
 
 class MainPageLogic:
+    """logic for main page"""
 
     def __init__(self):
         pass

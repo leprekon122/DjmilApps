@@ -31,10 +31,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    "main_djmil",
-    'rest_framework_simplejwt',
-    "rest_framework",
-    "import_export"
+    'main_djmil',
+    'rest_framework',
+    'import_export'
 ]
 
 

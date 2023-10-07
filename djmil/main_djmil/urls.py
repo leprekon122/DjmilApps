@@ -1,10 +1,7 @@
 from django.conf import settings
 from django.urls import path, re_path
 from django.views.static import serve
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+
 
 from . import views
 
@@ -17,8 +14,6 @@ urlpatterns = [
     path('statistics/', views.StatisticsPage.as_view(), name='statistics'),
     path('flight_recorder/', views.FlightRecorder.as_view(), name='flight_recorder'),
     path('sky_safe/', views.SkySafeOrder.as_view(), name='sky_safe'),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:

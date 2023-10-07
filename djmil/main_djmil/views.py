@@ -15,6 +15,7 @@ from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
     FilterFlightRecordData, SkySafeLogic, OpenDataSkySafeClass
 from .tasks import start_task
 
+
 load_dotenv()
 
 
@@ -23,6 +24,7 @@ def login_page(request):
     username = request.POST.get('login')
     password = request.POST.get('password')
     user = authenticate(request, username=username, password=password)
+
     if user is not None:
         login(request, user)
         return redirect('online_second_orders')
@@ -175,6 +177,7 @@ class OnlineSecondOrders(APIView,
                 'page_obj': page_obj,
                 'current_path': request.get_full_path(),
                 }
+
         return render(request, 'main_djmil/online_second_orders.html', data)
 
 
