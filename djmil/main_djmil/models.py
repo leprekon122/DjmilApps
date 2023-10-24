@@ -1,8 +1,9 @@
+"""import pockets"""
 from django.db import models
-from time import strftime
 
 
 class SecondOrdersModel(models.Model):
+    """Model for second online order page"""
     serial_no = models.CharField(max_length=16, default='unknown')
     product_type = models.IntegerField()
     longitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
@@ -22,6 +23,7 @@ class SecondOrdersModel(models.Model):
     status = models.CharField(max_length=60, null=True, blank=True)
 
     def __str__(self):
+        """return str data funct"""
         return f"{self.serial_no} {self.product_type}, {self.longitude} {self.latitude} {self.height}" \
                f"{self.altitude} {self.phone_app_longitude} {self.phone_app_latitude} {self.home_latitude} {self.home_x} {self.home_y}" \
                f"{self.home_longitude} {self.dt} {self.frame_id} {self.status}"
@@ -31,8 +33,25 @@ class SecondOrdersModel(models.Model):
         verbose_name_plural = 'SecondOrdersModel'
 
 
+class CombatOrdersModel(models.Model):
+    """model for auto collectins data in combat orders page """
+    serial_no = models.CharField(max_length=255, default='unknown')
+    dt = models.DateTimeField()
+    product_type = models.CharField(max_length=50, null=True, blank=True)
+    quantity = models.IntegerField()
+    status = models.CharField(max_length=40)
+
+    def __str__(self):
+        return f"{self.serial_no} {self.dt} {self.product_type} {self.quantity} {self.status}"
+
+    class Meta:
+        verbose_name = 'CombatOrdersModel'
+        verbose_name_plural = 'CombatOrdersModel'
+
+
 # Create your models here.
 class MainOrders(models.Model):
+    """class for main page"""
     serial_no = models.CharField(max_length=255)
     product_type = models.CharField(max_length=255)
     dt_first = models.DateTimeField(null=True, blank=True)
@@ -47,6 +66,7 @@ class MainOrders(models.Model):
 
 
 class StatisticDataSet(models.Model):
+    """class for collect statistics"""
     serial_no = models.CharField(max_length=255)
     dt = models.DateTimeField()
     product_type = models.CharField(max_length=255, null=True, blank=True)
@@ -76,6 +96,7 @@ class DataForCombatLogic(models.Model):
 
 
 class FlightRecorderModel(models.Model):
+    """model for fly recorder page"""
     drone_type = models.CharField(max_length=50)
     record_data = models.DateTimeField(auto_now=True)
     drone_id = models.CharField(max_length=255, null=True, blank=True)
@@ -91,6 +112,7 @@ class FlightRecorderModel(models.Model):
 
 
 class SkySafeData(models.Model):
+    """model for sky safe data page"""
     sensor_id = models.CharField(max_length=255, null=True, blank=True)
     station_id = models.CharField(max_length=255, null=True, blank=True)
     persistent_id = models.CharField(max_length=255, null=True, blank=True)

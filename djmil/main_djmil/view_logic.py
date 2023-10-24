@@ -1,3 +1,4 @@
+"""import pockets"""
 import csv
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -55,6 +56,7 @@ class OnlineSQLReq:
 
 class DownloadOnlineOrders:
     """class for downloading order """
+
     @property
     def download_order(self):
         """logic for download order in Online Second Order page """
@@ -117,8 +119,10 @@ class DownloadSecondOnlineOrders:
         )
 
         writer = csv.writer(response)
-        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
-                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height,'
+                         ' altitude, phone_app_latitude, phone_app_longitude, phone_app_x,'
+                         ' phone_app_y, home_latitude,'
+                         ' home_longitude, home_x, home_y, dt, frame_id, status'])
         for elem in model:
             writer.writerow(elem.values())
 
@@ -135,9 +139,9 @@ class DownloadSecondOnlineOrders:
 
         writer = csv.writer(response)
         writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height,'
-                         ' altitude,'
-                         'phone_app_latitude, phone_app_longitude, home_latitude,'
-                         ' home_longitude, dt'])
+                         ' altitude, phone_app_latitude, phone_app_longitude, phone_app_x,'
+                         ' phone_app_y, home_latitude,'
+                         ' home_longitude, home_x, home_y, dt, frame_id, status'])
         for elem in model:
             writer.writerow(elem.values())
 
@@ -153,8 +157,10 @@ class DownloadSecondOnlineOrders:
         )
 
         writer = csv.writer(response)
-        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height, altitude,'
-                         'phone_app_latitude, phone_app_longitude, home_latitude, home_longitude, dt'])
+        writer.writerow(['SELECT serial_no, product_type, longitude, latitude, height,'
+                         ' altitude, phone_app_latitude, phone_app_longitude, phone_app_x,'
+                         ' phone_app_y, home_latitude,'
+                         ' home_longitude, home_x, home_y, dt, frame_id, status'])
         for elem in model:
             writer.writerow(elem.values())
 
@@ -163,6 +169,7 @@ class DownloadSecondOnlineOrders:
 
 class CombatLogic:
     """class for combat order page"""
+
     def __init__(self, date_search=None, fake_drone=None, get_time=None):
         self.date_search = date_search
         self.fake_drone = fake_drone
@@ -180,7 +187,8 @@ class CombatLogic:
 
     @property
     def today_req(self):
-        """logic for today filer"""
+        """logic for today filter"""
+
         if self.get_time is not None:
             model_set = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:3]}") \
@@ -247,7 +255,18 @@ class CombatLogic:
 
                         model.append(model_data)
                         total_quan.append(quantity)
-        return [model, total_quan]
+        # determination last 5 detection
+        last_data_set_list = []
+        try:
+            last_data_set = SecondOrdersModel.objects.values('serial_no').order_by('-id')[:5]
+            for elem in last_data_set:
+                if elem['serial_no'] not in last_data_set_list:
+                    last_data_set_list.append(elem['serial_no'])
+        except Exception:
+            pass
+        # ==============================================
+
+        return [model, total_quan, last_data_set_list]
 
     @property
     def search_by_date(self):
@@ -364,36 +383,58 @@ class CombatLogic:
                                       'status': model_set[el]['status']
                                       })
 
-            return model
+        return model
 
-    @property
-    def search_by_week_statistics(self):
-        day_1 = (datetime.today() - timedelta(days=1)).strftime("%y-%m-%d")
-        day_2 = (datetime.today() - timedelta(days=2)).strftime("%y-%m-%d")
-        day_3 = (datetime.today() - timedelta(days=3)).strftime("%y-%m-%d")
-        day_4 = (datetime.today() - timedelta(days=4)).strftime("%y-%m-%d")
-        day_5 = (datetime.today() - timedelta(days=5)).strftime("%y-%m-%d")
-        day_6 = (datetime.today() - timedelta(days=6)).strftime("%y-%m-%d")
-        day_7 = (datetime.today() - timedelta(days=7)).strftime("%y-%m-%d")
 
-        model_set = SecondOrdersModel.objects.filter(
-            Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
-                dt__icontains=day_3) | Q(
-                dt__icontains=day_4) | Q(
-                dt__icontains=day_5) | Q(
-                dt__icontains=day_6) | Q(
-                dt__icontains=day_7)).values().exclude(
-            serial_no=self.fake_drone
-        ).order_by('serial_no')
+@property
+def search_by_week_statistics(self):
+    day_1 = (datetime.today() - timedelta(days=1)).strftime("%y-%m-%d")
+    day_2 = (datetime.today() - timedelta(days=2)).strftime("%y-%m-%d")
+    day_3 = (datetime.today() - timedelta(days=3)).strftime("%y-%m-%d")
+    day_4 = (datetime.today() - timedelta(days=4)).strftime("%y-%m-%d")
+    day_5 = (datetime.today() - timedelta(days=5)).strftime("%y-%m-%d")
+    day_6 = (datetime.today() - timedelta(days=6)).strftime("%y-%m-%d")
+    day_7 = (datetime.today() - timedelta(days=7)).strftime("%y-%m-%d")
 
-        model = []
+    model_set = SecondOrdersModel.objects.filter(
+        Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+            dt__icontains=day_3) | Q(
+            dt__icontains=day_4) | Q(
+            dt__icontains=day_5) | Q(
+            dt__icontains=day_6) | Q(
+            dt__icontains=day_7)).values().exclude(
+        serial_no=self.fake_drone
+    ).order_by('serial_no')
 
-        if len(model_set) == 1:
-            model.append(self.model_set)
+    model = []
 
-        else:
-            for el in range(len(model_set)):
-                if el == 0:
+    if len(model_set) == 1:
+        model.append(self.model_set)
+
+    else:
+        for el in range(len(model_set)):
+            if el == 0:
+                quantity = SecondOrdersModel.objects.filter(
+                    Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                        dt__icontains=day_3) | Q(
+                        dt__icontains=day_4) | Q(
+                        dt__icontains=day_5) | Q(
+                        dt__icontains=day_6) | Q(
+                        dt__icontains=day_7),
+                    serial_no=model_set[el][
+                        'serial_no']).values().count()
+
+                model.append({'serial_no': model_set[el]['serial_no'],
+                              'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                              'longitude': str(Decimal(model_set[el]['longitude'])),
+                              'latitude': str(Decimal(model_set[el]['latitude'])),
+                              'product_type': model_set[el]['product_type'],
+                              'quantity': quantity,
+                              'status': model_set[el]['status']
+                              })
+
+            else:
+                if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
                     quantity = SecondOrdersModel.objects.filter(
                         Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
                             dt__icontains=day_3) | Q(
@@ -413,28 +454,7 @@ class CombatLogic:
                                   'status': model_set[el]['status']
                                   })
 
-                else:
-                    if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
-                        quantity = SecondOrdersModel.objects.filter(
-                            Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
-                                dt__icontains=day_3) | Q(
-                                dt__icontains=day_4) | Q(
-                                dt__icontains=day_5) | Q(
-                                dt__icontains=day_6) | Q(
-                                dt__icontains=day_7),
-                            serial_no=model_set[el][
-                                'serial_no']).values().count()
-
-                        model.append({'serial_no': model_set[el]['serial_no'],
-                                      'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                      'longitude': str(Decimal(model_set[el]['longitude'])),
-                                      'latitude': str(Decimal(model_set[el]['latitude'])),
-                                      'product_type': model_set[el]['product_type'],
-                                      'quantity': quantity,
-                                      'status': model_set[el]['status']
-                                      })
-
-            return model
+        return model
 
 
 # change status drone on combat_data page
@@ -454,11 +474,9 @@ class ChoseStatusCombat:
             status=whom)
 
 
-
-
-
 class OpenDataCombatLogicClass:
     """OpenData get request in combat logic"""
+
     def __init__(self, *args):
         self.input_data = args[0]
 
@@ -522,7 +540,6 @@ class OpenDataCombatLogicClass:
             }
 
             return data
-
 
 
 class BuildCombatOrders:

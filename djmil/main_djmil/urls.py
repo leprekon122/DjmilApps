@@ -1,15 +1,14 @@
 from django.conf import settings
 from django.urls import path, re_path
 from django.views.static import serve
-
-
 from . import views
 
 urlpatterns = [
     path('', views.login_page, name='login'),
     path("main_page", views.MainPage.as_view(), name="main_page"),
     path('online_orders/', views.OnlineOrders.as_view(), name='online_orders'),
-    path('online_second_orders/', views.OnlineSecondOrders.as_view(), name='online_second_orders',),
+    path('online_second_orders/', views.OnlineSecondOrders.as_view(), name='online_second_orders'),
+    path('online_second_orders_api/', views.OnlineSecondOrdersApi.as_view(), name='online_second_orders_api'),
     path('combat_orders/', views.CombatOrder.as_view(), name="combat_orders"),
     path('statistics/', views.StatisticsPage.as_view(), name='statistics'),
     path('flight_recorder/', views.FlightRecorder.as_view(), name='flight_recorder'),

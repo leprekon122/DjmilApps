@@ -85,12 +85,21 @@
         {%for el in model%}
         <div class="alert alert-warning combat_alert"
              style="background: linear-gradient(to right, #0c0c0d, #a6700c, #0c0c0d)">
+            {%if el.serial_no in test%}
+            <form method="get">
+                <button class="btn btn-light main_btn text-danger" type="submit" name="open_data"
+                        value="{{el.serial_no}} {{el.dt}}" >
+                    {{el.serial_no}}
+                </button>
+            </form>
+            {%else%}
             <form method="get">
                 <button class="btn btn-warning main_btn text-light" type="submit" name="open_data"
                         value="{{el.serial_no}} {{el.dt}}">
                     {{el.serial_no}}
                 </button>
             </form>
+            {%endif%}
             {%if el.product_type == 41 %}
             <p style="color:#fff">mavic_2</p>
             {%elif el.product_type == 44 %}

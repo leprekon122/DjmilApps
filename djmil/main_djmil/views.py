@@ -1,3 +1,4 @@
+"""import pockets"""
 import os
 from datetime import datetime
 import requests
@@ -6,15 +7,19 @@ from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
 from dotenv import load_dotenv
 from rest_framework.views import APIView
+from rest_framework.mixins import ListModelMixin
+from rest_framework.generics import GenericAPIView
 from rest_framework import permissions
+
+from .api_logic import StandardResultsSetPagination
 from .models import MainOrders, SecondOrdersModel
+from .serializers import SecondOnlineOrderSerializer
 from .view_logic import CombatLogic, SecondOnlineSQLReq, OnlineSQLReq, \
     DownloadOnlineOrders, DownloadSecondOnlineOrders, BuildCombatOrders, \
     BuildStatistics, LogicAnalyze, OpenDataCombatLogicClass, \
     ChoseStatusCombat, AddFlightRecorderData, \
     FilterFlightRecordData, SkySafeLogic, OpenDataSkySafeClass
 from .tasks import start_task
-
 
 load_dotenv()
 
@@ -52,7 +57,7 @@ class MainPage(APIView):
 
 class OnlineOrders(APIView):
     """logic in OnlineOrders page"""
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
 
     @staticmethod
     def get(request):
@@ -181,6 +186,19 @@ class OnlineSecondOrders(APIView,
         return render(request, 'main_djmil/online_second_orders.html', data)
 
 
+class OnlineSecondOrdersApi(ListModelMixin,
+                            GenericAPIView):
+    """class of online second order page api"""
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = SecondOrdersModel.objects.all()
+    pagination_class = StandardResultsSetPagination
+    serializer_class = SecondOnlineOrderSerializer
+
+    def get(self, request, *args, **kwargs):
+        """get request function"""
+        return self.list(request, *args, **kwargs)
+
+
 class CombatOrder(APIView):
     """combat_order page view"""
     permission_classes = [permissions.IsAuthenticated]
@@ -222,6 +240,7 @@ class CombatOrder(APIView):
             data = {
                 'model': logic.today_req[0],
                 'action': 0,
+                'test': logic.today_req[2]
             }
 
             return render(request, 'main_djmil/combat_orders.html', data)
@@ -269,6 +288,7 @@ class StatisticsPage(APIView):
     @staticmethod
     def get(request):
         """function for get request in StatisticsPage """
+        print(request.user)
         month = request.GET.get('month')
         today = request.GET.get('today')
         weak = request.GET.get('weak')
@@ -291,7 +311,6 @@ class StatisticsPage(APIView):
         # statistics for today
         if today:
             logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")).today_statistics_order
-            print(logic)
             return render(request, 'main_djmil/main_statistics.html', {'logic': logic,
                                                                        'count': 'today'
                                                                        })
@@ -312,7 +331,7 @@ class StatisticsPage(APIView):
 
 class FlightRecorder(APIView):
     """logic for fly_recorder page"""
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
 
     @staticmethod
     def get(request):
@@ -352,7 +371,7 @@ class FlightRecorder(APIView):
 class SkySafeOrder(APIView):
     """logic for sky_safe order page"""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
 
     @staticmethod
     def get(request):
