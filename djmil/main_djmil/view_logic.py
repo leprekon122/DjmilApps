@@ -386,52 +386,52 @@ class CombatLogic:
         return model
 
 
-@property
-def search_by_week_statistics(self):
-    day_1 = (datetime.today() - timedelta(days=1)).strftime("%y-%m-%d")
-    day_2 = (datetime.today() - timedelta(days=2)).strftime("%y-%m-%d")
-    day_3 = (datetime.today() - timedelta(days=3)).strftime("%y-%m-%d")
-    day_4 = (datetime.today() - timedelta(days=4)).strftime("%y-%m-%d")
-    day_5 = (datetime.today() - timedelta(days=5)).strftime("%y-%m-%d")
-    day_6 = (datetime.today() - timedelta(days=6)).strftime("%y-%m-%d")
-    day_7 = (datetime.today() - timedelta(days=7)).strftime("%y-%m-%d")
+    @property
+    def search_by_week_statistics(self):
+        day_1 = (datetime.today() - timedelta(days=1)).strftime("%y-%m-%d")
+        day_2 = (datetime.today() - timedelta(days=2)).strftime("%y-%m-%d")
+        day_3 = (datetime.today() - timedelta(days=3)).strftime("%y-%m-%d")
+        day_4 = (datetime.today() - timedelta(days=4)).strftime("%y-%m-%d")
+        day_5 = (datetime.today() - timedelta(days=5)).strftime("%y-%m-%d")
+        day_6 = (datetime.today() - timedelta(days=6)).strftime("%y-%m-%d")
+        day_7 = (datetime.today() - timedelta(days=7)).strftime("%y-%m-%d")
 
-    model_set = SecondOrdersModel.objects.filter(
-        Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
-            dt__icontains=day_3) | Q(
-            dt__icontains=day_4) | Q(
-            dt__icontains=day_5) | Q(
-            dt__icontains=day_6) | Q(
-            dt__icontains=day_7)).values().exclude(
-        serial_no=self.fake_drone
-    ).order_by('serial_no')
+        model_set = SecondOrdersModel.objects.filter(
+            Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                dt__icontains=day_3) | Q(
+                dt__icontains=day_4) | Q(
+                dt__icontains=day_5) | Q(
+                dt__icontains=day_6) | Q(
+                dt__icontains=day_7)).values().exclude(
+            serial_no=self.fake_drone
+        ).order_by('serial_no')
 
-    model = []
+        model = []
 
-    if len(model_set) == 1:
-        model.append(self.model_set)
+        if len(model_set) == 1:
+            model.append(self.model_set)
 
-    else:
-        for el in range(len(model_set)):
-            if el == 0:
-                quantity = SecondOrdersModel.objects.filter(
-                    Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
-                        dt__icontains=day_3) | Q(
-                        dt__icontains=day_4) | Q(
-                        dt__icontains=day_5) | Q(
-                        dt__icontains=day_6) | Q(
-                        dt__icontains=day_7),
-                    serial_no=model_set[el][
-                        'serial_no']).values().count()
+        else:
+            for el in range(len(model_set)):
+                if el == 0:
+                    quantity = SecondOrdersModel.objects.filter(
+                        Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                            dt__icontains=day_3) | Q(
+                            dt__icontains=day_4) | Q(
+                            dt__icontains=day_5) | Q(
+                            dt__icontains=day_6) | Q(
+                            dt__icontains=day_7),
+                        serial_no=model_set[el][
+                            'serial_no']).values().count()
 
-                model.append({'serial_no': model_set[el]['serial_no'],
-                              'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                              'longitude': str(Decimal(model_set[el]['longitude'])),
-                              'latitude': str(Decimal(model_set[el]['latitude'])),
-                              'product_type': model_set[el]['product_type'],
-                              'quantity': quantity,
-                              'status': model_set[el]['status']
-                              })
+                    model.append({'serial_no': model_set[el]['serial_no'],
+                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'longitude': str(Decimal(model_set[el]['longitude'])),
+                                  'latitude': str(Decimal(model_set[el]['latitude'])),
+                                  'product_type': model_set[el]['product_type'],
+                                  'quantity': quantity,
+                                  'status': model_set[el]['status']
+                                  })
 
             else:
                 if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
