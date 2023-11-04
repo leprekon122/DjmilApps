@@ -30,7 +30,7 @@
             </div>
         </form>
 
-        <form method="get">
+        <!--<form method="get">
             <div class="alert alert-dark chose_dates"
                  style="background: linear-gradient(to right, #0c0c0d,#d9a30f, #0c0c0d)">
                 <input type="date" class="form-control" name="date_1">
@@ -38,7 +38,7 @@
                 <button class="btn btn-dark" type="submit" onclick="show_data()">обрати</button>
             </div>
         </form>
-        <br>
+        <br> -->
         {%if count == 'today'%}
         <div class="main_statistic">
             <div class="total_result_for_month"
@@ -46,6 +46,13 @@
                 <p class="text-light">Знайдено дронів за місяць: <span
                         id="total_val_drones">{{logic.total_value}}</span></p>
                 <p class="text-light">Загальна кількість виявлень: {{logic.dirty_total_value}}</p>
+
+                {% if logic.1001_firmware != 0 %}
+                <p class="text-light"><span id="1001_firmware_title">1001_firmware</span>: <span
+                        id="1001_firmware">{{logic.1001_firmware}}</span>
+                </p>
+                {%endif%}
+
                 {% if logic.mavic_2 != 0 %}
                 <p class="text-light"><span id="mavic_2_title">mavic_2</span>: <span
                         id="mavic_2">{{logic.mavic_2}}</span>
@@ -130,19 +137,21 @@
                 <p class="text-light">Знайдено дронів за місяць: <span
                         id="total_val_drones">{{model.total_value}}</span></p>
                 <p class="text-light">Загальна кількість виявлень: {{model.dirty_total_value}}</p>
+
+
                 {% if model.mavic_2 != 0 %}
                 <p class="text-light"><span id="mavic_2_title">mavic_2</span>: <span
-                        id="mavic_2">{{model.mavic_2}}</span>
+                        id="mavic_2">{{model.mavic_2}} </span>
                 </p>
                 {%endif%}
                 {% if model.M_200_v2 != 0 %}
                 <p class="text-light"><span id="M_200_v2_title">M_200_v2</span>: <span
-                        id="M_200_v2">{{model.M_200_v2}}</span>
+                        id="M_200_v2">{{model.M_200_v2}} </span>
                 </p>
                 {%endif%}
                 {% if model.Mavic_Mini != 0 %}
                 <p class="text-light"><span id="Mavic_Mini_title">Mavic_Mini</span>: <span
-                        id="Mavic_Mini">{{model.Mavic_Mini}}</span>
+                        id="Mavic_Mini">{{model.Mavic_Mini}} </span>
                 </p>
                 {%endif%}
                 {% if model.Mavic_Air_2 != 0 %}
@@ -169,11 +178,11 @@
                 {%if model.mavic2Enterprise != 0%}
                 <p class="text-light"><span id="mavic2Enterprise_title">mavic2Enterprise</span>: <span
                         class="mavic2Enterprise"
-                        id="mavic2Enterprise">{{model.mavic2Enterprise}}</span></p>
+                        id="mavic2Enterprise">{model.mavic2Enterprise}}</span></p>
                 {%endif%}
                 {%if model.mini_se != 0 %}
                 <p class="text-light"><span id="mini_se_title">mini_se</span>: <span
-                        id="mini_se">{{mmodel.mini_se}}</span>
+                        id="mini_se">{{model.mini_se}}</span>
                 </p>
                 {%endif%}
                 {%if model.mavic_3 != 0%}
@@ -205,19 +214,26 @@
                 {% if model.unknown != 0%}
                 <p class="text-light">fake_gps: <span id="fake_gps">{{model.unknown}}</span></p>
                 {%endif%}
-                <p class="text-light"><span id="day_1">{{date_set.day_1}}</span>: <span id="day_1_quan">{{quan_by_date.day_1}}</span>
+                <p class="text-light"><span id="day_1">{{date_set.day_1}}</span>: <span id="day_1_quan">
+                    {{quan_by_date.day_1}} </span>
                 </p>
-                <p class="text-light"><span id="day_2">{{date_set.day_2}}</span>: <span id="day_2_quan">{{quan_by_date.day_2}}</span>
+                <p class="text-light"><span id="day_2">{{date_set.day_2}}</span>: <span id="day_2_quan">
+                    {{quan_by_date.day_2}} </span>
                 </p>
-                <p class="text-light"><span id="day_3">{{date_set.day_3}}</span>: <span id="day_3_quan">{{quan_by_date.day_3}}</span>
+                <p class="text-light"><span id="day_3">{{date_set.day_3}}</span>: <span id="day_3_quan">
+                    {{quan_by_date.day_3}} </span>
                 </p>
-                <p class="text-light"><span id="day_4">{{date_set.day_4}}</span>: <span id="day_4_quan">{{quan_by_date.day_4}}</span>
+                <p class="text-light"><span id="day_4">{{date_set.day_4}}</span>: <span id="day_4_quan">
+                    {{quan_by_date.day_4}} </span>
                 </p>
-                <p class="text-light"><span id="day_5">{{date_set.day_5}}</span>: <span id="day_5_quan">{{quan_by_date.day_5}}</span>
+                <p class="text-light"><span id="day_5">{{date_set.day_5}}</span>: <span id="day_5_quan">
+                    {{quan_by_date.day_5}} </span>
                 </p>
-                <p class="text-light"><span id="day_6">{{date_set.day_6}}</span>: <span id="day_6_quan">{{quan_by_date.day_6}}</span>
+                <p class="text-light"><span id="day_6">{{date_set.day_6}}</span>: <span id="day_6_quan">
+                    {{quan_by_date.day_6}} </span>
                 </p>
-                <p class="text-light"><span id="day_7">{{date_set.day_7}}</span>: <span id="day_7_quan"> {{quan_by_date.day_7}}</span>
+                <p class="text-light"><span id="day_7">{{date_set.day_7}}</span>: <span id="day_7_quan">
+                    {{quan_by_date.day_7}} </span>
                 </p>
 
 
@@ -228,6 +244,7 @@
     </div>
 
     <div class="whose_drones_main">
+        {%if count == 'today'%}
         <div class="type_of_drone_diagram">
             <div class="whose_drones_name">
                 <h5 class="text-dark"> Приналежність у %</h5>
@@ -244,7 +261,23 @@
             </div>
         </div>
 
-        {%if count == 'week'%}
+        {%elif count == 'week'%}
+        <div class="type_of_drone_diagram">
+            <div class="whose_drones_name">
+                <h5 class="text-dark"> Приналежність у %</h5>
+            </div>
+            <canvas id="myChart1"></canvas>
+        </div>
+
+        <div class="round_diagram">
+            <div class="round_diagram_title">
+                <h5 class="text-dark">Типи дронів у %</h5>
+            </div>
+            <div class="second_diagram">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
         <div class="line_diagram_for_drones_per_week">
             <div class="line_diagram_title">
                 <h5 class="text-dark">Кільскість дронів за неділю</h5>
@@ -254,11 +287,7 @@
             </div>
         </div>
         {%endif%}
-
     </div>
-
-</div>
-</div>
 
 
 <script src="/static/main_djmil/js/statistics.js">

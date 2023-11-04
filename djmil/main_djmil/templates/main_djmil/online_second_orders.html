@@ -85,7 +85,9 @@
             <tbody>
             <tr class="main_row">
                 <td>{{el.serial_no}}</td>
-                {%if el.product_type == 41%}
+                {%if el.product_type == 0%}
+                <td>1001 firmware</td>
+                {%elif el.product_type == 41%}
                 <td>mavic_2</td>
                 {%elif el.product_type == 44 %}
                 <td>M_200_v2</td>

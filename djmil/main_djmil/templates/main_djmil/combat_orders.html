@@ -95,12 +95,14 @@
             {%else%}
             <form method="get">
                 <button class="btn btn-warning main_btn text-light" type="submit" name="open_data"
-                        value="{{el.serial_no}} {{el.dt}}">
+                        value="{{el.serial_no}} {{el.dt}}" >
                     {{el.serial_no}}
                 </button>
             </form>
             {%endif%}
-            {%if el.product_type == 41 %}
+            {%if el.product_type == 0 %}
+            <p style="color:#fff">1001 firmware</p>
+            {%elif el.product_type == 41 %}
             <p style="color:#fff">mavic_2</p>
             {%elif el.product_type == 44 %}
             <p style="color:#fff">M_200_v2</p>

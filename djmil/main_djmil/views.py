@@ -147,13 +147,18 @@ class OnlineSecondOrders(APIView,
         if download:
             options = request.GET.get('options')
             req_download = DownloadSecondOnlineOrders()
-            if options == 'without':
-                return req_download.download_order
-            if options == 'newest':
-                return req_download.download_newest_order
-            if options == 'oldest':
-                return req_download.download_oldest_order
-
+            download_filter = {'without': req_download.download_order,
+                               'newest': req_download.download_newest_order,
+                               'oldest': req_download.download_oldest_order
+                               }
+            #if options == 'without':
+            #    return req_download.download_order
+            #if options == 'newest':
+            #    return req_download.download_newest_order
+            #if options == 'oldest':
+            #    return req_download.download_oldest_order
+            if options:
+                return download_filter.get(options)
         # search by old,new, drone_id
 
         if search_by_drone_id:
@@ -218,7 +223,6 @@ class CombatOrder(APIView):
         fake_drone = request.GET.get('fakefake')
 
         get_time = request.GET.get('time')
-
         # build docx file and download
         if build_order:
             logic = BuildCombatOrders()
@@ -288,7 +292,6 @@ class StatisticsPage(APIView):
     @staticmethod
     def get(request):
         """function for get request in StatisticsPage """
-        print(request.user)
         month = request.GET.get('month')
         today = request.GET.get('today')
         weak = request.GET.get('weak')
@@ -312,7 +315,7 @@ class StatisticsPage(APIView):
         if today:
             logic = BuildStatistics(datetime.today().strftime("%y-%m-%d")).today_statistics_order
             return render(request, 'main_djmil/main_statistics.html', {'logic': logic,
-                                                                       'count': 'today'
+                                                                       'count': 'today',
                                                                        })
 
         # logic for result per weak

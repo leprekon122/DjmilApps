@@ -5,9 +5,9 @@ from django.db import models
 class SecondOrdersModel(models.Model):
     """Model for second online order page"""
     serial_no = models.CharField(max_length=16, default='unknown')
-    product_type = models.IntegerField()
+    product_type = models.IntegerField(default=0, null=True, blank=True)
     longitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
-    latitude = models.DecimalField(max_digits=45, decimal_places=20)
+    latitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)
     height = models.IntegerField(blank=True, null=True)
     altitude = models.IntegerField(blank=True, null=True)
     phone_app_latitude = models.DecimalField(max_digits=45, decimal_places=20, blank=True, null=True)

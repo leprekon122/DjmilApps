@@ -10,8 +10,6 @@ function whose_drones() {
     var data_2 = []
 
 
-
-
     if (document.getElementById('ally') != null) {
         data_1.push(Math.round((document.getElementById('ally').innerHTML / total_val_drones) * 100))
         data_2.push('наші')
@@ -55,6 +53,8 @@ function round_diagram(){
       var total_val_drones = document.getElementById('total_val_drones').innerHTML
 
       // variables for count data to round diagramm
+
+      var firmware_1001 = document.getElementById('1001_firmware')
       var mavic_2 = document.getElementById('mavic_2')
       var M_200_v2 = document.getElementById('M_200_v2')
       var Mavic_Mini = document.getElementById('Mavic_Mini')
@@ -71,6 +71,7 @@ function round_diagram(){
       var Mavic_3_Classic = document.getElementById('Mavic_3_Classic')
 
       // variables for drone names for round diagram
+      var firmware_title_1001 = document.getElementById('1001_firmware_title')
       var mavic_2_title = document.getElementById('mavic_2_title')
       var M_200_v2_title = document.getElementById('M_200_v2_title')
       var Mavic_Mini_title = document.getElementById('Mavic_Mini_title')
@@ -89,9 +90,11 @@ function round_diagram(){
 
       var data_1 = []
       var data_2 = []
-      var drones_data = [mavic_2, M_200_v2, Mavic_Mini, Mavic_Air_2, M300RTK, mini_2, air_2s, M30,mavic2Enterprise,
+      var drones_data = [firmware_1001, mavic_2, M_200_v2, Mavic_Mini, Mavic_Air_2, M300RTK, mini_2,
+       air_2s, M30,mavic2Enterprise,
       mini_se, mavic_3,  mini_3_Pro, Mavic_3T_3E, Mavic_3_Classic]
-      var drones_data_title = [mavic_2_title, M_200_v2_title, Mavic_Mini_title, Mavic_Air_2_title, M300RTK_title,
+      var drones_data_title = [firmware_title_1001, mavic_2_title, M_200_v2_title, Mavic_Mini_title, Mavic_Air_2_title,
+       M300RTK_title,
       mini_2_title, air_2s_title, M30_title, mavic2Enterprise_title, mini_se_title, mavic_3_title, mini_3_Pro_title,
       Mavic_3T_3E_title, Mavic_3_Classic_title]
 
@@ -101,6 +104,7 @@ function round_diagram(){
             data_2.push(drones_data_title[i].innerHTML)
             }
       }
+
 
       const ctx = document.getElementById('myChart');
 
@@ -128,43 +132,42 @@ round_diagram()
 
 function line_diagram(){
 
-  var day_1 = document.getElementById('day_1').innerHTML
-  var day_2 = document.getElementById('day_2').innerHTML
-  var day_3 = document.getElementById('day_3').innerHTML
-  var day_4 = document.getElementById('day_4').innerHTML
-  var day_5 = document.getElementById('day_5').innerHTML
-  var day_6 = document.getElementById('day_6').innerHTML
-  var day_7 = document.getElementById('day_7').innerHTML
+      var day_1 = document.getElementById('day_1').innerHTML
+      var day_2 = document.getElementById('day_2').innerHTML
+      var day_3 = document.getElementById('day_3').innerHTML
+      var day_4 = document.getElementById('day_4').innerHTML
+      var day_5 = document.getElementById('day_5').innerHTML
+      var day_6 = document.getElementById('day_6').innerHTML
+      var day_7 = document.getElementById('day_7').innerHTML
 
-  var day_1_quan = document.getElementById('day_1_quan').innerHTML
-  var day_2_quan = document.getElementById('day_2_quan').innerHTML
-  var day_3_quan = document.getElementById('day_3_quan').innerHTML
-  var day_4_quan = document.getElementById('day_4_quan').innerHTML
-  var day_5_quan = document.getElementById('day_5_quan').innerHTML
-  var day_6_quan = document.getElementById('day_6_quan').innerHTML
-  var day_7_quan = document.getElementById('day_7_quan').innerHTML
+      var day_1_quan = document.getElementById('day_1_quan').innerHTML
+      var day_2_quan = document.getElementById('day_2_quan').innerHTML
+      var day_3_quan = document.getElementById('day_3_quan').innerHTML
+      var day_4_quan = document.getElementById('day_4_quan').innerHTML
+      var day_5_quan = document.getElementById('day_5_quan').innerHTML
+      var day_6_quan = document.getElementById('day_6_quan').innerHTML
+      var day_7_quan = document.getElementById('day_7_quan').innerHTML
 
 
-  const ctx = document.getElementById('myChart2');
+      const ctx = document.getElementById('myChart2');
 
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: [day_1, day_2, day_3, day_4, day_5, day_6, day_7],
-      datasets: [{
-        label: '# of Votes',
-        data: [day_1_quan, day_2_quan, day_3_quan, day_4_quan, day_5_quan, day_6_quan, day_7_quan],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [day_1, day_2, day_3, day_4, day_5, day_6, day_7],
+          datasets: [{
+            label: '# of Votes',
+            data: [day_1_quan, day_2_quan, day_3_quan, day_4_quan, day_5_quan, day_6_quan, day_7_quan],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
         }
-      }
-    }
-  });
-
+      });
 }
 line_diagram()

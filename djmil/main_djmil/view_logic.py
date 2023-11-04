@@ -175,35 +175,37 @@ class CombatLogic:
         self.fake_drone = fake_drone
         self.get_time = get_time
 
+        self.model_set = SecondOrdersModel.objects.filter(
+            dt__icontains=self.date_search).values().exclude(
+            serial_no=self.fake_drone).order_by('serial_no')
+
         if self.get_time is not None:
             self.model_set = SecondOrdersModel.objects.filter(
                 dt__icontains=f"{self.date_search} {self.get_time[:2]}").values().exclude(
                 serial_no=self.fake_drone
             ).order_by('serial_no')
-        else:
-            self.model_set = SecondOrdersModel.objects.filter(
-                dt__icontains=self.date_search).values().exclude(
-                serial_no=self.fake_drone).order_by('serial_no')
+
+
 
     @property
     def today_req(self):
         """logic for today filter"""
+        today_date = datetime.today().strftime('%y-%m-%d')
+
+        model_set = SecondOrdersModel.objects.filter(
+            dt__icontains=f"{today_date}").values().exclude(
+            serial_no=self.fake_drone).order_by(
+            'serial_no')
 
         if self.get_time is not None:
             model_set = SecondOrdersModel.objects.filter(
-                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')} {self.get_time[:3]}") \
+                dt__icontains=f"{today_date} {self.get_time[:3]}") \
                 .values().exclude(
                 serial_no=self.fake_drone).order_by(
                 'serial_no')
 
-        else:
-            model_set = SecondOrdersModel.objects.filter(
-                dt__icontains=f"{datetime.today().strftime('%y-%m-%d')}").values().exclude(
-                serial_no=self.fake_drone).order_by(
-                'serial_no')
-
         model = []
-        total_quan = []
+        total_quan = set()
 
         if len(model_set) == 1:
             quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today()
@@ -217,51 +219,51 @@ class CombatLogic:
                           'quantity': quantity,
                           'status': model_set[0]['status']
                           }
-            total_quan.append(quantity)
+            total_quan.add(quantity)
 
             model.append(model_data)
 
         else:
-            for elem in range(len(model_set)):
-                if elem == 0:
+            for num_elem, elem in enumerate(model_set):
+                if num_elem == 0:
                     quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today()
                                                                 .strftime('%y-%m-%d'),
-                                                                serial_no=model_set[elem][
+                                                                serial_no=model_set[num_elem][
                                                                     'serial_no']).values().count()
 
-                    model_data = {'serial_no': model_set[elem]['serial_no'],
-                                  'dt': model_set[elem]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                  'product_type': model_set[elem]['product_type'],
+                    model_data = {'serial_no': model_set[num_elem]['serial_no'],
+                                  'dt': model_set[num_elem]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'product_type': model_set[num_elem]['product_type'],
                                   'quantity': quantity,
-                                  'status': model_set[elem]['status']
+                                  'status': model_set[num_elem]['status']
                                   }
 
                     model.append(model_data)
-                    total_quan.append(quantity)
+                    total_quan.add(quantity)
                 else:
-                    if model_set[elem]['serial_no'] != \
-                            model_set[elem - 1]['serial_no']:
+                    if model_set[num_elem]['serial_no'] != \
+                            model_set[num_elem - 1]['serial_no']:
                         quantity = SecondOrdersModel.objects.filter(dt__icontains=datetime.today()
                                                                     .strftime('%y-%m-%d'),
-                                                                    serial_no=model_set[elem][
+                                                                    serial_no=model_set[num_elem][
                                                                         'serial_no']).values().count()
 
-                        model_data = {'serial_no': model_set[elem]['serial_no'],
-                                      'dt': model_set[elem]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                      'product_type': model_set[elem]['product_type'],
+                        model_data = {'serial_no': model_set[num_elem]['serial_no'],
+                                      'dt': model_set[num_elem]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'product_type': model_set[num_elem]['product_type'],
                                       'quantity': quantity,
-                                      'status': model_set[elem]['status']
+                                      'status': model_set[num_elem]['status']
                                       }
-
                         model.append(model_data)
-                        total_quan.append(quantity)
+                        total_quan.add(quantity)
+
         # determination last 5 detection
-        last_data_set_list = []
+        last_data_set_list = set()
         try:
             last_data_set = SecondOrdersModel.objects.values('serial_no').order_by('-id')[:5]
             for elem in last_data_set:
                 if elem['serial_no'] not in last_data_set_list:
-                    last_data_set_list.append(elem['serial_no'])
+                    last_data_set_list.add(elem['serial_no'])
         except Exception:
             pass
         # ==============================================
@@ -335,8 +337,8 @@ class CombatLogic:
             model.append(self.model_set)
 
         else:
-            for el in range(len(model_set)):
-                if el == 0:
+            for iter_num, value in enumerate(model_set):
+                if iter_num == 0:
                     quantity = SecondOrdersModel.objects.filter(
                         Q(dt__icontains=cur_date) | Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 16:") | Q(
@@ -347,20 +349,20 @@ class CombatLogic:
                             dt__icontains=f"{cur_month}-{tommorow_date} 21:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 22:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 23:"),
-                        serial_no=model_set[el][
+                        serial_no=model_set[iter_num][
                             'serial_no']).values().count()
 
-                    model.append({'serial_no': model_set[el]['serial_no'],
-                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                  'longitude': str(Decimal(model_set[el]['longitude'])),
-                                  'latitude': str(Decimal(model_set[el]['latitude'])),
-                                  'product_type': model_set[el]['product_type'],
+                    model.append({'serial_no': model_set[iter_num]['serial_no'],
+                                  'dt': model_set[iter_num]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'longitude': str(Decimal(model_set[iter_num]['longitude'])),
+                                  'latitude': str(Decimal(model_set[iter_num]['latitude'])),
+                                  'product_type': model_set[iter_num]['product_type'],
                                   'quantity': quantity,
-                                  'status': model_set[el]['status']
+                                  'status': model_set[iter_num]['status']
                                   })
 
                 else:
-                    if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
+                    if model_set[iter_num]['serial_no'] != model_set[iter_num - 1]['serial_no']:
                         quantity = SecondOrdersModel.objects.filter(
                             Q(dt__icontains=cur_date) | Q(dt__icontains=f"{cur_month}-{tommorow_date} 15:") | Q(
                                 dt__icontains=f"{cur_month}-{tommorow_date} 16:") | Q(
@@ -371,20 +373,19 @@ class CombatLogic:
                                 dt__icontains=f"{cur_month}-{tommorow_date} 21:") | Q(
                                 dt__icontains=f"{cur_month}-{tommorow_date} 22:") | Q(
                                 dt__icontains=f"{cur_month}-{tommorow_date} 23:"),
-                            serial_no=model_set[el][
+                            serial_no=model_set[iter_num][
                                 'serial_no']).values().count()
 
-                        model.append({'serial_no': model_set[el]['serial_no'],
-                                      'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                      'longitude': str(Decimal(model_set[el]['longitude'])),
-                                      'latitude': str(Decimal(model_set[el]['latitude'])),
-                                      'product_type': model_set[el]['product_type'],
+                        model.append({'serial_no': model_set[iter_num]['serial_no'],
+                                      'dt': model_set[iter_num]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'longitude': str(Decimal(model_set[iter_num]['longitude'])),
+                                      'latitude': str(Decimal(model_set[iter_num]['latitude'])),
+                                      'product_type': model_set[iter_num]['product_type'],
                                       'quantity': quantity,
-                                      'status': model_set[el]['status']
+                                      'status': model_set[iter_num]['status']
                                       })
 
         return model
-
 
     @property
     def search_by_week_statistics(self):
@@ -412,8 +413,8 @@ class CombatLogic:
             model.append(self.model_set)
 
         else:
-            for el in range(len(model_set)):
-                if el == 0:
+            for num_iter, values in enumerate(model_set):
+                if num_iter == 0:
                     quantity = SecondOrdersModel.objects.filter(
                         Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
                             dt__icontains=day_3) | Q(
@@ -421,38 +422,38 @@ class CombatLogic:
                             dt__icontains=day_5) | Q(
                             dt__icontains=day_6) | Q(
                             dt__icontains=day_7),
-                        serial_no=model_set[el][
+                        serial_no=model_set[num_iter][
                             'serial_no']).values().count()
 
-                    model.append({'serial_no': model_set[el]['serial_no'],
-                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                  'longitude': str(Decimal(model_set[el]['longitude'])),
-                                  'latitude': str(Decimal(model_set[el]['latitude'])),
-                                  'product_type': model_set[el]['product_type'],
+                    model.append({'serial_no': model_set[num_iter]['serial_no'],
+                                  'dt': model_set[num_iter]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                  'longitude': str(Decimal(model_set[num_iter]['longitude'])),
+                                  'latitude': str(Decimal(model_set[num_iter]['latitude'])),
+                                  'product_type': model_set[num_iter]['product_type'],
                                   'quantity': quantity,
-                                  'status': model_set[el]['status']
+                                  'status': model_set[num_iter]['status']
                                   })
 
-            else:
-                if model_set[el]['serial_no'] != model_set[el - 1]['serial_no']:
-                    quantity = SecondOrdersModel.objects.filter(
-                        Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
-                            dt__icontains=day_3) | Q(
-                            dt__icontains=day_4) | Q(
-                            dt__icontains=day_5) | Q(
-                            dt__icontains=day_6) | Q(
-                            dt__icontains=day_7),
-                        serial_no=model_set[el][
-                            'serial_no']).values().count()
+                else:
+                    if model_set[num_iter]['serial_no'] != model_set[num_iter - 1]['serial_no']:
+                        quantity = SecondOrdersModel.objects.filter(
+                            Q(dt__icontains=day_1) | Q(dt__icontains=day_2) | Q(
+                                dt__icontains=day_3) | Q(
+                                dt__icontains=day_4) | Q(
+                                dt__icontains=day_5) | Q(
+                                dt__icontains=day_6) | Q(
+                                dt__icontains=day_7),
+                            serial_no=model_set[num_iter][
+                                'serial_no']).values().count()
 
-                    model.append({'serial_no': model_set[el]['serial_no'],
-                                  'dt': model_set[el]['dt'].strftime('%m %d, %Y, %H:%M'),
-                                  'longitude': str(Decimal(model_set[el]['longitude'])),
-                                  'latitude': str(Decimal(model_set[el]['latitude'])),
-                                  'product_type': model_set[el]['product_type'],
-                                  'quantity': quantity,
-                                  'status': model_set[el]['status']
-                                  })
+                        model.append({'serial_no': model_set[num_iter]['serial_no'],
+                                      'dt': model_set[num_iter]['dt'].strftime('%m %d, %Y, %H:%M'),
+                                      'longitude': str(Decimal(model_set[num_iter]['longitude'])),
+                                      'latitude': str(Decimal(model_set[num_iter]['latitude'])),
+                                      'product_type': model_set[num_iter]['product_type'],
+                                      'quantity': quantity,
+                                      'status': model_set[num_iter]['status']
+                                      })
 
         return model
 
@@ -710,6 +711,7 @@ class BuildStatistics:
         tommorow_date = (datetime.today() - timedelta(days=1)).strftime("%d")
 
         data_1 = {
+            0: 0,
             41: 0,
             44: 0,
             53: 0,
@@ -771,6 +773,7 @@ class BuildStatistics:
                             dt__icontains=f"{cur_month}-{tommorow_date} 21:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 22:") | Q(
                             dt__icontains=f"{cur_month}-{tommorow_date} 23:"))),
+                '1001_frimware': data_1[0],
                 'mavic_2': data_1[41],
                 'M_200_v2': data_1[44],
                 'Mavic_Mini': data_1[53],
@@ -820,6 +823,7 @@ class BuildStatistics:
                         'day_7': len(SecondOrdersModel.objects.filter(dt__icontains=day_7))
                         }
         data_1 = {
+            0: 0,
             41: 0,
             44: 0,
             53: 0,
@@ -877,6 +881,7 @@ class BuildStatistics:
                             dt__icontains=day_5) | Q(
                             dt__icontains=day_6) | Q(
                             dt__icontains=day_7))),
+                '1001_firmware': data_1[0],
                 'mavic_2': data_1[41],
                 'M_200_v2': data_1[44],
                 'Mavic_Mini': data_1[53],

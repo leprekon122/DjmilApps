@@ -40,3 +40,4 @@ function show_build_orders_all(){
         document.getElementById('hide_build_orders_all').style.justifyContent = 'red'
 
 }
+
